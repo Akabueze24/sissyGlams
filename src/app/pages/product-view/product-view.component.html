@@ -1,0 +1,466 @@
+<main class="product-view container-fluid">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="product-view__breadcrumb-nav">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Blush Satin Wrap Dress
+      </li>
+    </ol>
+  </nav>
+
+  <div class="row product-view__main gy-4 gy-lg-0">
+    <!-- ============================================================
+         LEFT — Gallery
+         Later: [src]="selectedVariant.mainImage" on the main image,
+         and *ngFor="let shot of selectedVariant.gallery" on the
+         thumbnail strip below. Both are driven by whichever variant
+         swatch is selected in the Color option (right column).
+    ============================================================ -->
+    <div class="col-12 col-lg-6">
+      <section class="product-gallery" aria-label="Product images">
+        <!--
+          Main image slider for the CURRENTLY selected variant (Pink).
+          thumbs-swiper=".product-gallery__thumbs" is Swiper Element's
+          native declarative thumb-sync — no TypeScript required.
+          Later: *ngFor="let shot of selectedVariant.gallery" over the
+          slides below, swapped whenever the variant selector changes.
+        -->
+        <div class="product-gallery__main">
+          <swiper-container
+            class="product-gallery__main-swiper"
+            thumbs-swiper=".product-gallery__thumbs"
+            navigation="true"
+            space-between="0"
+            loop="false"
+          >
+            <swiper-slide>
+              <img
+                class="product-gallery__main-img"
+                src="https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+%E2%80%94+Front"
+                alt="Blush Satin Wrap Dress in Pink, front view"
+                data-current-variant="pink"
+              />
+            </swiper-slide>
+            <swiper-slide>
+              <img
+                class="product-gallery__main-img"
+                src="https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+%E2%80%94+Back"
+                alt="Blush Satin Wrap Dress in Pink, back view"
+                data-current-variant="pink"
+              />
+            </swiper-slide>
+            <swiper-slide>
+              <img
+                class="product-gallery__main-img"
+                src="https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+%E2%80%94+Side"
+                alt="Blush Satin Wrap Dress in Pink, side view"
+                data-current-variant="pink"
+              />
+            </swiper-slide>
+            <swiper-slide>
+              <img
+                class="product-gallery__main-img"
+                src="https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+%E2%80%94+Detail"
+                alt="Blush Satin Wrap Dress in Pink, fabric detail"
+                data-current-variant="pink"
+              />
+            </swiper-slide>
+          </swiper-container>
+        </div>
+
+        <!--
+          Thumbnail nav swiper for the currently selected variant.
+          free-mode + watch-slides-progress lets Swiper toggle
+          .swiper-slide-thumb-active on the active .gallery-thumb
+          automatically — that's what drives the pink active border,
+          no click handlers needed.
+        -->
+        <swiper-container
+          class="product-gallery__thumbs"
+          slides-per-view="4"
+          space-between="10"
+          free-mode="true"
+          watch-slides-progress="true"
+          aria-label="Product image angles"
+        >
+          <swiper-slide class="gallery-thumb">
+            <img
+              src="https://placehold.co/160x160/ffd6e8/e8558c?text=Front"
+              alt="Front view"
+            />
+          </swiper-slide>
+          <swiper-slide class="gallery-thumb">
+            <img
+              src="https://placehold.co/160x160/ffd6e8/e8558c?text=Back"
+              alt="Back view"
+            />
+          </swiper-slide>
+          <swiper-slider class="gallery-thumb">
+            <img
+              src="https://placehold.co/160x160/ffd6e8/e8558c?text=Side"
+              alt="Side view"
+            />
+          </swiper-slider>
+          <swiper-slide class="gallery-thumb">
+            <img
+              src="https://placehold.co/160x160/ffd6e8/e8558c?text=Detail"
+              alt="Fabric detail view"
+            />
+          </swiper-slide>
+        </swiper-container>
+      </section>
+    </div>
+
+    <!-- ============================================================
+         RIGHT — Product info + options
+    ============================================================ -->
+    <div class="col-12 col-lg-6">
+      <div class="product-info">
+        <p class="product-info__brand">Sissy Dream</p>
+        <h1 class="product-info__name">Blush Satin Wrap Dress</h1>
+
+        <div
+          class="product-info__rating"
+          aria-label="Rating 4.5 out of 5 stars"
+        >
+          <span class="product-info__stars">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
+            ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
+            ><i class="fa-solid fa-star-half-stroke"></i>
+          </span>
+          <span class="product-info__review-count">(28 reviews)</span>
+        </div>
+
+        <div class="product-info__price">
+          <span class="product-info__badge">-28%</span>
+          <span class="product-info__price-old">$59.99</span>
+          <span class="product-info__price-current">$42.99</span>
+        </div>
+
+        <p class="product-info__description">
+          A soft satin wrap dress with a flattering tie waist and flowing skirt
+          — designed to feel elegant and move beautifully, from everyday wear to
+          your next special occasion.
+        </p>
+
+        <hr class="product-info__divider" />
+
+        <!-- ==========================================================
+             PRODUCT OPTIONS
+             These are example option groups for UI review — not every
+             product will have all three. Each group is fully static
+             (radio + label, :checked drives the styling) so it can be
+             wired to real option data later without changing markup.
+        ========================================================== -->
+        <div class="product-options">
+          <!-- COLOR / VARIANT — this is the master variant selector.
+               data-variant on each input is the hook a later
+               (change) handler / [(ngModel)] would read to swap the
+               gallery above to that variant's image set. -->
+          <div class="product-option">
+            <h2 class="product-option__label">
+              Color: <span class="product-option__value">Pink</span>
+            </h2>
+            <div
+              class="variant-swatches"
+              role="group"
+              aria-label="Select color variant"
+            >
+              <input
+                type="radio"
+                class="btn-check"
+                name="productVariant"
+                id="variantPink"
+                data-variant="pink"
+                checked
+              />
+              <label class="variant-swatch" for="variantPink">
+                <img
+                  class="variant-swatch__img"
+                  src="https://placehold.co/80x80/ffd6e8/e8558c?text=Pink"
+                  alt=""
+                />
+                <span class="variant-swatch__label">Pink</span>
+              </label>
+
+              <input
+                type="radio"
+                class="btn-check"
+                name="productVariant"
+                id="variantBlack"
+                data-variant="black"
+              />
+              <label class="variant-swatch" for="variantBlack">
+                <img
+                  class="variant-swatch__img"
+                  src="https://placehold.co/80x80/2b2b2b/ffffff?text=Black"
+                  alt=""
+                />
+                <span class="variant-swatch__label">Black</span>
+              </label>
+
+              <input
+                type="radio"
+                class="btn-check"
+                name="productVariant"
+                id="variantRed"
+                data-variant="red"
+              />
+              <label class="variant-swatch" for="variantRed">
+                <img
+                  class="variant-swatch__img"
+                  src="https://placehold.co/80x80/c62841/ffffff?text=Red"
+                  alt=""
+                />
+                <span class="variant-swatch__label">Red</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- SIZE — independent of variant/color -->
+          <div class="product-option">
+            <h2 class="product-option__label">
+              Size: <span class="product-option__value">M</span>
+            </h2>
+            <div class="choice-buttons" role="group" aria-label="Select size">
+              <input
+                type="radio"
+                class="btn-check"
+                name="productSize"
+                id="sizeS"
+              />
+              <label class="choice-btn" for="sizeS">S</label>
+
+              <input
+                type="radio"
+                class="btn-check"
+                name="productSize"
+                id="sizeM"
+                checked
+              />
+              <label class="choice-btn" for="sizeM">M</label>
+
+              <input
+                type="radio"
+                class="btn-check"
+                name="productSize"
+                id="sizeL"
+              />
+              <label class="choice-btn" for="sizeL">L</label>
+
+              <input
+                type="radio"
+                class="btn-check"
+                name="productSize"
+                id="sizeXL"
+              />
+              <label class="choice-btn" for="sizeXL">XL</label>
+            </div>
+          </div>
+
+          <!-- LENGTH — shown here as a UI example (e.g. for wigs); not
+               every product type will render this group -->
+          <div class="product-option">
+            <h2 class="product-option__label">
+              Length: <span class="product-option__value">20"</span>
+            </h2>
+            <div class="choice-buttons" role="group" aria-label="Select length">
+              <input
+                type="radio"
+                class="btn-check"
+                name="productLength"
+                id="length18"
+              />
+              <label class="choice-btn" for="length18">18"</label>
+
+              <input
+                type="radio"
+                class="btn-check"
+                name="productLength"
+                id="length20"
+                checked
+              />
+              <label class="choice-btn" for="length20">20"</label>
+
+              <input
+                type="radio"
+                class="btn-check"
+                name="productLength"
+                id="length22"
+              />
+              <label class="choice-btn" for="length22">22"</label>
+
+              <input
+                type="radio"
+                class="btn-check"
+                name="productLength"
+                id="length24"
+              />
+              <label class="choice-btn" for="length24">24"</label>
+            </div>
+          </div>
+        </div>
+
+        <hr class="product-info__divider" />
+
+        <!-- QUANTITY + ADD TO BAG + WISHLIST -->
+        <div class="product-actions">
+          <div
+            class="quantity-stepper"
+            role="group"
+            aria-label="Product quantity"
+          >
+            <button
+              class="quantity-stepper__btn"
+              type="button"
+              aria-label="Decrease quantity"
+            >
+              <i class="fa-solid fa-minus" aria-hidden="true"></i>
+            </button>
+            <span class="quantity-stepper__value" aria-live="polite">1</span>
+            <button
+              class="quantity-stepper__btn"
+              type="button"
+              aria-label="Increase quantity"
+            >
+              <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <button class="product-actions__add-to-bag" type="button">
+            Add to Bag
+          </button>
+
+          <button
+            class="product-actions__wishlist"
+            type="button"
+            aria-label="Add to wishlist"
+          >
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PRODUCT DETAILS — Bootstrap tabs, no custom TS
+  ============================================================ -->
+  <section class="product-details" aria-label="Product details">
+    <nav>
+      <div
+        class="nav nav-tabs product-details__tabs"
+        id="productDetailsTabs"
+        role="tablist"
+      >
+        <button
+          class="nav-link active"
+          id="tab-description-btn"
+          data-bs-toggle="tab"
+          data-bs-target="#tab-description"
+          type="button"
+          role="tab"
+          aria-controls="tab-description"
+          aria-selected="true"
+        >
+          Description
+        </button>
+        <button
+          class="nav-link"
+          id="tab-details-btn"
+          data-bs-toggle="tab"
+          data-bs-target="#tab-details"
+          type="button"
+          role="tab"
+          aria-controls="tab-details"
+          aria-selected="false"
+        >
+          Product Details
+        </button>
+        <button
+          class="nav-link"
+          id="tab-shipping-btn"
+          data-bs-toggle="tab"
+          data-bs-target="#tab-shipping"
+          type="button"
+          role="tab"
+          aria-controls="tab-shipping"
+          aria-selected="false"
+        >
+          Shipping &amp; Returns
+        </button>
+        <button
+          class="nav-link"
+          id="tab-reviews-btn"
+          data-bs-toggle="tab"
+          data-bs-target="#tab-reviews"
+          type="button"
+          role="tab"
+          aria-controls="tab-reviews"
+          aria-selected="false"
+        >
+          Reviews
+        </button>
+      </div>
+    </nav>
+
+    <div
+      class="tab-content product-details__content"
+      id="productDetailsTabsContent"
+    >
+      <div
+        class="tab-pane fade show active"
+        id="tab-description"
+        role="tabpanel"
+        aria-labelledby="tab-description-btn"
+      >
+        <p>
+          A soft satin wrap dress with a flattering tie waist and flowing skirt.
+          Designed to drape gently over the body, this piece moves beautifully
+          whether you're dressing up for an evening out or wearing it for
+          everyday comfort. Finished with delicate seaming and a smooth,
+          cool-to-the-touch fabric.
+        </p>
+      </div>
+
+      <div
+        class="tab-pane fade"
+        id="tab-details"
+        role="tabpanel"
+        aria-labelledby="tab-details-btn"
+      >
+        <ul class="product-details__list">
+          <li>Fabric: 95% satin polyester, 5% spandex</li>
+          <li>Wrap-tie waist with adjustable fit</li>
+          <li>Machine washable, cold, gentle cycle</li>
+          <li>Imported</li>
+        </ul>
+      </div>
+
+      <div
+        class="tab-pane fade"
+        id="tab-shipping"
+        role="tabpanel"
+        aria-labelledby="tab-shipping-btn"
+      >
+        <p>
+          Free worldwide shipping on orders over $50. Orders are processed
+          within 1&ndash;2 business days and typically arrive within 5&ndash;10
+          business days depending on destination. Returns are accepted within 30
+          days of delivery for unworn items with tags attached.
+        </p>
+      </div>
+
+      <div
+        class="tab-pane fade"
+        id="tab-reviews"
+        role="tabpanel"
+        aria-labelledby="tab-reviews-btn"
+      >
+        <p>Customer reviews will appear here.</p>
+      </div>
+    </div>
+  </section>
+</main>

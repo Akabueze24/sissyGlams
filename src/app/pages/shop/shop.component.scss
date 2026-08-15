@@ -1,0 +1,318 @@
+@import "../../../styles/variables";
+
+// ============================================================
+// Shop page shell
+// ============================================================
+.shop-page {
+  max-width: 1400px;
+  padding: 1rem 1rem 3rem;
+
+  @media (min-width: 992px) {
+    padding: 1.25rem 1.25rem 3.5rem;
+  }
+}
+
+// --- Breadcrumb ---
+.shop-breadcrumb-nav {
+  margin-bottom: 1rem;
+
+  .breadcrumb {
+    margin: 0;
+    font-family: $font-body;
+    font-size: 0.8rem;
+  }
+
+  .breadcrumb-item a {
+    color: $color-text-muted;
+    text-decoration: none;
+
+    &:hover {
+      color: $brand-pink;
+      text-decoration: underline;
+    }
+  }
+
+  .breadcrumb-item.active {
+    color: $color-text-dark;
+    font-weight: 600;
+  }
+
+  .breadcrumb-item + .breadcrumb-item::before {
+    color: $color-text-muted;
+  }
+}
+
+// --- Category header ---
+.shop-header {
+  margin-bottom: 1.75rem;
+
+  &__title {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: $color-text-dark;
+    margin-bottom: 0.5rem;
+
+    @media (min-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  &__description {
+    font-family: $font-body;
+    font-size: 0.85rem;
+    color: $color-text-muted;
+    max-width: 720px;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+// ============================================================
+// Layout — fixed-width sidebar (~215px), product area fills
+// the rest. Kept deliberately simple (no percentage-based
+// flex-basis) so it can't be starved by content width changes.
+// ============================================================
+.shop-layout {
+  @media (min-width: 992px) {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+}
+
+.shop-filters {
+  --bs-offcanvas-width: 300px;
+
+  @media (min-width: 992px) {
+    flex: 0 0 215px;
+    width: 215px;
+    padding-right: 1.25rem;
+    border-right: 1px solid $color-border;
+  }
+
+  .offcanvas-header {
+    @media (min-width: 992px) {
+      display: none;
+    }
+  }
+
+  // Explicit flex-column + gap for stacking the three filter
+  // sections — more robust than an adjacent-sibling margin
+  // selector, which is what caused the previous overlap bug.
+  .offcanvas-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+.shop-main {
+  min-width: 0; // let the grid shrink/grow correctly inside the flex item
+
+  @media (min-width: 992px) {
+    flex: 1 1 0%;
+  }
+}
+
+.shop-filters__title {
+  font-family: $font-heading;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: $color-text-dark;
+  margin-bottom: 0.85rem;
+}
+
+
+
+
+
+// ============================================================
+// Toolbar
+// ============================================================
+.shop-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid $color-border;
+
+  // Mobile: [Filters] ... [Sort] on one row, count wraps to its own line
+  &__count {
+    order: 3;
+    flex: 1 0 100%;
+    font-family: $font-body;
+    font-size: 0.8rem;
+    color: $color-text-muted;
+    margin: 0;
+
+    @media (min-width: 576px) {
+      order: 0;
+      flex: 1 1 auto;
+    }
+  }
+
+  &__filter-btn {
+    order: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid $brand-pink;
+    background-color: $color-white;
+    color: $brand-pink-dark;
+    font-family: $font-body;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: $brand-pink-light;
+    }
+
+    // Hidden on desktop — sidebar is always visible there
+    @media (min-width: 992px) {
+      display: none;
+    }
+  }
+
+  &__sort {
+    order: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+  }
+
+  &__sort-label {
+    font-family: $font-body;
+    font-size: 0.8rem;
+    color: $color-text-muted;
+    white-space: nowrap;
+
+    @media (max-width: 575.98px) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
+  }
+
+  &__sort-select {
+    width: auto;
+    font-family: $font-body;
+    font-size: 0.8rem;
+    padding: 0.4rem 2rem 0.4rem 0.75rem;
+    border-color: $color-border;
+    color: $color-text-dark;
+
+    &:focus {
+      border-color: $brand-pink;
+      box-shadow: 0 0 0 0.2rem rgba($brand-pink, 0.15);
+    }
+  }
+}
+
+.shop-product-grid {
+  margin-bottom: 2rem;
+}
+
+// ============================================================
+// Pagination — compact premium style with prev/next labels
+// ============================================================
+.shop-pagination-nav {
+  margin: 0.5rem 0 2.5rem;
+
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .page-item {
+    margin: 0;
+  }
+
+  .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid $color-border;
+    border-radius: 50%;
+    background-color: $color-white;
+    font-family: $font-body;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: $color-text-dark;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+
+    &:hover {
+      color: $brand-pink-dark;
+      background-color: $brand-pink-light;
+      border-color: $brand-pink-light;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba($brand-pink, 0.15);
+    }
+  }
+
+  .page-link--nav {
+    width: auto;
+    height: 34px;
+    padding: 0 0.75rem;
+    border-radius: 999px;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    color: $color-text-muted;
+    border-color: $color-border;
+    background-color: $color-white;
+
+    &__label {
+      @media (max-width: 419.98px) {
+        display: none;
+      }
+    }
+  }
+
+  .page-item.active .page-link {
+    background-color: $brand-pink;
+    border-color: $brand-pink;
+    color: $color-white;
+  }
+
+  .page-item.disabled .page-link {
+    color: $color-border;
+    background-color: transparent;
+    border-color: transparent;
+    pointer-events: none;
+  }
+}
+
+// ============================================================
+// Shopping Suggestions — now a full section below the grid,
+// reusing app-product-card (no separate small-card design here)
+// ============================================================
+.suggestions-section {
+  &__title {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: $color-text-dark;
+    margin-bottom: 1.25rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid $color-border;
+  }
+}

@@ -1,0 +1,172 @@
+<div class="billing-address">
+
+  <a class="billing-address__back" routerLink="/account/address">
+    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+    <span>Back to Addresses</span>
+  </a>
+
+  <header class="billing-address__header">
+    <span class="billing-address__icon">
+      <i class="fa-regular fa-credit-card" aria-hidden="true"></i>
+    </span>
+    <div>
+      <h1 class="billing-address__title">Billing Address</h1>
+      <p class="billing-address__subtitle">
+        Enter the billing address you would like to use for your purchases.
+      </p>
+    </div>
+  </header>
+
+  <form class="billing-form">
+
+    <div class="row g-3">
+
+      <div class="col-12 col-md-6">
+        <div class="billing-form__group">
+          <label class="billing-form__label" for="billingFirstName">
+            First Name <span class="billing-form__required" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="billingFirstName"
+            class="billing-form__input"
+            type="text"
+            autocomplete="given-name"
+          />
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <div class="billing-form__group">
+          <label class="billing-form__label" for="billingLastName">
+            Last Name <span class="billing-form__required" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="billingLastName"
+            class="billing-form__input"
+            type="text"
+            autocomplete="family-name"
+          />
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="billing-form__group">
+          <label class="billing-form__label" for="billingCompany">Company</label>
+          <input
+            id="billingCompany"
+            class="billing-form__input"
+            type="text"
+            autocomplete="organization"
+          />
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="billing-form__group">
+          <label class="billing-form__label" for="billingCountry">
+            Country / Region <span class="billing-form__required" aria-hidden="true">*</span>
+          </label>
+          <select id="billingCountry" class="billing-form__select" autocomplete="country">
+            <option value="NG" selected>Nigeria</option>
+            <option value="US">United States</option>
+            <option value="GB">United Kingdom</option>
+            <option value="CA">Canada</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="billing-form__group">
+          <label class="billing-form__label" for="billingStreet">
+            Street Address <span class="billing-form__required" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="billingStreet"
+            class="billing-form__input"
+            type="text"
+            placeholder="House number and street name"
+            autocomplete="address-line1"
+          />
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="billing-form__group">
+          <label class="billing-form__label" for="billingApartment">Apartment / Suite</label>
+          <input
+            id="billingApartment"
+            class="billing-form__input"
+            type="text"
+            placeholder="Apartment, suite, unit, etc. (optional)"
+            autocomplete="address-line2"
+          />
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <div class="billing-form__group">
+          <label class="billing-form__label" for="billingCity">
+            City <span class="billing-form__required" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="billingCity"
+            class="billing-form__input"
+            type="text"
+            autocomplete="address-level2"
+          />
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <div class="billing-form__group">
+          <label class="billing-form__label" for="billingState">
+            State / Province <span class="billing-form__required" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="billingState"
+            class="billing-form__input"
+            type="text"
+            autocomplete="address-level1"
+          />
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <div class="billing-form__group">
+          <label class="billing-form__label" for="billingPostalCode">
+            Postal Code <span class="billing-form__required" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="billingPostalCode"
+            class="billing-form__input"
+            type="text"
+            autocomplete="postal-code"
+          />
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <div class="billing-form__group">
+          <label class="billing-form__label" for="billingPhone">
+            Phone <span class="billing-form__required" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="billingPhone"
+            class="billing-form__input"
+            type="tel"
+            placeholder="+234 800 000 0000"
+            autocomplete="tel"
+          />
+        </div>
+      </div>
+
+    </div>
+
+    <div class="billing-form__actions">
+      <button class="billing-form__save" type="submit">Save Address</button>
+      <a class="billing-form__cancel" routerLink="/account/address">Cancel</a>
+    </div>
+
+  </form>
+
+</div>

@@ -1,0 +1,46 @@
+@import '../../../../styles/variables';
+
+// ============================================================
+// Rating filter — compact
+// ============================================================
+.rating-filter {
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.3rem 0;
+    cursor: pointer;
+  }
+
+  &__checkbox {
+    flex: 0 0 auto;
+    accent-color: $brand-pink;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+  }
+
+  &__stars {
+    flex: 0 0 auto;
+    display: inline-flex;
+    gap: 1px;
+    font-size: 0.68rem;
+    color: $brand-pink;
+
+    .fa-regular.fa-star {
+      color: $color-border;
+    }
+  }
+
+  &__text {
+    font-family: $font-body;
+    font-size: 0.78rem;
+    color: $color-text-dark;
+  }
+}

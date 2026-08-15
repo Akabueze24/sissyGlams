@@ -1,0 +1,497 @@
+<header class="site-header">
+  <!-- 1. Announcement bar -->
+  <div class="announcement-bar text-center">
+    <span>🎀 Free Worldwide Shipping US$50+ 🎀</span>
+  </div>
+
+  <!-- 2. Top info bar (desktop / tablet only) -->
+  <div
+    class="topbar d-none d-lg-flex align-items-center justify-content-between"
+  >
+    <div class="topbar__left d-flex align-items-center">
+      <ul class="social-list list-unstyled d-flex align-items-center mb-0">
+        <li>
+          <a href="#" aria-label="Facebook"
+            ><i class="fa-brands fa-facebook-f"></i
+          ></a>
+        </li>
+        <li>
+          <a href="#" aria-label="Instagram"
+            ><i class="fa-brands fa-instagram"></i
+          ></a>
+        </li>
+        <li>
+          <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+        </li>
+      </ul>
+
+      <span class="topbar__divider" aria-hidden="true"></span>
+
+      <ul class="info-links list-unstyled d-flex align-items-center mb-0">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/shipping">Shipping</a></li>
+        <li><a href="/returns">Returns</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/faq">FAQ</a></li>
+      </ul>
+    </div>
+
+    <div class="topbar__right d-flex align-items-center">
+      <div class="dropdown currency-dropdown">
+        <button
+          class="btn dropdown-toggle"
+          type="button"
+          id="currencyDropdown"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          USD
+        </button>
+        <ul
+          class="dropdown-menu dropdown-menu-end"
+          aria-labelledby="currencyDropdown"
+        >
+          <li><button class="dropdown-item" type="button">USD</button></li>
+          <li><button class="dropdown-item" type="button">EUR</button></li>
+          <li><button class="dropdown-item" type="button">GBP</button></li>
+        </ul>
+      </div>
+
+      <a class="topbar__contact" href="mailto:support@sissydream.com">
+        <i class="fa-regular fa-envelope"></i>
+        <span>SUPPORT&#64;SISSYDREAM.COM</span>
+      </a>
+
+      <a class="topbar__contact" href="tel:+13616663162">
+        <i class="fa-solid fa-phone"></i>
+        <span>+1&nbsp;361&nbsp;666&nbsp;3162</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- 3. Main header -->
+  <div class="main-header">
+    <div
+      class="main-header__inner d-flex align-items-center justify-content-between"
+    >
+      <!-- Mobile-only: hamburger + logo + cart -->
+      <div
+        class="mobile-row d-flex d-lg-none align-items-center justify-content-between w-100"
+      >
+        <button
+          class="hamburger-btn"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#categoryNavCollapse"
+          aria-controls="categoryNavCollapse"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <a class="logo logo--mobile" href="/">
+          <span class="logo__word"
+            >Sissy<span class="logo__word--accent">Dream</span></span
+          >
+        </a>
+
+        <!-- Wishlist -->
+        <a class="mobile-wishlist-btn" href="/wishlist" aria-label="Wishlist">
+          <i class="fa-regular fa-heart"></i>
+          
+        </a>
+
+        <a class="mobile-account-btn" aria-label="Account" (click)="authModal.open('login')">
+          <i class="fa-regular fa-user"></i>
+          <span>LOGIN</span>
+        </a>
+
+        <a class="cart-icon-btn" href="/cart" aria-label="Cart">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="cart-badge">0</span>
+        </a>
+      </div>
+
+      <!-- Desktop: logo -->
+      <a class="logo d-none d-lg-flex align-items-center" href="/">
+        <span class="logo__mark">
+          <i class="fa-solid fa-face-smile"></i>
+        </span>
+        <span class="logo__text">
+          <span class="logo__word"
+            >Sissy<span class="logo__word--accent">Dream</span></span
+          >
+          <span class="logo__tagline">Sissy Maker Store</span>
+        </span>
+      </a>
+
+      <!-- Desktop: search -->
+      <form class="search-form d-none d-lg-flex" role="search">
+        <input
+          class="search-form__input"
+          type="search"
+          name="q"
+          placeholder="I'm a sissy looking for..."
+          aria-label="Search products"
+        />
+        <button class="search-form__btn" type="submit" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+
+      <!-- Desktop: actions -->
+      <div class="header-actions d-none d-lg-flex align-items-center">
+        <a class="header-actions__item" href="/wishlist" aria-label="Wishlist">
+          <i class="fa-regular fa-heart"></i>
+          <span>WISHLIST</span>
+        </a>
+
+        <span class="header-actions__divider" aria-hidden="true"></span>
+
+        <a
+          class="header-actions__item header-actions__item--login"
+          (click)="authModal.open('login')"
+        >
+          <i class="fa-regular fa-user"></i>
+          <span>LOGIN</span>
+        </a>
+
+        <span class="header-actions__divider" aria-hidden="true"></span>
+
+        <a class="header-actions__item header-actions__item--cart" href="/cart">
+          <span class="cart-icon-wrap">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span class="cart-badge">0</span>
+          </span>
+          <span>$0.00</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Mobile-only: full-width search row -->
+    <form
+      class="search-form search-form--mobile d-flex d-lg-none"
+      role="search"
+    >
+      <input
+        class="search-form__input"
+        type="search"
+        name="q"
+        placeholder="I'm a sissy looking for..."
+        aria-label="Search products"
+      />
+      <button class="search-form__btn" type="submit" aria-label="Search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+    </form>
+  </div>
+
+  <!-- 4. Pink category navigation -->
+  <nav class="category-nav navbar navbar-expand-lg">
+    <div class="category-nav__inner container-fluid">
+      <div class="collapse navbar-collapse" id="categoryNavCollapse">
+        <ul class="navbar-nav category-nav__list">
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              New
+            </a>
+
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/dresses"> All Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/bodycon">
+                  Bodycon Dresses
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Dresses
+            </a>
+
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/dresses"> All Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/bodycon">
+                  Bodycon Dresses
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/wigs"> Wigs </a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Lingerie
+            </a>
+
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/dresses"> All Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/bodycon">
+                  Bodycon Dresses
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Sharper
+            </a>
+
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/dresses"> All Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/bodycon">
+                  Bodycon Dresses
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/wigs"> Shoes </a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              tops
+            </a>
+
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/dresses"> All Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/bodycon">
+                  Bodycon Dresses
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Bottoms
+            </a>
+
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/dresses"> All Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/bodycon">
+                  Bodycon Dresses
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Sissy Toys
+            </a>
+
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/dresses"> All Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/bodycon">
+                  Bodycon Dresses
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Make Up
+            </a>
+
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/dresses"> All Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/bodycon">
+                  Bodycon Dresses
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Accessories
+            </a>
+
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/dresses"> All Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/bodycon">
+                  Bodycon Dresses
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Collections
+            </a>
+
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/dresses"> All Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/bodycon">
+                  Bodycon Dresses
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Sissy Fun
+            </a>
+
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/dresses"> All Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/dresses/bodycon">
+                  Bodycon Dresses
+                </a>
+              </li>
+            </ul>
+          </li> -->
+
+          <li class="nav-item">
+            <a class="nav-link" href="/wigs"> Ebooks </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <app-auth #authModal></app-auth>
+</header>

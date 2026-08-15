@@ -1,0 +1,47 @@
+<div class="address-page">
+
+  <!-- Page header -->
+  <header class="address-page__header">
+    <h1 class="address-page__title">Edit Address</h1>
+    <p class="address-page__description">
+      The following addresses will be used on the checkout page by default.
+    </p>
+  </header>
+
+  <!-- Billing address -->
+  <section class="address-section" aria-labelledby="billingAddressHeading">
+    <div class="address-section__header">
+      <span class="address-section__icon">
+        <i class="fa-regular fa-credit-card" aria-hidden="true"></i>
+      </span>
+      <h2 class="address-section__title" id="billingAddressHeading">Billing address</h2>
+    </div>
+
+    <a class="address-section__action" routerLink="/account/address/billing">
+      Add Billing address
+    </a>
+
+    <p class="address-section__message">
+      You have not set up this type of address yet.
+    </p>
+  </section>
+
+  <!-- Shipping address -->
+  <section class="address-section" aria-labelledby="shippingAddressHeading">
+    <div class="address-section__header">
+      <span class="address-section__icon">
+        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+      </span>
+      <h2 class="address-section__title" id="shippingAddressHeading">Shipping address</h2>
+    </div>
+
+    <a class="address-section__action" routerLink="/account/address/shipping">
+      Add Shipping address
+    </a>
+
+    <p class="address-section__message">
+      You have not set up this type of address yet.
+    </p>
+  </section>
+
+</div>

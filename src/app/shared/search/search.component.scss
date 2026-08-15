@@ -1,0 +1,49 @@
+@import '../../../styles/variables';
+
+:host {
+  display: contents;
+}
+
+.search-form {
+  flex: 1 1 auto;
+  max-width: 480px;
+  border: 1px solid $brand-pink;
+  border-radius: 999px;
+  overflow: hidden;
+
+  &__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 0.55rem 1.1rem;
+    font-family: $font-body;
+    font-size: 0.85rem;
+    color: $color-text-dark;
+    background: transparent;
+
+    &::placeholder {
+      color: $color-text-muted;
+    }
+  }
+
+  &__btn {
+    border: none;
+    background-color: $brand-pink;
+    color: $color-white;
+    padding: 0 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: $brand-pink-dark;
+    }
+  }
+
+  &--mobile {
+    max-width: none;
+    width: 100%;
+    margin-top: 0.75rem;
+  }
+}

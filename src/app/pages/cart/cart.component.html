@@ -1,0 +1,234 @@
+<main class="cart-page container-fluid">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="cart-page__breadcrumb-nav">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Cart</li>
+    </ol>
+  </nav>
+
+  <!-- Page header -->
+  <header class="cart-page__header">
+    <h1 class="cart-page__title">Shopping Bag</h1>
+    <p class="cart-page__subtitle">Review your items before checkout.</p>
+  </header>
+
+  <!--
+    Empty state — part of the UI framework, not wired up yet.
+    Later: *ngIf="cartItems.length === 0" on this section, and
+    *ngIf="cartItems.length > 0" on .cart-content below, so only
+    one renders at a time. Hidden via d-none for now so both can
+    exist in the markup without both being visible.
+  -->
+  <section class="cart-empty d-none" aria-label="Empty shopping bag">
+    <i class="fa-solid fa-bag-shopping cart-empty__icon" aria-hidden="true"></i>
+    <h2 class="cart-empty__title">Your Shopping Bag Is Empty</h2>
+    <p class="cart-empty__text">You haven't added anything to your bag yet.</p>
+    <a class="cart-empty__cta" href="/shop">Continue Shopping</a>
+  </section>
+
+  <!-- Cart content — future: *ngIf="cartItems.length > 0" -->
+  <div class="row cart-content gy-4">
+
+    <!-- Cart items -->
+    <div class="col-12 col-lg-8">
+      <section class="cart-items" aria-label="Items in your bag">
+        <h2 class="cart-items__heading">Your Items</h2>
+
+        <ul class="cart-items__list">
+
+          <li>
+            <article class="cart-item">
+              <img
+                class="cart-item__image"
+                src="https://placehold.co/200x200/ffd6e8/e8558c?text=Wrap+Dress"
+                alt="Blush Satin Wrap Dress"
+              />
+              <div class="cart-item__body">
+                <div class="cart-item__info">
+                  <h3 class="cart-item__name"><a href="/product/blush-satin-wrap-dress">Blush Satin Wrap Dress</a></h3>
+                  <p class="cart-item__brand">Sissy Dream</p>
+                  <ul class="cart-item__options">
+                    <li>Color: Pink</li>
+                    <li>Size: M</li>
+                  </ul>
+                </div>
+
+                <div class="cart-item__price">$42.99</div>
+
+                <div class="cart-item__quantity" role="group" aria-label="Blush Satin Wrap Dress quantity">
+                  <button class="cart-item__qty-btn" type="button" aria-label="Decrease quantity">
+                    <i class="fa-solid fa-minus" aria-hidden="true"></i>
+                  </button>
+                  <span class="cart-item__qty-value">1</span>
+                  <button class="cart-item__qty-btn" type="button" aria-label="Increase quantity">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                  </button>
+                </div>
+
+                <div class="cart-item__total">$42.99</div>
+
+                <button class="cart-item__remove" type="button" aria-label="Remove Blush Satin Wrap Dress from bag">
+                  <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+                  <span>Remove</span>
+                </button>
+              </div>
+            </article>
+          </li>
+
+          <li>
+            <article class="cart-item">
+              <img
+                class="cart-item__image"
+                src="https://placehold.co/200x200/ffc2dc/e8558c?text=Babydoll"
+                alt="Silky Lace Babydoll"
+              />
+              <div class="cart-item__body">
+                <div class="cart-item__info">
+                  <h3 class="cart-item__name"><a href="/product/silky-lace-babydoll">Silky Lace Babydoll</a></h3>
+                  <p class="cart-item__brand">Sissy Dream</p>
+                  <ul class="cart-item__options">
+                    <li>Color: Black</li>
+                    <li>Size: M</li>
+                  </ul>
+                </div>
+
+                <div class="cart-item__price">$34.99</div>
+
+                <div class="cart-item__quantity" role="group" aria-label="Silky Lace Babydoll quantity">
+                  <button class="cart-item__qty-btn" type="button" aria-label="Decrease quantity">
+                    <i class="fa-solid fa-minus" aria-hidden="true"></i>
+                  </button>
+                  <span class="cart-item__qty-value">1</span>
+                  <button class="cart-item__qty-btn" type="button" aria-label="Increase quantity">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                  </button>
+                </div>
+
+                <div class="cart-item__total">$34.99</div>
+
+                <button class="cart-item__remove" type="button" aria-label="Remove Silky Lace Babydoll from bag">
+                  <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+                  <span>Remove</span>
+                </button>
+              </div>
+            </article>
+          </li>
+
+          <li>
+            <article class="cart-item">
+              <img
+                class="cart-item__image"
+                src="https://placehold.co/200x200/ffe0ee/e8558c?text=Body+Wave+Wig"
+                alt="Long Body Wave Wig"
+              />
+              <div class="cart-item__body">
+                <div class="cart-item__info">
+                  <h3 class="cart-item__name"><a href="/product/long-body-wave-wig">Long Body Wave Wig</a></h3>
+                  <p class="cart-item__brand">Sissy Dream</p>
+                  <ul class="cart-item__options">
+                    <li>Color: Natural Black</li>
+                    <li>Length: 20"</li>
+                  </ul>
+                </div>
+
+                <div class="cart-item__price">$89.99</div>
+
+                <div class="cart-item__quantity" role="group" aria-label="Long Body Wave Wig quantity">
+                  <button class="cart-item__qty-btn" type="button" aria-label="Decrease quantity">
+                    <i class="fa-solid fa-minus" aria-hidden="true"></i>
+                  </button>
+                  <span class="cart-item__qty-value">1</span>
+                  <button class="cart-item__qty-btn" type="button" aria-label="Increase quantity">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                  </button>
+                </div>
+
+                <div class="cart-item__total">$89.99</div>
+
+                <button class="cart-item__remove" type="button" aria-label="Remove Long Body Wave Wig from bag">
+                  <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+                  <span>Remove</span>
+                </button>
+              </div>
+            </article>
+          </li>
+
+        </ul>
+      </section>
+    </div>
+
+    <!-- Cart summary + trust section -->
+    <div class="col-12 col-lg-4">
+      <aside class="cart-summary" aria-label="Cart summary">
+        <h2 class="cart-summary__heading">Cart Summary</h2>
+
+        <div class="cart-summary__row">
+          <span>Subtotal</span>
+          <span>$167.97</span>
+        </div>
+        <div class="cart-summary__row">
+          <span>Shipping</span>
+          <span class="cart-summary__muted">Calculated at checkout</span>
+        </div>
+        <div class="cart-summary__row">
+          <span>Discount</span>
+          <span class="cart-summary__discount">&minus;$10.00</span>
+        </div>
+
+        <hr class="cart-summary__divider" />
+
+        <div class="cart-summary__row cart-summary__row--total">
+          <span>Estimated Total</span>
+          <span>$157.97</span>
+        </div>
+
+        <button class="cart-summary__checkout" type="button">
+          Proceed to Checkout
+        </button>
+
+        <p class="cart-summary__shipping-note">
+          Free shipping on orders over $50.
+        </p>
+      </aside>
+
+      <ul class="cart-trust">
+        <li class="cart-trust__item">
+          <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+          <span>
+            <strong>Secure Checkout</strong>
+            Safe &amp; secure payment
+          </span>
+        </li>
+        <li class="cart-trust__item">
+          <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+          <span>
+            <strong>Easy Returns</strong>
+            30-day returns
+          </span>
+        </li>
+        <li class="cart-trust__item">
+          <i class="fa-solid fa-headset" aria-hidden="true"></i>
+          <span>
+            <strong>Customer Support</strong>
+            We're here to help
+          </span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Continue shopping -->
+  <div class="cart-page__continue-wrap">
+    <a class="cart-page__continue" href="/shop">Continue Shopping</a>
+  </div>
+
+  <!-- You May Also Like — reuses the existing collection slider -->
+  <section class="cart-recommendations" aria-labelledby="cartRecommendationsHeading">
+    <h2 class="cart-recommendations__title" id="cartRecommendationsHeading">You May Also Like</h2>
+    <app-collection-slider></app-collection-slider>
+  </section>
+
+</main>

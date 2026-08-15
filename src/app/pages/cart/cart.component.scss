@@ -1,0 +1,542 @@
+@import '../../../styles/variables';
+
+// ============================================================
+// Page shell
+// ============================================================
+.cart-page {
+  max-width: 1400px;
+  padding: 1.5rem 1rem 4rem;
+
+  @media (min-width: 992px) {
+    padding: 2rem 1.25rem 4.5rem;
+  }
+}
+
+.cart-page__breadcrumb-nav {
+  margin-bottom: 1.5rem;
+
+  .breadcrumb {
+    margin: 0;
+    font-family: $font-body;
+    font-size: 0.78rem;
+  }
+
+  .breadcrumb-item a {
+    color: $color-text-muted;
+    text-decoration: none;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: $brand-pink-dark;
+      text-decoration: underline;
+    }
+  }
+
+  .breadcrumb-item.active {
+    color: $color-text-dark;
+    font-weight: 600;
+  }
+
+  .breadcrumb-item + .breadcrumb-item::before {
+    color: $color-border;
+  }
+}
+
+.cart-page__header {
+  margin-bottom: 2.25rem;
+}
+
+.cart-page__title {
+  font-family: $font-heading;
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+  color: $color-text-dark;
+  margin-bottom: 0.35rem;
+
+  @media (min-width: 768px) {
+    font-size: 1.85rem;
+  }
+}
+
+.cart-page__subtitle {
+  font-family: $font-body;
+  font-size: 0.85rem;
+  color: $color-text-muted;
+  margin: 0;
+}
+
+// ============================================================
+// Empty state
+// ============================================================
+.cart-empty {
+  text-align: center;
+  padding: 5rem 1rem;
+  max-width: 400px;
+  margin: 0 auto;
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background-color: $brand-pink-light;
+    color: $brand-pink-dark;
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  &__title {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: $color-text-dark;
+    margin-bottom: 0.5rem;
+  }
+
+  &__text {
+    font-family: $font-body;
+    font-size: 0.85rem;
+    color: $color-text-muted;
+    margin-bottom: 1.75rem;
+  }
+
+  &__cta {
+    display: inline-block;
+    background-color: $brand-pink;
+    color: $color-white;
+    font-family: $font-body;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0.8rem 2rem;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: $brand-pink-dark;
+    }
+  }
+}
+
+// ============================================================
+// Cart items
+// ============================================================
+.cart-items {
+  &__heading {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.01em;
+    color: $color-text-dark;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      border-bottom: 1px solid $color-border;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+.cart-item {
+  display: flex;
+  gap: 1.1rem;
+  padding: 1.5rem 0;
+
+  &__image {
+    flex: 0 0 auto;
+    width: 84px;
+    height: 84px;
+    border-radius: 0.5rem;
+    border: 1px solid $color-border;
+    object-fit: cover;
+
+    @media (min-width: 576px) {
+      width: 108px;
+      height: 108px;
+      border-radius: 0.65rem;
+    }
+  }
+
+  &__body {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1.5rem;
+  }
+
+  &__info {
+    flex: 1 1 190px;
+    min-width: 160px;
+  }
+
+  &__name {
+    margin: 0 0 0.3rem;
+    font-family: $font-heading;
+    font-size: 0.98rem;
+    font-weight: 600;
+    line-height: 1.3;
+
+    a {
+      color: $color-text-dark;
+      text-decoration: none;
+
+      &:hover {
+        color: $brand-pink-dark;
+      }
+    }
+  }
+
+  &__brand {
+    margin: 0 0 0.4rem;
+    font-family: $font-body;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: $color-text-muted;
+  }
+
+  &__options {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: $font-body;
+    font-size: 0.76rem;
+    color: $color-text-muted;
+
+    li {
+      display: inline;
+
+      &:not(:last-child)::after {
+        content: '\2022';
+        margin: 0 0.4rem;
+        color: $color-border;
+      }
+    }
+  }
+
+  &__price {
+    flex: 0 0 auto;
+    font-family: $font-body;
+    font-size: 0.85rem;
+    color: $color-text-muted;
+  }
+
+  // Polished quantity control — pill-shaped, consistent height,
+  // restrained hover states (no plain Bootstrap look)
+  &__quantity {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    height: 36px;
+    border: 1px solid $color-border;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  &__qty-btn {
+    width: 34px;
+    height: 100%;
+    border: none;
+    background-color: transparent;
+    color: $color-text-dark;
+    font-size: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background-color: $brand-pink-light;
+      color: $brand-pink-dark;
+    }
+  }
+
+  &__qty-value {
+    min-width: 28px;
+    text-align: center;
+    font-family: $font-body;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: $color-text-dark;
+    border-left: 1px solid $color-border;
+    border-right: 1px solid $color-border;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__total {
+    flex: 0 0 auto;
+    font-family: $font-heading;
+    font-size: 1rem;
+    font-weight: 700;
+    color: $brand-pink-dark;
+    min-width: 64px;
+    text-align: right;
+  }
+
+  // Kept deliberately quiet — icon + label, no border/background,
+  // only a subtle color shift on hover
+  &__remove {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: none;
+    background: transparent;
+    color: $color-text-muted;
+    font-family: $font-body;
+    font-size: 0.74rem;
+    padding: 0.3rem 0;
+    cursor: pointer;
+    transition: color 0.15s ease;
+
+    i {
+      font-size: 0.7rem;
+    }
+
+    &:hover {
+      color: $brand-pink-dark;
+    }
+  }
+
+  // Mobile: stack info / price / (qty + total, aligned) / remove
+  @media (max-width: 575.98px) {
+    gap: 0.85rem;
+    padding: 1.25rem 0;
+
+    &__body {
+      row-gap: 0.5rem;
+    }
+
+    &__info {
+      flex-basis: 100%;
+      order: 1;
+    }
+
+    &__price {
+      flex-basis: 100%;
+      order: 2;
+    }
+
+    &__quantity {
+      order: 3;
+    }
+
+    &__total {
+      order: 4;
+      margin-left: auto;
+      align-self: center;
+    }
+
+    &__remove {
+      flex-basis: 100%;
+      order: 5;
+      margin-top: 0.15rem;
+    }
+  }
+}
+
+// ============================================================
+// Cart summary — premium checkout card
+// ============================================================
+.cart-summary {
+  border: 1px solid $color-border;
+  background-color: $color-white;
+  padding: 1.75rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+  &__heading {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
+    color: $color-text-dark;
+    margin-bottom: 1.35rem;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: $font-body;
+    font-size: 0.84rem;
+    color: $color-text-dark;
+    margin-bottom: 0.75rem;
+  }
+
+  &__muted {
+    color: $color-text-muted;
+    font-size: 0.78rem;
+  }
+
+  &__discount {
+    color: $brand-pink-dark;
+    font-weight: 600;
+  }
+
+  &__divider {
+    border: none;
+    border-top: 1px solid $color-border;
+    margin: 1.15rem 0;
+  }
+
+  &__row--total {
+    align-items: center;
+    font-family: $font-heading;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: $color-text-dark;
+    margin-bottom: 1.5rem;
+
+    span:last-child {
+      font-size: 1.35rem;
+      color: $brand-pink-dark;
+    }
+  }
+
+  &__checkout {
+    display: block;
+    width: 100%;
+    border: none;
+    background-color: $brand-pink;
+    color: $color-white;
+    font-family: $font-body;
+    font-weight: 700;
+    font-size: 0.88rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 0.9rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+
+    &:hover {
+      background-color: $brand-pink-dark;
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &__shipping-note {
+    margin: 1rem 0 0;
+    font-family: $font-body;
+    font-size: 0.74rem;
+    color: $color-text-muted;
+    text-align: center;
+  }
+}
+
+// ============================================================
+// Trust / reassurance — quiet, not a Bootstrap list-group
+// ============================================================
+.cart-trust {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cart-trust__item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 0.25rem;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid rgba($color-border, 0.6);
+  }
+
+  i {
+    flex: 0 0 auto;
+    width: 20px;
+    text-align: center;
+    color: $brand-pink;
+    font-size: 1rem;
+  }
+
+  span {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    font-family: $font-body;
+    font-size: 0.75rem;
+    color: $color-text-muted;
+    line-height: 1.4;
+  }
+
+  strong {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: $color-text-dark;
+  }
+}
+
+// ============================================================
+// Continue shopping — quiet secondary action
+// ============================================================
+.cart-page__continue-wrap {
+  text-align: center;
+  padding: 2rem 0;
+  border-top: 1px solid $color-border;
+  margin-top: 1rem;
+}
+
+.cart-page__continue {
+  display: inline-flex;
+  align-items: center;
+  font-family: $font-body;
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  color: $color-text-muted;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    color: $brand-pink-dark;
+    border-bottom-color: $brand-pink;
+  }
+}
+
+// ============================================================
+// You May Also Like — visually tied to the rest of the page
+// ============================================================
+.cart-recommendations {
+  margin-top: 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid $color-border;
+
+  &__title {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: 0.01em;
+    color: $color-text-dark;
+    margin-bottom: 1.5rem;
+  }
+}

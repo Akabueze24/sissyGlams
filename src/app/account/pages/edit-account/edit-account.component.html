@@ -1,0 +1,133 @@
+<div class="edit-account">
+
+  <header class="edit-account__header">
+    <h1 class="edit-account__title">Edit Account</h1>
+    <p class="edit-account__subtitle">Update your personal information and account password.</p>
+  </header>
+
+  <!-- SECTION 1 — Personal Information -->
+  <section class="account-section">
+    <h2 class="account-section__title">Personal Information</h2>
+    <p class="account-section__description">Update the information associated with your account.</p>
+
+    <form class="account-form">
+      <div class="row g-3">
+
+        <div class="col-12 col-md-6">
+          <div class="account-form__group">
+            <label class="account-form__label" for="editFirstName">First Name</label>
+            <input
+              id="editFirstName"
+              class="account-form__input"
+              type="text"
+              autocomplete="given-name"
+            />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="account-form__group">
+            <label class="account-form__label" for="editLastName">Last Name</label>
+            <input
+              id="editLastName"
+              class="account-form__input"
+              type="text"
+              autocomplete="family-name"
+            />
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="account-form__group">
+            <label class="account-form__label" for="editEmail">Email Address</label>
+            <input
+              id="editEmail"
+              class="account-form__input"
+              type="email"
+              autocomplete="email"
+            />
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="account-form__group">
+            <label class="account-form__label" for="editPhone">Phone Number</label>
+            <input
+              id="editPhone"
+              class="account-form__input"
+              type="tel"
+              autocomplete="tel"
+            />
+          </div>
+        </div>
+
+      </div>
+
+      <div class="account-form__actions">
+        <button class="account-form__save" type="submit">Save Changes</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- SECTION 2 — Change Password -->
+  <section class="account-section">
+    <h2 class="account-section__title">Change Password</h2>
+    <p class="account-section__description">Update your password to keep your account secure.</p>
+
+    <form class="account-form">
+      <div class="row g-3">
+
+        <div class="col-12">
+          <div class="account-form__group">
+            <label class="account-form__label" for="currentPassword">Current Password</label>
+            <div class="account-form__password">
+              <input
+                id="currentPassword"
+                class="account-form__input"
+                type="password"
+                autocomplete="current-password"
+              />
+              <i class="fa-regular fa-eye account-form__password-toggle" aria-hidden="true"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="account-form__group">
+            <label class="account-form__label" for="newPassword">New Password</label>
+            <div class="account-form__password">
+              <input
+                id="newPassword"
+                class="account-form__input"
+                type="password"
+                autocomplete="new-password"
+              />
+              <i class="fa-regular fa-eye account-form__password-toggle" aria-hidden="true"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="account-form__group">
+            <label class="account-form__label" for="confirmNewPassword">Confirm New Password</label>
+            <div class="account-form__password">
+              <input
+                id="confirmNewPassword"
+                class="account-form__input"
+                type="password"
+                autocomplete="new-password"
+              />
+              <i class="fa-regular fa-eye account-form__password-toggle" aria-hidden="true"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="account-form__actions">
+        <button class="account-form__save" type="submit">Change Password</button>
+      </div>
+    </form>
+  </section>
+
+</div>

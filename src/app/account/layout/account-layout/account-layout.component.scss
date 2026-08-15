@@ -1,0 +1,168 @@
+@import '../../../../styles/variables';
+
+// ============================================================
+// Page shell
+// ============================================================
+.account-layout {
+  max-width: 1400px;
+  padding: 1.5rem 1rem 3.5rem;
+
+  @media (min-width: 992px) {
+    padding: 2rem 1.25rem 4rem;
+  }
+}
+
+// ============================================================
+// Sidebar
+// ============================================================
+.account-sidebar {
+  background-color: $color-white;
+  border: 1px solid $color-border;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  padding: 1.5rem;
+  align-self: flex-start;
+
+  @media (min-width: 992px) {
+    position: sticky;
+    top: 1.5rem;
+  }
+}
+
+// ============================================================
+// Customer information
+// ============================================================
+.account-header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid $color-border;
+
+  &__icon {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: $brand-pink-light;
+    color: $brand-pink-dark;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  &__title {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: $color-text-dark;
+    margin: 0 0 0.15rem;
+  }
+
+  &__subtitle {
+    font-family: $font-body;
+    font-size: 0.75rem;
+    color: $color-text-muted;
+    margin: 0;
+    word-break: break-word;
+  }
+}
+
+// ============================================================
+// Logout
+// ============================================================
+.account-logout {
+  padding-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid $color-border;
+}
+
+.account-nav-item--logout {
+  color: $color-text-muted;
+
+  i {
+    color: $color-text-muted;
+  }
+
+  &:hover {
+    background-color: $brand-pink-light;
+    color: $brand-pink-dark;
+
+    i {
+      color: $brand-pink-dark;
+    }
+  }
+}
+
+// ============================================================
+// Account navigation
+// ============================================================
+.account-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.account-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.5rem;
+  font-family: $font-body;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $color-text-dark;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  i {
+    width: 18px;
+    text-align: center;
+    color: $color-text-muted;
+    font-size: 0.9rem;
+    transition: color 0.15s ease;
+  }
+
+  &:hover {
+    background-color: $brand-pink-light;
+    color: $brand-pink-dark;
+
+    i {
+      color: $brand-pink-dark;
+    }
+  }
+
+  &--active {
+    background-color: $brand-pink-light;
+    color: $brand-pink-dark;
+    font-weight: 700;
+
+    i {
+      color: $brand-pink-dark;
+    }
+  }
+}
+
+// ============================================================
+// Content area
+// ============================================================
+.account-content {
+  background-color: $color-white;
+  border: 1px solid $color-border;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  padding: 1.75rem 1.5rem;
+  min-height: 400px;
+
+  @media (min-width: 768px) {
+    padding: 2.25rem 2rem;
+  }
+}

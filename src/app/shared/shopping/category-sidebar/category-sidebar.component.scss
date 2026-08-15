@@ -1,0 +1,92 @@
+@import '../../../../styles/variables';
+
+
+
+
+// ============================================================
+// Shop by Category — compact, elegant
+// ============================================================
+.shop-category-nav {
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__item {
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__link {
+    display: block;
+    flex: 1 1 auto;
+    padding: 0.5rem 0;
+    font-family: $font-body;
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: $color-text-dark;
+    text-decoration: none;
+
+    &:hover {
+      color: $brand-pink-dark;
+    }
+
+    &--active {
+      color: $brand-pink-dark;
+      font-weight: 700;
+    }
+  }
+
+  &__toggle {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: $color-text-muted;
+    font-size: 0.68rem;
+    transition:
+      transform 0.2s ease,
+      color 0.15s ease;
+
+    &:hover {
+      color: $brand-pink;
+    }
+
+    &[aria-expanded="true"] {
+      color: $brand-pink-dark;
+      transform: rotate(180deg);
+    }
+  }
+
+  &__sublist {
+    list-style: none;
+    margin: 0 0 0.5rem;
+    padding: 0 0 0 0.85rem;
+
+    li {
+      margin-bottom: 0.35rem;
+    }
+
+    a {
+      font-family: $font-body;
+      font-size: 0.76rem;
+      color: $color-text-muted;
+      text-decoration: none;
+
+      &:hover {
+        color: $brand-pink-dark;
+        text-decoration: underline;
+      }
+    }
+  }
+}

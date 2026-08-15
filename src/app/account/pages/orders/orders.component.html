@@ -1,0 +1,79 @@
+<div class="orders-page">
+
+  <!-- Page header -->
+  <header class="orders-page__header">
+    <h1 class="orders-page__title">My Orders</h1>
+    <p class="orders-page__subtitle">View and manage your recent orders.</p>
+  </header>
+
+  <!-- Summary -->
+  <div class="orders-summary">
+    <div class="orders-summary__item">
+      <span class="orders-summary__value">3</span>
+      <span class="orders-summary__label">Total Orders</span>
+    </div>
+    <span class="orders-summary__divider" aria-hidden="true"></span>
+    <div class="orders-summary__item">
+      <span class="orders-summary__value orders-summary__value--processing">1</span>
+      <span class="orders-summary__label">Processing</span>
+    </div>
+    <span class="orders-summary__divider" aria-hidden="true"></span>
+    <div class="orders-summary__item">
+      <span class="orders-summary__value orders-summary__value--completed">2</span>
+      <span class="orders-summary__label">Completed</span>
+    </div>
+  </div>
+
+  <!--
+    Empty state — prepared but not shown. Later: *ngIf="orders.length === 0"
+    here, and *ngIf="orders.length > 0" on .orders-page__table-wrap below,
+    so only one renders at a time.
+  -->
+  <div class="orders-empty d-none">
+    <i class="fa-solid fa-box-open orders-empty__icon" aria-hidden="true"></i>
+    <p class="orders-empty__title">No orders yet.</p>
+    <p class="orders-empty__text">
+      You haven't placed any orders yet.
+      Start shopping to discover something you love.
+    </p>
+  </div>
+
+  <!-- Orders table -->
+  <div class="orders-page__table-wrap table-responsive">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th scope="col">Order</th>
+          <th scope="col">Date</th>
+          <th scope="col">Status</th>
+          <th scope="col">Total</th>
+          <th scope="col" class="orders-table__action-col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="orders-table__number">#SD-1001</td>
+          <td>Aug 12, 2026</td>
+          <td><span class="orders-table__status orders-table__status--processing">Processing</span></td>
+          <td class="orders-table__total">$45.00</td>
+          <td><a class="orders-table__action" routerLink="#">View Order</a></td>
+        </tr>
+        <tr>
+          <td class="orders-table__number">#SD-1000</td>
+          <td>Aug 08, 2026</td>
+          <td><span class="orders-table__status bg-success-subtle text-success-emphasis">Completed</span></td>
+          <td class="orders-table__total">$82.00</td>
+          <td><a class="orders-table__action" routerLink="#">View Order</a></td>
+        </tr>
+        <tr>
+          <td class="orders-table__number">#SD-0999</td>
+          <td>Aug 02, 2026</td>
+          <td><span class="orders-table__status bg-success-subtle text-success-emphasis">Completed</span></td>
+          <td class="orders-table__total">$35.00</td>
+          <td><a class="orders-table__action" routerLink="#">View Order</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

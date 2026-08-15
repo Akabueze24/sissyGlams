@@ -1,0 +1,76 @@
+<div class="downloads-page">
+
+  <!-- Page header -->
+  <header class="downloads-page__header">
+    <h1 class="downloads-page__title">My Downloads</h1>
+    <p class="downloads-page__subtitle">Access your digital purchases and downloads.</p>
+  </header>
+
+  <!--
+    Empty state — prepared but not shown. Later: *ngIf="downloads.length === 0"
+    here, and *ngIf="downloads.length > 0" on .downloads-grid below, so only
+    one renders at a time.
+  -->
+  <div class="downloads-empty d-none">
+    <i class="fa-solid fa-book-open downloads-empty__icon" aria-hidden="true"></i>
+    <p class="downloads-empty__title">No downloads yet.</p>
+    <p class="downloads-empty__text">Your purchased digital products will appear here.</p>
+  </div>
+
+  <!-- Digital library -->
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 g-lg-4 downloads-grid">
+
+    <div class="col">
+      <article class="download-card">
+        <div class="download-card__media">
+          <i class="fa-solid fa-book download-card__icon" aria-hidden="true"></i>
+        </div>
+        <div class="download-card__body">
+          <h2 class="download-card__title">The Ultimate Sissy Style Guide</h2>
+          <p class="download-card__type">Ebook</p>
+          <p class="download-card__date">Purchased Aug 12, 2026</p>
+          <button class="download-card__action" type="button">
+            <i class="fa-solid fa-download" aria-hidden="true"></i>
+            <span>Download</span>
+          </button>
+        </div>
+      </article>
+    </div>
+
+    <div class="col">
+      <article class="download-card">
+        <div class="download-card__media">
+          <i class="fa-solid fa-book download-card__icon" aria-hidden="true"></i>
+        </div>
+        <div class="download-card__body">
+          <h2 class="download-card__title">Sissy Confidence &amp; Transformation</h2>
+          <p class="download-card__type">Ebook</p>
+          <p class="download-card__date">Purchased Aug 08, 2026</p>
+          <button class="download-card__action" type="button">
+            <i class="fa-solid fa-download" aria-hidden="true"></i>
+            <span>Download</span>
+          </button>
+        </div>
+      </article>
+    </div>
+
+    <div class="col">
+      <article class="download-card">
+        <div class="download-card__media">
+          <i class="fa-solid fa-book download-card__icon" aria-hidden="true"></i>
+        </div>
+        <div class="download-card__body">
+          <h2 class="download-card__title">Feminine Style Essentials</h2>
+          <p class="download-card__type">Ebook</p>
+          <p class="download-card__date">Purchased Aug 02, 2026</p>
+          <button class="download-card__action" type="button">
+            <i class="fa-solid fa-download" aria-hidden="true"></i>
+            <span>Download</span>
+          </button>
+        </div>
+      </article>
+    </div>
+
+  </div>
+
+</div>

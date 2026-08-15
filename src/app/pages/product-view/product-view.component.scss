@@ -1,0 +1,443 @@
+@import '../../../styles/variables';
+
+// ============================================================
+// Page shell
+// ============================================================
+.product-view {
+  max-width: 1400px;
+  padding: 1rem 1rem 3rem;
+
+  @media (min-width: 992px) {
+    padding: 1.25rem 1.25rem 3.5rem;
+  }
+}
+
+.product-view__breadcrumb-nav {
+  margin-bottom: 1.25rem;
+
+  .breadcrumb {
+    margin: 0;
+    font-family: $font-body;
+    font-size: 0.8rem;
+  }
+
+  .breadcrumb-item a {
+    color: $color-text-muted;
+    text-decoration: none;
+
+    &:hover {
+      color: $brand-pink;
+      text-decoration: underline;
+    }
+  }
+
+  .breadcrumb-item.active {
+    color: $color-text-dark;
+    font-weight: 600;
+  }
+
+  .breadcrumb-item + .breadcrumb-item::before {
+    color: $color-text-muted;
+  }
+}
+
+// ============================================================
+// GALLERY — Swiper Element (main slider + thumb-sync slider)
+// ============================================================
+.product-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.product-gallery__main {
+  border: 1px solid $color-border;
+  overflow: hidden;
+}
+
+.product-gallery__main-swiper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+
+  // Theme Swiper's built-in navigation arrows to match the brand
+  --swiper-theme-color: #{$brand-pink};
+  --swiper-navigation-color: #{$brand-pink};
+  --swiper-navigation-size: 20px;
+}
+
+.product-gallery__main-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; // keeps the image uncropped-looking and undistorted within a square frame
+}
+
+.product-gallery__thumbs {
+  width: 100%;
+  height: 76px;
+  box-sizing: border-box;
+  padding: 2px; // room for the active thumb's border so it isn't clipped
+
+  @media (min-width: 768px) {
+    height: 84px;
+  }
+}
+
+.gallery-thumb {
+  width: 100%;
+  height: 100%;
+  border: 2px solid $color-border;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+
+  // Swiper's thumbs module applies this class automatically —
+  // no click handler or TS needed to get the active pink border.
+  &.swiper-slide-thumb-active {
+    opacity: 1;
+    border-color: $brand-pink;
+  }
+}
+
+// ============================================================
+// PRODUCT INFO
+// ============================================================
+.product-info {
+  &__brand {
+    font-family: $font-body;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $brand-pink-dark;
+    margin-bottom: 0.35rem;
+  }
+
+  &__name {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: $color-text-dark;
+    margin-bottom: 0.6rem;
+
+    @media (min-width: 768px) {
+      font-size: 1.85rem;
+    }
+  }
+
+  &__rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+  }
+
+  &__stars {
+    color: $brand-pink;
+    font-size: 0.85rem;
+  }
+
+  &__review-count {
+    font-family: $font-body;
+    font-size: 0.8rem;
+    color: $color-text-muted;
+  }
+
+  &__price {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  &__badge {
+    background-color: $brand-pink;
+    color: $color-white;
+    font-family: $font-body;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+  }
+
+  &__price-old {
+    font-family: $font-body;
+    font-size: 0.95rem;
+    color: $color-text-muted;
+    text-decoration: line-through;
+  }
+
+  &__price-current {
+    font-family: $font-body;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: $brand-pink-dark;
+  }
+
+  &__description {
+    font-family: $font-body;
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: $color-text-muted;
+    margin-bottom: 0;
+  }
+
+  &__divider {
+    border: none;
+    border-top: 1px solid $color-border;
+    margin: 1.35rem 0;
+  }
+}
+
+// ============================================================
+// PRODUCT OPTIONS
+// ============================================================
+.product-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.product-option {
+  &__label {
+    font-family: $font-body;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: $color-text-dark;
+    margin-bottom: 0.65rem;
+  }
+
+  &__value {
+    font-weight: 400;
+    color: $color-text-muted;
+  }
+}
+
+// --- Color / variant swatches — visually distinct from gallery thumbs:
+// larger, labeled, rounded, and using the .btn-check radio pattern ---
+.variant-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.variant-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+
+  &__img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid $color-border;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  &__label {
+    font-family: $font-body;
+    font-size: 0.72rem;
+    color: $color-text-muted;
+  }
+
+  .btn-check:checked + &,
+  .btn-check:focus-visible + & {
+    .variant-swatch__img {
+      border-color: $brand-pink;
+      box-shadow: 0 0 0 2px rgba($brand-pink, 0.2);
+    }
+
+    .variant-swatch__label {
+      color: $brand-pink-dark;
+      font-weight: 600;
+    }
+  }
+}
+
+// --- Size / Length choice buttons ---
+.choice-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.choice-btn {
+  min-width: 44px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid $color-border;
+  background-color: $color-white;
+  color: $color-text-dark;
+  font-family: $font-body;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    border-color: $brand-pink;
+  }
+
+  .btn-check:checked + & {
+    border-color: $brand-pink;
+    background-color: $brand-pink;
+    color: $color-white;
+  }
+
+  .btn-check:focus-visible + & {
+    outline: 2px solid $brand-pink;
+    outline-offset: 2px;
+  }
+}
+
+// ============================================================
+// QUANTITY + ADD TO BAG + WISHLIST
+// ============================================================
+.product-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.quantity-stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid $color-border;
+
+  &__btn {
+    width: 38px;
+    height: 42px;
+    border: none;
+    background-color: $color-white;
+    color: $color-text-dark;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background-color: $brand-pink-light;
+      color: $brand-pink-dark;
+    }
+
+    &:disabled {
+      color: $color-border;
+      cursor: not-allowed;
+    }
+  }
+
+  &__value {
+    min-width: 36px;
+    text-align: center;
+    font-family: $font-body;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: $color-text-dark;
+  }
+}
+
+.product-actions__add-to-bag {
+  flex: 1 1 auto;
+  min-width: 180px;
+  height: 44px;
+  border: none;
+  background-color: $brand-pink;
+  color: $color-white;
+  font-family: $font-body;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $brand-pink-dark;
+  }
+}
+
+.product-actions__wishlist {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  border: 1px solid $color-border;
+  background-color: $color-white;
+  color: $color-text-dark;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    border-color: $brand-pink;
+    color: $brand-pink;
+  }
+}
+
+// ============================================================
+// PRODUCT DETAILS — tabs
+// ============================================================
+.product-details {
+  margin-top: 3rem;
+}
+
+.product-details__tabs {
+  border-bottom: 1px solid $color-border;
+
+  .nav-link {
+    font-family: $font-body;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: $color-text-muted;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0.75rem 1rem;
+
+    &.active {
+      color: $brand-pink-dark;
+      border-bottom-color: $brand-pink;
+      background-color: transparent;
+    }
+
+    &:hover:not(.active) {
+      color: $color-text-dark;
+      border-color: transparent;
+    }
+  }
+}
+
+.product-details__content {
+  padding: 1.5rem 0;
+  font-family: $font-body;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: $color-text-muted;
+  max-width: 760px;
+}
+
+.product-details__list {
+  margin: 0;
+  padding-left: 1.1rem;
+
+  li {
+    margin-bottom: 0.4rem;
+  }
+}

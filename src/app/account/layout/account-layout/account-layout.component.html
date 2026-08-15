@@ -1,0 +1,132 @@
+<div class="account-layout container-fluid">
+  <div class="row account-layout__row gy-4">
+    <!-- Account Sidebar -->
+    <aside class="col-12 col-lg-3 account-sidebar">
+      <!-- Customer Information -->
+      <div class="account-header">
+        <div class="account-header__icon">
+          <i class="fa-solid fa-user" aria-hidden="true"></i>
+        </div>
+
+        <div class="account-header__text">
+          <h1 class="account-header__title">Jin</h1>
+          <p class="account-header__subtitle">jinmyung473@gmail.com</p>
+        </div>
+      </div>
+
+      <!-- Logout -->
+      <div class="account-logout">
+        <a class="account-nav-item account-nav-item--logout" href="#">
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+
+      <!-- Account Navigation -->
+      <nav class="account-nav" aria-label="Account navigation">
+        <ul class="account-nav__list">
+          <li>
+            <a
+              class="account-nav-item account-nav-item"
+              routerLink="/account"
+              routerLinkActive="account-nav-item--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-solid fa-gauge" aria-hidden="true"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="account-nav-item"
+              routerLink="/account/orders"
+              routerLinkActive="account-nav-item--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-solid fa-box" aria-hidden="true"></i>
+              <span>My Orders</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="account-nav-item"
+              routerLink="/account/downloads"
+              routerLinkActive="account-nav-item--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-solid fa-download" aria-hidden="true"></i>
+              <span>My Downloads</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="account-nav-item"
+              routerLink="/account/address"
+              routerLinkActive="account-nav-item--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+              <span>Edit Address</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="account-nav-item"
+              routerLink="/account/payment"
+              routerLinkActive="account-nav-item--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-regular fa-credit-card" aria-hidden="true"></i>
+              <span>Payment Methods</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="account-nav-item"
+              routerLink="/account/edit-account"
+              routerLinkActive="account-nav-item--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-regular fa-id-card" aria-hidden="true"></i>
+              <span>Edit Account</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="account-nav-item"
+              routerLink="/account/wishlist"
+              routerLinkActive="account-nav-item--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              <span>My Wishlist</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="account-nav-item"
+              routerLink="/account/customer-support"
+              routerLinkActive="account-nav-item--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-regular fa-comments" aria-hidden="true"></i>
+              <span>Customer Support</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Account Content -->
+    <div class="col-12 col-lg-9 account-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

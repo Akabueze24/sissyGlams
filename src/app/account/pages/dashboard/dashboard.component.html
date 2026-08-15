@@ -1,0 +1,112 @@
+<div class="account-dashboard">
+
+  <!-- Welcome section -->
+  <header class="dashboard-header">
+    <h1 class="dashboard-header__title">Welcome back, Jin!</h1>
+    <p class="dashboard-header__text">
+      From your account dashboard you can view your recent orders,
+      manage your account details, and access your downloads and wishlist.
+    </p>
+  </header>
+
+  <!-- Quick action cards -->
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 g-lg-4 dashboard-cards">
+
+    <div class="col">
+      <a class="dashboard-card" routerLink="/account/orders">
+        <span class="dashboard-card__icon">
+          <i class="fa-solid fa-box" aria-hidden="true"></i>
+        </span>
+        <span class="dashboard-card__title">My Orders</span>
+        <span class="dashboard-card__description">View and track your orders</span>
+      </a>
+    </div>
+
+    <div class="col">
+      <a class="dashboard-card" routerLink="/account/downloads">
+        <span class="dashboard-card__icon">
+          <i class="fa-solid fa-download" aria-hidden="true"></i>
+        </span>
+        <span class="dashboard-card__title">My Downloads</span>
+        <span class="dashboard-card__description">Access your digital purchases</span>
+      </a>
+    </div>
+
+    <div class="col">
+      <a class="dashboard-card" routerLink="/account/wishlist">
+        <span class="dashboard-card__icon">
+          <i class="fa-regular fa-heart" aria-hidden="true"></i>
+        </span>
+        <span class="dashboard-card__title">My Wishlist</span>
+        <span class="dashboard-card__description">View your saved products</span>
+      </a>
+    </div>
+
+    <div class="col">
+      <a class="dashboard-card" routerLink="/account/edit-account">
+        <span class="dashboard-card__icon">
+          <i class="fa-regular fa-id-card" aria-hidden="true"></i>
+        </span>
+        <span class="dashboard-card__title">Edit Account</span>
+        <span class="dashboard-card__description">Update your account details</span>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Recent Orders -->
+  <section class="recent-orders" aria-labelledby="recentOrdersHeading">
+    <div class="recent-orders__header">
+      <h2 class="recent-orders__title" id="recentOrdersHeading">Recent Orders</h2>
+    </div>
+
+    <!--
+      Empty state — prepared but not shown. Later: *ngIf="orders.length === 0"
+      here, and *ngIf="orders.length > 0" on .recent-orders__table-wrap below,
+      so only one renders at a time.
+    -->
+    <div class="recent-orders__empty d-none">
+      <i class="fa-solid fa-box-open recent-orders__empty-icon" aria-hidden="true"></i>
+      <p class="recent-orders__empty-title">No orders yet.</p>
+      <p class="recent-orders__empty-text">Start shopping to see your orders here.</p>
+    </div>
+
+    <div class="recent-orders__table-wrap table-responsive">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th scope="col">Order</th>
+            <th scope="col">Date</th>
+            <th scope="col">Status</th>
+            <th scope="col">Total</th>
+            <th scope="col" class="orders-table__action-col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="orders-table__number">#SD-1001</td>
+            <td>Aug 12, 2026</td>
+            <td><span class="orders-table__status orders-table__status--processing">Processing</span></td>
+            <td class="orders-table__total">$45.00</td>
+            <td><a class="orders-table__view" routerLink="#">View Order</a></td>
+          </tr>
+          <tr>
+            <td class="orders-table__number">#SD-1000</td>
+            <td>Aug 08, 2026</td>
+            <td><span class="orders-table__status orders-table__status--completed">Completed</span></td>
+            <td class="orders-table__total">$82.00</td>
+            <td><a class="orders-table__view" routerLink="#">View Order</a></td>
+          </tr>
+          <tr>
+            <td class="orders-table__number">#SD-0999</td>
+            <td>Aug 02, 2026</td>
+            <td><span class="orders-table__status orders-table__status--completed">Completed</span></td>
+            <td class="orders-table__total">$35.00</td>
+            <td><a class="orders-table__view" routerLink="#">View Order</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>

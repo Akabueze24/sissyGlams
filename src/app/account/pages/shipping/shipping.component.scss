@@ -1,0 +1,176 @@
+@import '../../../../styles/variables';
+
+// ============================================================
+// Back link
+// ============================================================
+.billing-address__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  font-family: $font-body;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: $color-text-muted;
+  text-decoration: none;
+
+  i {
+    font-size: 0.75rem;
+  }
+
+  &:hover {
+    color: $brand-pink-dark;
+  }
+}
+
+// ============================================================
+// Page header
+// ============================================================
+.billing-address__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 1.75rem;
+}
+
+.billing-address__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: $brand-pink-light;
+  color: $brand-pink-dark;
+  font-size: 1rem;
+  flex: 0 0 auto;
+}
+
+.billing-address__title {
+  font-family: $font-heading;
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: $color-text-dark;
+  margin-bottom: 0.35rem;
+
+  @media (min-width: 768px) {
+    font-size: 1.6rem;
+  }
+}
+
+.billing-address__subtitle {
+  font-family: $font-body;
+  font-size: 0.85rem;
+  color: $color-text-muted;
+  margin: 0;
+}
+
+// ============================================================
+// Form
+// ============================================================
+.billing-form {
+  background-color: $color-white;
+  border: 1px solid $color-border;
+  border-radius: 0.65rem;
+  padding: 1.5rem;
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
+}
+
+.billing-form__group {
+  display: flex;
+  flex-direction: column;
+}
+
+.billing-form__label {
+  font-family: $font-body;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: $color-text-dark;
+  margin-bottom: 0.4rem;
+}
+
+.billing-form__required {
+  color: $brand-pink-dark;
+}
+
+.billing-form__input,
+.billing-form__select {
+  height: 44px;
+  padding: 0 0.9rem;
+  border: 1px solid $color-border;
+  border-radius: 0.4rem;
+  background-color: $color-white;
+  font-family: $font-body;
+  font-size: 0.88rem;
+  color: $color-text-dark;
+  width: 100%;
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $brand-pink;
+    box-shadow: 0 0 0 3px rgba($brand-pink, 0.15);
+  }
+}
+
+.billing-form__select {
+  appearance: auto;
+}
+
+// ============================================================
+// Actions
+// ============================================================
+.billing-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid $color-border;
+}
+
+.billing-form__save {
+  height: 44px;
+  padding: 0 1.75rem;
+  border: none;
+  background-color: $brand-pink;
+  color: $color-white;
+  font-family: $font-body;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $brand-pink-dark;
+  }
+}
+
+.billing-form__cancel {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 1.75rem;
+  border: 1px solid $color-border;
+  background-color: $color-white;
+  color: $color-text-dark;
+  font-family: $font-body;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 0.4rem;
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    border-color: $brand-pink;
+    color: $brand-pink-dark;
+  }
+}

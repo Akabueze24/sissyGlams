@@ -1,0 +1,203 @@
+<main class="checkout container-fluid">
+
+  <header class="checkout__header">
+    <h1 class="checkout__title">Checkout</h1>
+  </header>
+
+  <div class="row checkout-layout gy-4">
+
+    <!-- LEFT COLUMN — Billing & Shipping -->
+    <div class="col-12 col-lg-7">
+      <div class="checkout-card">
+        <h2 class="checkout-card__title">Billing &amp; Shipping</h2>
+
+        <form class="checkout-form">
+          <div class="row g-3">
+
+            <div class="col-12">
+              <div class="checkout-form__group">
+                <label class="checkout-form__label" for="checkoutEmail">Email Address</label>
+                <input id="checkoutEmail" class="checkout-form__input" type="email" autocomplete="email" />
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="checkout-form__group">
+                <label class="checkout-form__label" for="checkoutFirstName">First Name</label>
+                <input id="checkoutFirstName" class="checkout-form__input" type="text" autocomplete="given-name" />
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="checkout-form__group">
+                <label class="checkout-form__label" for="checkoutLastName">Last Name</label>
+                <input id="checkoutLastName" class="checkout-form__input" type="text" autocomplete="family-name" />
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="checkout-form__group">
+                <label class="checkout-form__label" for="checkoutPhone">Phone Number</label>
+                <input id="checkoutPhone" class="checkout-form__input" type="tel" autocomplete="tel" />
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="checkout-form__group">
+                <label class="checkout-form__label" for="checkoutAddress">Address</label>
+                <input
+                  id="checkoutAddress"
+                  class="checkout-form__input"
+                  type="text"
+                  placeholder="House number and street name"
+                  autocomplete="address-line1"
+                />
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="checkout-form__group">
+                <label class="checkout-form__label" for="checkoutApartment">Apartment / Suite</label>
+                <input
+                  id="checkoutApartment"
+                  class="checkout-form__input"
+                  type="text"
+                  placeholder="Apartment, suite, unit, etc. (optional)"
+                  autocomplete="address-line2"
+                />
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="checkout-form__group">
+                <label class="checkout-form__label" for="checkoutCity">City</label>
+                <input id="checkoutCity" class="checkout-form__input" type="text" autocomplete="address-level2" />
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="checkout-form__group">
+                <label class="checkout-form__label" for="checkoutState">State / Province</label>
+                <input id="checkoutState" class="checkout-form__input" type="text" autocomplete="address-level1" />
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="checkout-form__group">
+                <label class="checkout-form__label" for="checkoutCountry">Country</label>
+                <select id="checkoutCountry" class="checkout-form__select" autocomplete="country">
+                  <option value="NG" selected>Nigeria</option>
+                  <option value="US">United States</option>
+                  <option value="GB">United Kingdom</option>
+                  <option value="CA">Canada</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="checkout-form__group">
+                <label class="checkout-form__label" for="checkoutZip">Postal / ZIP Code</label>
+                <input id="checkoutZip" class="checkout-form__input" type="text" autocomplete="postal-code" />
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Shipping Method -->
+          <div class="checkout-form__shipping">
+            <h3 class="checkout-form__subtitle">Shipping Method</h3>
+
+            <label class="checkout-radio">
+              <input type="radio" name="shippingMethod" class="checkout-radio__input" checked />
+              <span class="checkout-radio__label">Standard Shipping</span>
+              <span class="checkout-radio__price">&#8358;3,000</span>
+            </label>
+
+            <label class="checkout-radio">
+              <input type="radio" name="shippingMethod" class="checkout-radio__input" />
+              <span class="checkout-radio__label">Express Shipping</span>
+              <span class="checkout-radio__price">&#8358;6,000</span>
+            </label>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN — Order Summary (top) + Payment Method (below) -->
+    <div class="col-12 col-lg-5">
+
+      <div class="checkout-card order-summary">
+        <h2 class="checkout-card__title">Your Order</h2>
+
+        <ul class="order-summary__list">
+          <li class="order-summary__item">
+            <span>Sissy Dress</span>
+            <span>&#8358;30,000</span>
+          </li>
+          <li class="order-summary__item">
+            <span>Ebook</span>
+            <span>&#8358;5,000</span>
+          </li>
+        </ul>
+
+        <div class="order-summary__row">
+          <span>Subtotal</span>
+          <span>&#8358;35,000</span>
+        </div>
+        <div class="order-summary__row">
+          <span>Shipping</span>
+          <span>&#8358;3,000</span>
+        </div>
+
+        <hr class="order-summary__divider" />
+
+        <div class="order-summary__row order-summary__row--total">
+          <span>Total</span>
+          <span>&#8358;38,000</span>
+        </div>
+      </div>
+
+      <div class="checkout-card payment-method">
+        <h2 class="checkout-card__title">Payment Method</h2>
+
+        <div class="payment-method__options">
+
+          <label class="checkout-radio">
+            <input type="radio" name="paymentMethod" class="checkout-radio__input" checked />
+            <span class="checkout-radio__label">Card</span>
+          </label>
+
+          <label class="checkout-radio">
+            <input type="radio" name="paymentMethod" class="checkout-radio__input" />
+            <span class="checkout-radio__label">Bank Transfer</span>
+          </label>
+
+          <label class="checkout-radio">
+            <input type="radio" name="paymentMethod" class="checkout-radio__input" />
+            <span class="checkout-radio__label">USSD</span>
+          </label>
+
+          <label class="checkout-radio">
+            <input type="radio" name="paymentMethod" class="checkout-radio__input" />
+            <span class="checkout-radio__label">Apple Pay</span>
+          </label>
+
+          <label class="checkout-radio">
+            <input type="radio" name="paymentMethod" class="checkout-radio__input" />
+            <span class="checkout-radio__label">Google Pay</span>
+          </label>
+
+          <label class="checkout-radio">
+            <input type="radio" name="paymentMethod" class="checkout-radio__input" />
+            <span class="checkout-radio__label">Crypto</span>
+          </label>
+
+        </div>
+
+        <button class="checkout__submit" type="submit">Pay &#8358;38,000</button>
+      </div>
+
+    </div>
+
+  </div>
+</main>

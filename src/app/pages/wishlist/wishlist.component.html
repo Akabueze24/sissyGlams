@@ -1,0 +1,26 @@
+<main class="wishlist-page container-fluid">
+
+  <header class="wishlist-page__header">
+    <h1 class="wishlist-page__title">My Sissy Closet</h1>
+    <p class="wishlist-page__subtitle">Your favorite items, saved for later.</p>
+    <p class="wishlist-page__count">8 items</p>
+  </header>
+
+  <!--
+    Empty state — part of the UI framework, not wired up yet.
+    Later: *ngIf="wishlistItems.length === 0" here, and
+    *ngIf="wishlistItems.length > 0" on the grid below.
+    Hidden via d-none for now so both can exist in the markup.
+  -->
+  <section class="wishlist-empty d-none" aria-label="Empty wishlist">
+    <i class="fa-regular fa-heart wishlist-empty__icon" aria-hidden="true"></i>
+    <h2 class="wishlist-empty__title">My Wishlist is Empty</h2>
+    <p class="wishlist-empty__text">You haven't added anything to your wishlist yet.</p>
+    <a class="wishlist-empty__cta" href="/shop">Continue Shopping</a>
+  </section>
+
+ <app-product-card [wishlistMode]="true"></app-product-card>
+
+ 
+
+</main>

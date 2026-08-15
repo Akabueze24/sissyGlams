@@ -1,0 +1,216 @@
+@import '../../../../styles/variables';
+
+// ============================================================
+// Welcome section
+// ============================================================
+.dashboard-header {
+  margin-bottom: 1.75rem;
+
+  &__title {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: $color-text-dark;
+    margin-bottom: 0.5rem;
+
+    @media (min-width: 768px) {
+      font-size: 1.65rem;
+    }
+  }
+
+  &__text {
+    font-family: $font-body;
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: $color-text-muted;
+    max-width: 640px;
+    margin: 0;
+  }
+}
+
+// ============================================================
+// Quick action cards
+// ============================================================
+.dashboard-cards {
+  margin-bottom: 2.25rem;
+}
+
+.dashboard-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+  height: 100%;
+  padding: 1.25rem;
+  background-color: $color-white;
+  border: 1px solid $color-border;
+  border-radius: 0.65rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  text-decoration: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    border-color: $brand-pink;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: $brand-pink-light;
+    color: $brand-pink-dark;
+    font-size: 1.05rem;
+  }
+
+  &__title {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: $color-text-dark;
+  }
+
+  &__description {
+    font-family: $font-body;
+    font-size: 0.78rem;
+    color: $color-text-muted;
+    line-height: 1.4;
+  }
+}
+
+// ============================================================
+// Recent Orders
+// ============================================================
+.recent-orders {
+  &__header {
+    margin-bottom: 1.1rem;
+  }
+
+  &__title {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: $color-text-dark;
+    margin: 0;
+  }
+}
+
+// --- Empty state (prepared, hidden via d-none for now) ---
+.recent-orders__empty {
+  text-align: center;
+  padding: 3rem 1rem;
+
+  &-icon {
+    font-size: 2rem;
+    color: $brand-pink-light;
+    margin-bottom: 0.85rem;
+  }
+
+  &-title {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1rem;
+    color: $color-text-dark;
+    margin-bottom: 0.3rem;
+  }
+
+  &-text {
+    font-family: $font-body;
+    font-size: 0.85rem;
+    color: $color-text-muted;
+    margin: 0;
+  }
+}
+
+// --- Orders table ---
+.recent-orders__table-wrap {
+  border: 1px solid $color-border;
+  border-radius: 0.65rem;
+  overflow: hidden;
+}
+
+.orders-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  font-family: $font-body;
+
+  thead {
+    background-color: rgba($brand-pink-light, 0.5);
+  }
+
+  th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $color-text-muted;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.9rem 1rem;
+    font-size: 0.85rem;
+    color: $color-text-dark;
+    border-top: 1px solid $color-border;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: rgba($brand-pink-light, 0.25);
+    }
+  }
+
+  &__action-col {
+    text-align: right;
+  }
+
+  &__number {
+    font-weight: 600;
+  }
+
+  &__total {
+    font-weight: 700;
+    color: $brand-pink-dark;
+  }
+
+  &__status {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+
+    &--processing {
+      background-color: $brand-pink-light;
+      color: $brand-pink-dark;
+    }
+
+    &--completed {
+      background-color: rgba($color-border, 0.6);
+      color: $color-text-dark;
+    }
+  }
+
+  &__view {
+    display: block;
+    text-align: right;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: $brand-pink-dark;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

@@ -1,0 +1,597 @@
+@import '../../../styles/variables';
+
+// ============================================================
+// Backdrop + centering
+// ============================================================
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 1.5rem;
+
+  background-color: rgba(0, 0, 0, 0.5);
+
+  // Allow the overlay to handle overflow when necessary
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  // Prevent scroll from being passed to the page behind
+  overscroll-behavior: contain;
+
+  // Better touch behavior on mobile
+  -webkit-overflow-scrolling: touch;
+}
+
+// ============================================================
+// Modal card
+// ============================================================
+.auth-modal {
+  position: relative;
+
+  width: 100%;
+  max-width: 460px;
+
+  // IMPORTANT:
+  // Use the dynamic viewport height for mobile browsers.
+  max-height: calc(100dvh - 3rem);
+
+  // The modal itself becomes the scroll container
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  background-color: $color-white;
+
+  border-radius: 0.75rem;
+
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+
+  padding: 2.25rem 1.75rem 2rem;
+
+  // Stop scroll chaining from the modal to the overlay/body
+  overscroll-behavior: contain;
+
+  // Smooth scrolling on iOS/mobile browsers
+  -webkit-overflow-scrolling: touch;
+
+  // Prevent the scrollbar from causing horizontal layout issues
+  scrollbar-gutter: stable;
+
+  @media (min-width: 576px) {
+    padding: 2.5rem 2.5rem 2.25rem;
+  }
+
+  // ----------------------------------------------------------
+  // Close button
+  // ----------------------------------------------------------
+  &__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    background: transparent;
+
+    color: $color-text-muted;
+    font-size: 1rem;
+
+    cursor: pointer;
+
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: $brand-pink-dark;
+    }
+  }
+
+  // ----------------------------------------------------------
+  // Brand
+  // ----------------------------------------------------------
+  &__brand {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  &__brand-word {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: $brand-pink-mid;
+  }
+
+  &__brand-accent {
+    color: $brand-pink-dark;
+  }
+
+  // ----------------------------------------------------------
+  // Heading
+  // ----------------------------------------------------------
+  &__heading {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1.35rem;
+    color: $color-text-dark;
+
+    text-align: center;
+
+    margin-bottom: 0.4rem;
+  }
+
+  // ----------------------------------------------------------
+  // Subtext
+  // ----------------------------------------------------------
+  &__subtext {
+    font-family: $font-body;
+    font-size: 0.85rem;
+    color: $color-text-muted;
+
+    text-align: center;
+
+    margin-bottom: 1.75rem;
+  }
+
+  // ----------------------------------------------------------
+  // Login/Register switch
+  // ----------------------------------------------------------
+  &__switch {
+    margin: 1.5rem 0 0;
+
+    text-align: center;
+
+    font-family: $font-body;
+    font-size: 0.82rem;
+
+    color: $color-text-muted;
+  }
+
+  &__switch-link {
+    display: inline;
+
+    border: none;
+    background: transparent;
+
+    padding: 0;
+    margin-left: 0.3rem;
+
+    font-family: $font-body;
+    font-weight: 700;
+    font-size: 0.82rem;
+
+    color: $brand-pink-dark;
+
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// ============================================================
+// Form
+// ============================================================
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+// ============================================================
+// First name + Last name
+// ============================================================
+.auth-form__row-group {
+  display: flex;
+  flex-direction: column;
+
+  gap: 1.1rem;
+
+  @media (min-width: 480px) {
+    flex-direction: row;
+
+    .auth-form__group {
+      flex: 1 1 0%;
+      min-width: 0;
+    }
+  }
+}
+
+// ============================================================
+// Form group
+// ============================================================
+.auth-form__group {
+  display: flex;
+  flex-direction: column;
+}
+
+// ============================================================
+// Labels
+// ============================================================
+.auth-form__label {
+  font-family: $font-body;
+  font-weight: 600;
+  font-size: 0.78rem;
+
+  color: $color-text-dark;
+
+  margin-bottom: 0.4rem;
+}
+
+// ============================================================
+// Inputs
+// ============================================================
+.auth-form__input {
+  width: 100%;
+  height: 44px;
+
+  padding: 0 0.9rem;
+
+  border: 1px solid $color-border;
+  border-radius: 0.4rem;
+
+  background-color: $color-white;
+
+  font-family: $font-body;
+  font-size: 0.88rem;
+
+  color: $color-text-dark;
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+
+  &:focus {
+    outline: none;
+
+    border-color: $brand-pink;
+
+    box-shadow: 0 0 0 3px rgba($brand-pink, 0.15);
+  }
+}
+
+// ============================================================
+// Password wrapper
+// ============================================================
+.auth-form__password-wrap {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  .auth-form__input {
+    padding-right: 2.6rem;
+  }
+}
+
+// ============================================================
+// Password visibility button
+// ============================================================
+.auth-form__password-toggle {
+  position: absolute;
+  right: 0.75rem;
+
+  border: none;
+  background: transparent;
+
+  color: $color-text-muted;
+
+  font-size: 0.85rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $brand-pink-dark;
+  }
+}
+
+// ============================================================
+// Error message
+// ============================================================
+.auth-form__error {
+  min-height: 1.1rem;
+
+  margin: 0.35rem 0 0;
+
+  font-family: $font-body;
+  font-size: 0.72rem;
+
+  color: $brand-pink-dark;
+}
+
+// ============================================================
+// Password strength
+// ============================================================
+.auth-form__strength {
+  display: flex;
+
+  gap: 0.35rem;
+
+  margin-top: 0.5rem;
+}
+
+.auth-form__strength-bar {
+  flex: 1 1 0%;
+
+  height: 4px;
+
+  border-radius: 999px;
+
+  background-color: $color-border;
+}
+
+// ============================================================
+// Checkbox rows
+// ============================================================
+.auth-form__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  flex-wrap: wrap;
+
+  gap: 0.5rem;
+}
+
+.auth-form__checkbox {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 0.5rem;
+
+  font-family: $font-body;
+  font-size: 0.78rem;
+
+  color: $color-text-muted;
+
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    margin-top: 0.15rem;
+
+    accent-color: $brand-pink;
+
+    width: 15px;
+    height: 15px;
+
+    flex: 0 0 auto;
+  }
+
+  a {
+    color: $brand-pink-dark;
+
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &--terms {
+    line-height: 1.5;
+  }
+}
+
+// ============================================================
+// Forgot password
+// ============================================================
+.auth-form__link {
+  font-family: $font-body;
+  font-size: 0.78rem;
+
+  color: $brand-pink-dark;
+
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// ============================================================
+// Submit button
+// ============================================================
+.auth-form__submit {
+  width: 100%;
+  height: 46px;
+
+  border: none;
+
+  background-color: $brand-pink;
+
+  color: $color-white;
+
+  font-family: $font-body;
+  font-weight: 700;
+  font-size: 0.88rem;
+
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+
+  border-radius: 0.4rem;
+
+  cursor: pointer;
+
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $brand-pink-dark;
+  }
+}
+
+// ============================================================
+// Divider + social login
+// ============================================================
+.auth-divider {
+  display: flex;
+  align-items: center;
+
+  gap: 0.85rem;
+
+  margin: 1.5rem 0 1.1rem;
+
+  &::before,
+  &::after {
+    content: '';
+
+    flex: 1 1 auto;
+
+    height: 1px;
+
+    background-color: $color-border;
+  }
+
+  span {
+    font-family: $font-body;
+    font-size: 0.7rem;
+    font-weight: 600;
+
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+
+    color: $color-text-muted;
+
+    white-space: nowrap;
+  }
+}
+
+// ============================================================
+// Google button
+// ============================================================
+.auth-social-btn {
+  width: 100%;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.6rem;
+
+  border: 1px solid $color-border;
+
+  background-color: $color-white;
+
+  border-radius: 0.4rem;
+
+  font-family: $font-body;
+  font-weight: 600;
+  font-size: 0.82rem;
+
+  color: $color-text-dark;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+
+  i {
+    font-size: 0.95rem;
+  }
+
+  &:hover {
+    border-color: $brand-pink;
+
+    background-color: $brand-pink-light;
+  }
+}
+
+// ============================================================
+// MOBILE
+// ============================================================
+@media (max-width: 575.98px) {
+
+  .auth-overlay {
+    align-items: flex-start;
+
+    padding: 0.75rem;
+
+    // Keep the overlay inside the viewport
+    min-height: 100dvh;
+    overflow-y: auto;
+  }
+
+  .auth-modal {
+    width: 100%;
+
+    max-width: 100%;
+
+    // Important for small screens
+    max-height: calc(100dvh - 1.5rem);
+
+    padding: 2rem 1.25rem 1.75rem;
+
+    border-radius: 0.6rem;
+  }
+
+  .auth-modal__heading {
+    font-size: 1.25rem;
+  }
+
+  .auth-modal__subtext {
+    font-size: 0.82rem;
+
+    margin-bottom: 1.5rem;
+  }
+
+  .auth-form {
+    gap: 1rem;
+  }
+
+  .auth-form__row {
+    align-items: flex-start;
+  }
+}
+
+// ============================================================
+// VERY SMALL PHONES
+// ============================================================
+@media (max-width: 380px) {
+
+  .auth-overlay {
+    padding: 0.5rem;
+  }
+
+  .auth-modal {
+    max-height: calc(100dvh - 1rem);
+
+    padding: 1.75rem 1rem 1.5rem;
+  }
+
+  .auth-modal__close {
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .auth-modal__brand {
+    margin-bottom: 1.25rem;
+  }
+
+  .auth-modal__brand-word {
+    font-size: 1.2rem;
+  }
+
+  .auth-modal__heading {
+    font-size: 1.2rem;
+  }
+
+  .auth-modal__subtext {
+    font-size: 0.78rem;
+  }
+}

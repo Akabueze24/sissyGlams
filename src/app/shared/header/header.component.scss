@@ -1,0 +1,470 @@
+@import "../../../styles/variables";
+
+// ============================================================
+// 1. Announcement bar
+// ============================================================
+.announcement-bar {
+  background-color: $brand-pink;
+  color: $color-white;
+  font-family: $font-body;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  padding: 0.55rem 1rem;
+}
+
+// ============================================================
+// 2. Top info bar
+// ============================================================
+.topbar {
+  background-color: $color-bg-light;
+  border-bottom: 1px solid $color-border;
+  font-family: $font-body;
+  font-size: $header-topbar-font-size;
+  color: $color-text-muted;
+  padding: 0.4rem 2rem;
+
+  a {
+    color: $color-text-muted;
+    text-decoration: none;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: $brand-pink;
+    }
+  }
+
+  &__divider {
+    width: 1px;
+    height: 14px;
+    background-color: $color-border;
+    margin: 0 1rem;
+  }
+
+  &__right {
+    gap: 1.5rem;
+  }
+
+  &__contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 500;
+
+    i {
+      color: $brand-pink;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+.social-list {
+  gap: 0.9rem;
+
+  li a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+  }
+}
+
+.info-links {
+  gap: 0.75rem;
+
+  li {
+    position: relative;
+    padding-right: 0.75rem;
+    border-right: 1px solid $color-border;
+
+    &:last-child {
+      border-right: none;
+      padding-right: 0;
+    }
+  }
+}
+
+.currency-dropdown {
+  .btn {
+    font-size: $header-topbar-font-size;
+    color: $color-text-muted;
+    padding: 0 0.25rem;
+    border: none;
+    background: transparent;
+
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  .dropdown-menu {
+    min-width: 6rem;
+    font-size: $header-topbar-font-size;
+  }
+}
+
+// ============================================================
+// 3. Main header
+// ============================================================
+.main-header {
+  background-color: $color-white;
+  padding: 0.85rem 2rem;
+
+  &__inner {
+    gap: 1.5rem;
+  }
+}
+
+// ============================================================
+// Logo
+// ============================================================
+.logo {
+  text-decoration: none;
+  gap: 0.65rem;
+  flex-shrink: 0;
+
+  &__mark {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: $brand-pink-light;
+    color: $brand-pink;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
+  }
+
+  &__word {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: $brand-pink-mid;
+
+    &--accent {
+      color: $brand-pink-dark;
+    }
+  }
+
+  &__tagline {
+    font-family: $font-body;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $color-text-muted;
+  }
+
+  &--mobile {
+    .logo__word {
+      font-size: 1.15rem;
+    }
+  }
+}
+
+// ============================================================
+// Search
+// ============================================================
+.search-form {
+  flex: 1 1 auto;
+  max-width: 480px;
+  border: 1px solid $brand-pink;
+  border-radius: 999px;
+  overflow: hidden;
+
+  &__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 0.55rem 1.1rem;
+    font-family: $font-body;
+    font-size: 0.85rem;
+    color: $color-text-dark;
+    background: transparent;
+
+    &::placeholder {
+      color: $color-text-muted;
+    }
+  }
+
+  &__btn {
+    border: none;
+    background-color: $brand-pink;
+    color: $color-white;
+    padding: 0 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: $brand-pink-dark;
+    }
+  }
+
+  &--mobile {
+    max-width: none;
+    width: 100%;
+    margin-top: 0.75rem;
+  }
+}
+
+// ============================================================
+// Desktop actions
+// ============================================================
+.header-actions {
+  gap: 1.1rem;
+  flex-shrink: 0;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: $color-text-dark;
+    text-decoration: none;
+    font-family: $font-body;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+
+    i {
+      font-size: 1.1rem;
+      color: $color-text-dark;
+    }
+
+    &:hover {
+      color: $brand-pink;
+
+      i {
+        color: $brand-pink;
+      }
+    }
+  }
+
+  &__divider {
+    width: 1px;
+    height: 22px;
+    background-color: $color-border;
+  }
+}
+
+// ============================================================
+// Cart badge
+// ============================================================
+.cart-icon-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background-color: $brand-pink;
+  color: $color-white;
+  font-size: 0.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+// ============================================================
+// Mobile row
+// ============================================================
+.hamburger-btn {
+  border: none;
+  background: transparent;
+  font-size: 1.25rem;
+  color: $color-text-dark;
+  padding: 0.25rem 0.4rem;
+
+  &:hover {
+    color: $brand-pink;
+  }
+}
+
+// Mobile account + cart container
+.mobile-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobile-wishlist-btn {
+  color: $color-text-dark;
+  font-size: 1.1rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $brand-pink;
+  }
+}
+
+// Mobile account
+.mobile-account-btn {
+  color: $color-text-dark;
+  font-size: 1.1rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $brand-pink;
+  }
+}
+
+// Mobile cart
+.cart-icon-btn {
+  position: relative;
+  color: $color-text-dark;
+  font-size: 1.15rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $brand-pink;
+  }
+}
+
+// ============================================================
+// 4. Purple category navigation
+// ============================================================
+.category-nav {
+  background-color: $brand-pink;
+  padding: 0;
+
+  &__inner {
+    padding: 0 2rem;
+  }
+
+  &__list {
+    gap: 0.25rem;
+  }
+
+  .nav-link {
+    font-family: $font-body;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: $color-white;
+    padding: 0.75rem 1rem;
+    display: inline-block;
+    transition: background-color 0.15s ease;
+
+    &:hover,
+    &.show {
+      background-color: rgba($color-white, 0.12);
+    }
+  }
+
+  .dropdown-menu {
+    border: none;
+    border-radius: 0.4rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    padding: 0.4rem 0;
+    margin-top: 0;
+  }
+
+  .dropdown-item {
+    font-family: $font-body;
+    font-size: 0.85rem;
+    color: $color-text-dark;
+    padding: 0.5rem 1.1rem;
+
+    &:hover,
+    &:focus {
+      background-color: $brand-pink-light;
+      color: $brand-pink-dark;
+    }
+  }
+
+  // ==========================================================
+  // Mobile collapsed menu
+  // ==========================================================
+  @media (max-width: 991.98px) {
+    .navbar-collapse {
+      background-color: $brand-pink;
+      padding: 0.5rem 1rem 1rem;
+    }
+
+    &__list {
+      gap: 0;
+    }
+
+    .nav-link {
+      padding: 0.55rem 0.5rem;
+      border-bottom: 1px solid rgba($color-white, 0.15);
+    }
+
+    .dropdown-menu {
+      position: static;
+      float: none;
+      box-shadow: none;
+      background-color: rgba($color-white, 0.08);
+    }
+
+    .dropdown-item {
+      color: $color-white;
+
+      &:hover,
+      &:focus {
+        background-color: rgba($color-white, 0.15);
+        color: $color-white;
+      }
+    }
+  }
+}
+
+// ============================================================
+// Responsive tweaks
+// ============================================================
+@media (max-width: 991.98px) {
+  .topbar,
+  .main-header {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .category-nav__inner {
+    padding: 0 1rem;
+  }
+}
+
+// ============================================================
+// Small mobile screens
+// ============================================================
+@media (max-width: 400px) {
+  .mobile-actions {
+    gap: 0.7rem;
+  }
+
+  .mobile-account-btn,
+  .cart-icon-btn {
+    font-size: 1.05rem;
+  }
+
+  .logo--mobile .logo__word {
+    font-size: 1.05rem;
+  }
+}

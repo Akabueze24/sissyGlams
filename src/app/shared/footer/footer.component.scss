@@ -1,0 +1,215 @@
+@import '../../../styles/variables';
+
+// ============================================================
+// Footer shell
+// ============================================================
+.site-footer {
+  background-color: $brand-pink-dark;
+  color: rgba($color-white, 0.85);
+  padding: 2.5rem 1rem 1.5rem;
+
+  @media (min-width: 768px) {
+    padding: 3rem 2rem 1.75rem;
+  }
+
+  @media (min-width: 1200px) {
+    padding: 3.5rem 3rem 2rem;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  &__inner {
+    max-width: 1400px;
+  }
+
+  &__heading {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $color-white;
+    margin-bottom: 1rem;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      margin-bottom: 0.6rem;
+    }
+
+    a {
+      font-family: $font-body;
+      font-size: 0.85rem;
+      color: rgba($color-white, 0.8);
+      transition: color 0.15s ease;
+
+      &:hover,
+      &:focus-visible {
+        color: $color-white;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// ============================================================
+// Newsletter
+// ============================================================
+.newsletter {
+  text-align: center;
+  margin-top: 2.5rem;
+  padding: 2rem 1rem;
+  border-top: 1px solid rgba($color-white, 0.18);
+  border-bottom: 1px solid rgba($color-white, 0.18);
+
+  @media (min-width: 768px) {
+    padding: 2.25rem 2rem;
+  }
+
+  &__heading {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $color-white;
+    margin-bottom: 0.5rem;
+  }
+
+  &__text {
+    font-family: $font-body;
+    font-size: 0.85rem;
+    color: rgba($color-white, 0.8);
+    margin-bottom: 1.25rem;
+  }
+
+  &__form {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  &__label {
+    // Visually hidden but still available to assistive tech,
+    // since the input's placeholder communicates purpose visually.
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+
+    @media (min-width: 576px) {
+      flex-direction: row;
+      gap: 0;
+    }
+  }
+
+  &__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 1px solid rgba($color-white, 0.35);
+    background-color: rgba($color-white, 0.08);
+    color: $color-white;
+    font-family: $font-body;
+    font-size: 0.85rem;
+    padding: 0.65rem 1rem;
+
+    @media (min-width: 576px) {
+      border-right: none;
+    }
+
+    &::placeholder {
+      color: rgba($color-white, 0.6);
+    }
+
+    &:focus {
+      outline: none;
+      background-color: rgba($color-white, 0.14);
+      border-color: $color-white;
+    }
+  }
+
+  &__btn {
+    flex: 0 0 auto;
+    border: 1px solid $color-white;
+    background-color: $color-white;
+    color: $brand-pink-dark;
+    font-family: $font-body;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 0.65rem 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+      background-color: transparent;
+      color: $color-white;
+    }
+  }
+}
+
+// ============================================================
+// Bottom bar — social icons + copyright
+// ============================================================
+.site-footer__bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.75rem;
+  text-align: center;
+}
+
+.social-list {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba($color-white, 0.35);
+    border-radius: 50%;
+    color: $color-white;
+    font-size: 0.85rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+      background-color: $color-white;
+      color: $brand-pink-dark;
+      border-color: $color-white;
+    }
+  }
+}
+
+.site-footer__copyright {
+  font-family: $font-body;
+  font-size: 0.75rem;
+  color: rgba($color-white, 0.7);
+  margin: 0;
+}

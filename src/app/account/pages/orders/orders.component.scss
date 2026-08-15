@@ -1,0 +1,201 @@
+@import '../../../../styles/variables';
+
+// ============================================================
+// Page header
+// ============================================================
+.orders-page__header {
+  margin-bottom: 1.5rem;
+}
+
+.orders-page__title {
+  font-family: $font-heading;
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: $color-text-dark;
+  margin-bottom: 0.5rem;
+
+  @media (min-width: 768px) {
+    font-size: 1.65rem;
+  }
+}
+
+.orders-page__subtitle {
+  font-family: $font-body;
+  font-size: 0.88rem;
+  color: $color-text-muted;
+  margin: 0;
+}
+
+// ============================================================
+// Summary — kept subtle/inline, not admin-style KPI cards
+// ============================================================
+.orders-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.75rem;
+  background-color: $color-white;
+  border: 1px solid $color-border;
+  border-radius: 0.65rem;
+}
+
+.orders-summary__item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.orders-summary__value {
+  font-family: $font-heading;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: $color-text-dark;
+
+  &--processing {
+    color: $brand-pink-dark;
+  }
+
+  &--completed {
+    color: $color-text-dark;
+  }
+}
+
+.orders-summary__label {
+  font-family: $font-body;
+  font-size: 0.78rem;
+  color: $color-text-muted;
+}
+
+.orders-summary__divider {
+  width: 1px;
+  height: 20px;
+  background-color: $color-border;
+}
+
+// ============================================================
+// Empty state (prepared, hidden via d-none for now)
+// ============================================================
+.orders-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  background-color: $color-white;
+  border: 1px solid $color-border;
+  border-radius: 0.65rem;
+  margin-bottom: 1.75rem;
+
+  &__icon {
+    font-size: 2rem;
+    color: $brand-pink-light;
+    margin-bottom: 0.85rem;
+  }
+
+  &__title {
+    font-family: $font-heading;
+    font-weight: 700;
+    font-size: 1rem;
+    color: $color-text-dark;
+    margin-bottom: 0.3rem;
+  }
+
+  &__text {
+    font-family: $font-body;
+    font-size: 0.85rem;
+    color: $color-text-muted;
+    margin: 0;
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+// ============================================================
+// Orders table
+// ============================================================
+.orders-page__table-wrap {
+  border: 1px solid $color-border;
+  border-radius: 0.65rem;
+  overflow: hidden;
+}
+
+.orders-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  font-family: $font-body;
+
+  thead {
+    background-color: rgba($brand-pink-light, 0.5);
+  }
+
+  th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $color-text-muted;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.9rem 1rem;
+    font-size: 0.85rem;
+    color: $color-text-dark;
+    border-top: 1px solid $color-border;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: rgba($brand-pink-light, 0.25);
+    }
+  }
+
+  &__action-col {
+    text-align: right;
+  }
+
+  &__number {
+    font-weight: 600;
+  }
+
+  &__total {
+    font-weight: 700;
+    color: $brand-pink-dark;
+  }
+
+  // Processing uses the brand pink variables (no existing variable
+  // for a "success" state, so Completed uses Bootstrap's built-in
+  // bg-success-subtle / text-success-emphasis utility classes
+  // directly in the markup instead of a new SCSS color here).
+  &__status {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+
+    &--processing {
+      background-color: $brand-pink-light;
+      color: $brand-pink-dark;
+    }
+  }
+
+  &__action {
+    display: block;
+    text-align: right;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: $brand-pink-dark;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

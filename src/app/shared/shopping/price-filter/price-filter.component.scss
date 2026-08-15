@@ -1,0 +1,94 @@
+@import '../../../../styles/variables';
+.price-filter {
+  &__slider {
+    position: relative;
+    height: 24px;
+    margin: 0.25rem 0 0.5rem;
+  }
+
+  &__track-bg {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    transform: translateY(-50%);
+    background-color: $color-border;
+    border-radius: 999px;
+  }
+
+  &__range {
+    position: absolute;
+    top: 50%;
+    height: 4px;
+    transform: translateY(-50%);
+    background-color: $brand-pink;
+    border-radius: 999px;
+  }
+
+  &__input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 24px;
+    margin: 0;
+    background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    pointer-events: none; // only the thumb (below) should be clickable
+
+    &::-webkit-slider-runnable-track {
+      background: transparent;
+      height: 4px;
+    }
+
+    &::-moz-range-track {
+      background: transparent;
+      height: 4px;
+    }
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      pointer-events: auto;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: $color-white;
+      border: 2px solid $brand-pink;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      margin-top: -6px; // vertically center thumb on the 4px track
+    }
+
+    &::-moz-range-thumb {
+      pointer-events: auto;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: $color-white;
+      border: 2px solid $brand-pink;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
+
+    &:focus-visible::-webkit-slider-thumb {
+      outline: 2px solid $brand-pink;
+      outline-offset: 2px;
+    }
+
+    &:focus-visible::-moz-range-thumb {
+      outline: 2px solid $brand-pink;
+      outline-offset: 2px;
+    }
+  }
+
+  &__values {
+    display: flex;
+    justify-content: space-between;
+    font-family: $font-body;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: $color-text-dark;
+  }
+}

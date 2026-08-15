@@ -1,0 +1,140 @@
+<main class="shop-page container-fluid">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="shop-breadcrumb-nav">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Lingerie</li>
+    </ol>
+  </nav>
+
+  <!-- Category title + description -->
+  <header class="shop-header">
+    <h1 class="shop-header__title">Lingerie</h1>
+    <p class="shop-header__description">
+      Soft, delicate, and made to make you feel your most feminine self —
+      explore bras, panties, babydolls, corsets, and garter sets designed for
+      comfort and confidence.
+    </p>
+  </header>
+
+  <div class="shop-layout">
+    <!-- Filter sidebar / mobile offcanvas — Category, Price, Rating ONLY -->
+    <aside
+      class="offcanvas-lg offcanvas-start shop-filters"
+      tabindex="-1"
+      id="shopFiltersOffcanvas"
+      aria-labelledby="shopFiltersLabel"
+    >
+      <div class="offcanvas-header">
+        <h2 class="offcanvas-title shop-filters__title" id="shopFiltersLabel">
+          Filters
+        </h2>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="offcanvas"
+          data-bs-target="#shopFiltersOffcanvas"
+          aria-label="Close filters"
+        ></button>
+      </div>
+
+      <div class="offcanvas-body shop-filters__body">
+        <!-- Shop by Category -->
+        <nav aria-label="Shop by category" class="shop-category-nav">
+          <h2 class="shop-filters__title">Shop by Category</h2>
+         <app-category-sidebar></app-category-sidebar>
+        </nav>
+
+        <!-- Price -->
+        <section class="price-filter" aria-labelledby="priceFilterHeading">
+          <h2 class="shop-filters__title" id="priceFilterHeading">Price</h2>
+
+        <app-price-filter></app-price-filter>
+
+          
+        </section>
+
+        <!-- Rating -->
+        <section class="rating-filter" aria-labelledby="ratingFilterHeading">
+          <h2 class="shop-filters__title" id="ratingFilterHeading">Rating</h2>
+          <app-rating-filter></app-rating-filter>
+        </section>
+      </div>
+    </aside>
+
+    <!-- Main content: toolbar + grid + pagination -->
+    <div class="shop-main">
+      <div class="shop-toolbar">
+        <button
+          class="shop-toolbar__filter-btn"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#shopFiltersOffcanvas"
+          aria-controls="shopFiltersOffcanvas"
+        >
+          <i class="fa-solid fa-sliders"></i>
+          <span>Filters</span>
+        </button>
+
+        <p class="shop-toolbar__count">Showing 1&ndash;12 of 48 results</p>
+
+        <div class="shop-toolbar__sort">
+          <label for="shopSort" class="shop-toolbar__sort-label">Sort by</label>
+          <select id="shopSort" class="form-select shop-toolbar__sort-select">
+            <option>Featured</option>
+            <option>Best Selling</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Newest</option>
+            <option>Customer Rating</option>
+          </select>
+        </div>
+      </div>
+
+      <app-product-card></app-product-card>
+
+      <nav aria-label="Product pagination" class="shop-pagination-nav">
+        <ul class="pagination">
+          <li class="page-item disabled">
+            <a
+              class="page-link page-link--nav"
+              href="#"
+              aria-label="Previous page"
+            >
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+              <span class="page-link--nav__label">Previous</span>
+            </a>
+          </li>
+          <li class="page-item active" aria-current="page">
+            <a class="page-link" href="#">1</a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">4</a></li>
+          <li class="page-item"><a class="page-link" href="#">5</a></li>
+          <li class="page-item">
+            <a class="page-link page-link--nav" href="#" aria-label="Next page">
+              <span class="page-link--nav__label">Next</span>
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!--
+        Shopping Suggestions — moved out of the sidebar per latest spec.
+        Uses the same <app-product-card> as the main grid (no separate
+        card design). Static for now; swap these 4 slots for a
+        *ngFor over a ProductService result once that's wired up —
+        the markup shape (row > col > app-product-card) is already
+        ready for that.
+      -->
+      <section class="suggestions-section" aria-labelledby="suggestionsHeading">
+        <h2 class="suggestions-section__title" id="suggestionsHeading">
+          You May Also Like
+        </h2>
+        <app-collection-slider></app-collection-slider>
+      </section>
+    </div>
+  </div>
+</main>
