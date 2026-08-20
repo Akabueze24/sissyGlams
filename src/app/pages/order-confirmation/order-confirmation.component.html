@@ -1,0 +1,285 @@
+<main
+  class="order-confirmation container-fluid"
+  *ngIf="order"
+>
+  <!-- 1. Success header -->
+  <header class="order-confirmation__header">
+    <span class="order-confirmation__icon">
+      <i
+        class="fa-solid fa-check"
+        aria-hidden="true"
+      ></i>
+    </span>
+
+    <h1 class="order-confirmation__title">
+      Order Confirmed!
+    </h1>
+
+    <p class="order-confirmation__message">
+      Thank you for your order. We've received your purchase and will begin
+      processing it shortly.
+    </p>
+
+    <p class="order-confirmation__number">
+      Order #{{ order.id }}
+    </p>
+  </header>
+
+  <div class="order-confirmation__content">
+
+    <!-- 2. Order summary -->
+    <section
+      class="order-confirmation__card order-summary"
+      aria-labelledby="orderSummaryHeading"
+    >
+      <h2
+        class="order-confirmation__card-title"
+        id="orderSummaryHeading"
+      >
+        Order Summary
+      </h2>
+
+      <ul class="order-summary__list">
+
+        <li
+          class="order-summary__item"
+          *ngFor="let item of order.items"
+        >
+          <img
+            class="order-summary__image"
+            [src]="item.color?.image || 'fallback-image'"
+            [alt]="item.productName"
+          />
+
+          <div class="order-summary__details">
+
+            <p class="order-summary__name">
+              {{ item.productName }}
+            </p>
+
+            <p class="order-summary__meta">
+
+              <ng-container *ngIf="item.color">
+                Color: {{ item.color.name }}
+              </ng-container>
+
+              <ng-container *ngIf="item.size">
+                <span *ngIf="item.color">&middot;</span>
+                Size: {{ item.size.value }}
+              </ng-container>
+
+              <ng-container *ngIf="item.length">
+                <span *ngIf="item.color || item.size">
+                  &middot;
+                </span>
+                Length: {{ item.length }}
+              </ng-container>
+
+              <span
+                *ngIf="item.color || item.size || item.length"
+              >
+                &middot;
+              </span>
+
+              Qty: {{ item.quantity }}
+
+            </p>
+
+          </div>
+
+          <p class="order-summary__price">
+            {{ item.price * item.quantity | currency }}
+          </p>
+        </li>
+
+      </ul>
+
+      <!-- Order totals -->
+      <div class="order-summary__totals">
+
+        <div class="order-summary__row">
+          <span>Subtotal</span>
+
+          <span>
+            {{ order.subtotal | currency }}
+          </span>
+        </div>
+
+        <div class="order-summary__row">
+          <span>Shipping</span>
+
+          <span>
+            {{ order.shippingCost | currency }}
+          </span>
+        </div>
+
+        <hr class="order-summary__divider" />
+
+        <div
+          class="order-summary__row order-summary__row--total"
+        >
+          <span>Total</span>
+
+          <span>
+            {{ order.total | currency }}
+          </span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3 & 4. Shipping + Payment -->
+    <div class="order-confirmation__details-row">
+
+      <!-- Shipping information -->
+      <section
+        class="order-confirmation__card shipping-info"
+        aria-labelledby="shippingInfoHeading"
+      >
+        <h2
+          class="order-confirmation__card-title"
+          id="shippingInfoHeading"
+        >
+          Shipping To
+        </h2>
+
+        <address class="shipping-info__address">
+
+          {{ order.customer.firstName }}
+          {{ order.customer.lastName }}
+
+          <br />
+
+          {{ order.shippingAddress.address }}
+
+          <br *ngIf="order.shippingAddress.apartment" />
+
+          <span *ngIf="order.shippingAddress.apartment">
+            {{ order.shippingAddress.apartment }}
+          </span>
+
+          <br />
+
+          {{ order.shippingAddress.city }}
+
+          <br />
+
+          {{ order.shippingAddress.state }}
+
+          <br />
+
+          {{ order.shippingAddress.country }}
+
+          <br />
+
+          {{ order.shippingAddress.postalCode }}
+
+          <br />
+
+          {{ order.customer.phone }}
+
+        </address>
+
+        <p class="shipping-info__method">
+
+          <span class="shipping-info__label">
+            Shipping Method:
+          </span>
+
+          <span>
+            {{ order.shippingMethod | titlecase }}
+          </span>
+
+        </p>
+      </section>
+
+      <!-- Payment information -->
+      <section
+        class="order-confirmation__card payment-info"
+        aria-labelledby="paymentInfoHeading"
+      >
+        <h2
+          class="order-confirmation__card-title"
+          id="paymentInfoHeading"
+        >
+          Payment
+        </h2>
+
+        <p class="payment-info__row">
+
+          <span class="payment-info__label">
+            Payment Method:
+          </span>
+
+          <span>
+            {{ order.paymentMethod | titlecase }}
+          </span>
+
+        </p>
+
+        <p class="payment-info__row">
+
+          <span class="payment-info__label">
+            Payment Status:
+          </span>
+
+          <span
+            class="payment-info__status"
+            [class.payment-info__status--pending]="
+              order.paymentStatus === 'pending'
+            "
+          >
+            {{ order.paymentStatus | titlecase }}
+          </span>
+
+        </p>
+      </section>
+
+    </div>
+
+    <!-- 5. What's next -->
+    <section
+      class="order-confirmation__card whats-next"
+      aria-labelledby="whatsNextHeading"
+    >
+      <h2
+        class="order-confirmation__card-title"
+        id="whatsNextHeading"
+      >
+        What's Next
+      </h2>
+
+      <ul class="whats-next__list">
+        <li>We are preparing your order.</li>
+        <li>
+          You will receive an email confirmation at
+          <strong>{{ order.customer.email }}</strong>.
+        </li>
+        <li>
+          We will notify you when your order has shipped.
+        </li>
+      </ul>
+    </section>
+
+  </div>
+
+  <!-- 6. Actions -->
+  <div class="order-confirmation__actions">
+
+    <a
+      class="order-confirmation__action order-confirmation__action--primary"
+      routerLink="/shop"
+    >
+      Continue Shopping
+    </a>
+
+    <a
+      class="order-confirmation__action order-confirmation__action--secondary"
+      routerLink="/account/orders"
+    >
+      View My Orders
+    </a>
+
+  </div>
+
+</main>

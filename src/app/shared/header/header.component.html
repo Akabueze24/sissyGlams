@@ -97,19 +97,27 @@
         </a>
 
         <!-- Wishlist -->
-        <a class="mobile-wishlist-btn" href="/wishlist" aria-label="Wishlist">
+        <a
+          class="mobile-wishlist-btn"
+          routerLink="/wishlist"
+          aria-label="Wishlist"
+        >
           <i class="fa-regular fa-heart"></i>
-          
+          <span class="wishlist-badge">{{ wishlistCount }}</span>
         </a>
 
-        <a class="mobile-account-btn" aria-label="Account" (click)="authModal.open('login')">
+        <a
+          class="mobile-account-btn"
+          aria-label="Account"
+          (click)="openAccountAuth()"
+        >
           <i class="fa-regular fa-user"></i>
-          <span>LOGIN</span>
+          <span>Account</span>
         </a>
 
-        <a class="cart-icon-btn" href="/cart" aria-label="Cart">
+        <a class="cart-icon-btn" routerLink="/cart" aria-label="Cart">
           <i class="fa-solid fa-cart-shopping"></i>
-          <span class="cart-badge">0</span>
+          <span class="cart-badge">{{ cartCount }}</span>
         </a>
       </div>
 
@@ -142,8 +150,16 @@
 
       <!-- Desktop: actions -->
       <div class="header-actions d-none d-lg-flex align-items-center">
-        <a class="header-actions__item" href="/wishlist" aria-label="Wishlist">
-          <i class="fa-regular fa-heart"></i>
+        <a
+          class="header-actions__item"
+          routerLink="/wishlist"
+          aria-label="Wishlist"
+        >
+          <span class="wishlist-icon-wrap">
+            <i class="fa-regular fa-heart"></i>
+            <span class="wishlist-badge">{{ wishlistCount }}</span>
+          </span>
+
           <span>WISHLIST</span>
         </a>
 
@@ -151,20 +167,23 @@
 
         <a
           class="header-actions__item header-actions__item--login"
-          (click)="authModal.open('login')"
+          (click)="openAccountAuth()"
         >
           <i class="fa-regular fa-user"></i>
-          <span>LOGIN</span>
+          <span>Account</span>
         </a>
 
         <span class="header-actions__divider" aria-hidden="true"></span>
 
-        <a class="header-actions__item header-actions__item--cart" href="/cart">
+        <a
+          class="header-actions__item header-actions__item--cart"
+          routerLink="/cart"
+        >
           <span class="cart-icon-wrap">
             <i class="fa-solid fa-bag-shopping"></i>
-            <span class="cart-badge">0</span>
+            <span class="cart-badge">{{ cartCount }}</span>
           </span>
-          <span>$0.00</span>
+          <span>${{ cartTotal | number: "1.2-2" }}</span>
         </a>
       </div>
     </div>

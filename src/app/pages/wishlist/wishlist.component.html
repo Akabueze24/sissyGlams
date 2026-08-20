@@ -1,26 +1,78 @@
 <main class="wishlist-page container-fluid">
 
+  <!-- ============================================================
+       HEADER
+  ============================================================= -->
   <header class="wishlist-page__header">
-    <h1 class="wishlist-page__title">My Sissy Closet</h1>
-    <p class="wishlist-page__subtitle">Your favorite items, saved for later.</p>
-    <p class="wishlist-page__count">8 items</p>
+
+    <h1 class="wishlist-page__title">
+      My Sissy Closet
+    </h1>
+
+    <p class="wishlist-page__subtitle">
+      Your favorite items, saved for later.
+    </p>
+
+    <p class="wishlist-page__count">
+      {{ wishlistItems.length }}
+      {{ wishlistItems.length === 1 ? 'item' : 'items' }}
+    </p>
+
   </header>
 
-  <!--
-    Empty state — part of the UI framework, not wired up yet.
-    Later: *ngIf="wishlistItems.length === 0" here, and
-    *ngIf="wishlistItems.length > 0" on the grid below.
-    Hidden via d-none for now so both can exist in the markup.
-  -->
-  <section class="wishlist-empty d-none" aria-label="Empty wishlist">
-    <i class="fa-regular fa-heart wishlist-empty__icon" aria-hidden="true"></i>
-    <h2 class="wishlist-empty__title">My Wishlist is Empty</h2>
-    <p class="wishlist-empty__text">You haven't added anything to your wishlist yet.</p>
-    <a class="wishlist-empty__cta" href="/shop">Continue Shopping</a>
+
+  <!-- ============================================================
+       EMPTY WISHLIST
+  ============================================================= -->
+  <section
+    class="wishlist-empty"
+    *ngIf="wishlistItems.length === 0"
+    aria-label="Empty wishlist"
+  >
+
+    <i
+      class="fa-regular fa-heart wishlist-empty__icon"
+      aria-hidden="true"
+    ></i>
+
+    <h2 class="wishlist-empty__title">
+      My Wishlist is Empty
+    </h2>
+
+    <p class="wishlist-empty__text">
+      You haven't added anything to your wishlist yet.
+    </p>
+
+    <a
+      class="wishlist-empty__cta"
+      routerLink="/shop"
+    >
+      Continue Shopping
+    </a>
+
   </section>
 
- <app-product-card [wishlistMode]="true"></app-product-card>
 
- 
+  <!-- ============================================================
+       WISHLIST PRODUCTS
+  ============================================================= -->
+  <div
+    class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 g-lg-4 product-grid"
+    *ngIf="wishlistItems.length > 0"
+  >
+
+    <div
+      class="col"
+      *ngFor="let product of wishlistItems"
+    >
+
+      <app-product-card
+        [product]="product"
+        [wishlistMode]="true"
+      ></app-product-card>
+
+    </div>
+
+  </div>
 
 </main>

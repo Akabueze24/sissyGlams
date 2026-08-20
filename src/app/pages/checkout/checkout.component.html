@@ -1,203 +1,666 @@
 <main class="checkout container-fluid">
-
   <header class="checkout__header">
     <h1 class="checkout__title">Checkout</h1>
   </header>
 
-  <div class="row checkout-layout gy-4">
+  <!-- ============================================================
+       COMPLETE CHECKOUT FORM
+  ============================================================= -->
+  <form
+    class="checkout-form"
+    [formGroup]="checkoutForm"
+    (ngSubmit)="submitCheckout()"
+  >
+    <div class="row checkout-layout gy-4">
+      <!-- ============================================================
+           LEFT COLUMN — BILLING & SHIPPING
+      ============================================================= -->
 
-    <!-- LEFT COLUMN — Billing & Shipping -->
-    <div class="col-12 col-lg-7">
-      <div class="checkout-card">
-        <h2 class="checkout-card__title">Billing &amp; Shipping</h2>
+      <div class="col-12 col-lg-7">
+        <div class="checkout-card">
+          <h2 class="checkout-card__title">Billing &amp; Shipping</h2>
 
-        <form class="checkout-form">
           <div class="row g-3">
-
+            <!-- EMAIL -->
             <div class="col-12">
               <div class="checkout-form__group">
-                <label class="checkout-form__label" for="checkoutEmail">Email Address</label>
-                <input id="checkoutEmail" class="checkout-form__input" type="email" autocomplete="email" />
+                <label class="checkout-form__label" for="checkoutEmail">
+                  Email Address
+                </label>
+
+                <input
+                  id="checkoutEmail"
+                  class="checkout-form__input"
+                  [class.checkout-form__input--error]="
+                    checkoutForm.get('email')?.invalid &&
+                    checkoutForm.get('email')?.touched
+                  "
+                  type="email"
+                  formControlName="email"
+                  autocomplete="email"
+                />
+
+                <p
+                  class="checkout-form__error"
+                  *ngIf="
+                    checkoutForm.get('email')?.invalid &&
+                    checkoutForm.get('email')?.touched
+                  "
+                >
+                  <small *ngIf="checkoutForm.get('email')?.errors?.['required']">
+                    Email address is required.
+                  </small>
+
+                  <small *ngIf="checkoutForm.get('email')?.errors?.['email']">
+                    Please enter a valid email address.
+                  </small>
+                </p>
               </div>
             </div>
 
+            <!-- FIRST NAME -->
             <div class="col-12 col-md-6">
               <div class="checkout-form__group">
-                <label class="checkout-form__label" for="checkoutFirstName">First Name</label>
-                <input id="checkoutFirstName" class="checkout-form__input" type="text" autocomplete="given-name" />
+                <label class="checkout-form__label" for="checkoutFirstName">
+                  First Name
+                </label>
+
+                <input
+                  id="checkoutFirstName"
+                  class="checkout-form__input"
+                  [class.checkout-form__input--error]="
+                    checkoutForm.get('firstName')?.invalid &&
+                    checkoutForm.get('firstName')?.touched
+                  "
+                  type="text"
+                  formControlName="firstName"
+                  autocomplete="given-name"
+                />
+
+                <p
+                  class="checkout-form__error"
+                  *ngIf="
+                    checkoutForm.get('firstName')?.invalid &&
+                    checkoutForm.get('firstName')?.touched
+                  "
+                >
+                  <small
+                    *ngIf="checkoutForm.get('firstName')?.errors?.['required']"
+                  >
+                    First name is required.
+                  </small>
+
+                  <small
+                    *ngIf="checkoutForm.get('firstName')?.errors?.['minlength']"
+                  >
+                    First name must be at least 2 characters.
+                  </small>
+
+                  <small
+                    *ngIf="checkoutForm.get('firstName')?.errors?.['pattern']"
+                  >
+                    First name contains invalid characters.
+                  </small>
+                </p>
               </div>
             </div>
 
+            <!-- LAST NAME -->
             <div class="col-12 col-md-6">
               <div class="checkout-form__group">
-                <label class="checkout-form__label" for="checkoutLastName">Last Name</label>
-                <input id="checkoutLastName" class="checkout-form__input" type="text" autocomplete="family-name" />
+                <label class="checkout-form__label" for="checkoutLastName">
+                  Last Name
+                </label>
+
+                <input
+                  id="checkoutLastName"
+                  class="checkout-form__input"
+                  [class.checkout-form__input--error]="
+                    checkoutForm.get('lastName')?.invalid &&
+                    checkoutForm.get('lastName')?.touched
+                  "
+                  type="text"
+                  formControlName="lastName"
+                  autocomplete="family-name"
+                />
+
+                <p
+                  class="checkout-form__error"
+                  *ngIf="
+                    checkoutForm.get('lastName')?.invalid &&
+                    checkoutForm.get('lastName')?.touched
+                  "
+                >
+                  <small
+                    *ngIf="checkoutForm.get('lastName')?.errors?.['required']"
+                  >
+                    Last name is required.
+                  </small>
+
+                  <small
+                    *ngIf="checkoutForm.get('lastName')?.errors?.['minlength']"
+                  >
+                    Last name must be at least 2 characters.
+                  </small>
+
+                  <small
+                    *ngIf="checkoutForm.get('lastName')?.errors?.['pattern']"
+                  >
+                    Last name contains invalid characters.
+                  </small>
+                </p>
               </div>
             </div>
 
+            <!-- PHONE -->
             <div class="col-12">
               <div class="checkout-form__group">
-                <label class="checkout-form__label" for="checkoutPhone">Phone Number</label>
-                <input id="checkoutPhone" class="checkout-form__input" type="tel" autocomplete="tel" />
+                <label class="checkout-form__label" for="checkoutPhone">
+                  Phone Number
+                </label>
+
+                <input
+                  id="checkoutPhone"
+                  class="checkout-form__input"
+                  [class.checkout-form__input--error]="
+                    checkoutForm.get('phone')?.invalid &&
+                    checkoutForm.get('phone')?.touched
+                  "
+                  type="tel"
+                  formControlName="phone"
+                  autocomplete="tel"
+                />
+
+                <p
+                  class="checkout-form__error"
+                  *ngIf="
+                    checkoutForm.get('phone')?.invalid &&
+                    checkoutForm.get('phone')?.touched
+                  "
+                >
+                  <small *ngIf="checkoutForm.get('phone')?.errors?.['required']">
+                    Phone number is required.
+                  </small>
+
+                  <small *ngIf="checkoutForm.get('phone')?.errors?.['pattern']">
+                    Please enter a valid phone number.
+                  </small>
+                </p>
               </div>
             </div>
 
+            <!-- ADDRESS -->
             <div class="col-12">
               <div class="checkout-form__group">
-                <label class="checkout-form__label" for="checkoutAddress">Address</label>
+                <label class="checkout-form__label" for="checkoutAddress">
+                  Address
+                </label>
+
                 <input
                   id="checkoutAddress"
                   class="checkout-form__input"
+                  [class.checkout-form__input--error]="
+                    checkoutForm.get('address')?.invalid &&
+                    checkoutForm.get('address')?.touched
+                  "
                   type="text"
+                  formControlName="address"
                   placeholder="House number and street name"
                   autocomplete="address-line1"
                 />
+
+                <p
+                  class="checkout-form__error"
+                  *ngIf="
+                    checkoutForm.get('address')?.invalid &&
+                    checkoutForm.get('address')?.touched
+                  "
+                >
+                  <small
+                    *ngIf="checkoutForm.get('address')?.errors?.['required']"
+                  >
+                    Address is required.
+                  </small>
+
+                  <small
+                    *ngIf="checkoutForm.get('address')?.errors?.['minlength']"
+                  >
+                    Please enter a more complete address.
+                  </small>
+                </p>
               </div>
             </div>
 
+            <!-- APARTMENT -->
             <div class="col-12">
               <div class="checkout-form__group">
-                <label class="checkout-form__label" for="checkoutApartment">Apartment / Suite</label>
+                <label class="checkout-form__label" for="checkoutApartment">
+                  Apartment / Suite
+                </label>
+
                 <input
                   id="checkoutApartment"
                   class="checkout-form__input"
                   type="text"
+                  formControlName="apartment"
                   placeholder="Apartment, suite, unit, etc. (optional)"
                   autocomplete="address-line2"
                 />
               </div>
             </div>
 
+            <!-- CITY -->
             <div class="col-12 col-md-6">
               <div class="checkout-form__group">
-                <label class="checkout-form__label" for="checkoutCity">City</label>
-                <input id="checkoutCity" class="checkout-form__input" type="text" autocomplete="address-level2" />
+                <label class="checkout-form__label" for="checkoutCity">
+                  City
+                </label>
+
+                <input
+                  id="checkoutCity"
+                  class="checkout-form__input"
+                  [class.checkout-form__input--error]="
+                    checkoutForm.get('city')?.invalid &&
+                    checkoutForm.get('city')?.touched
+                  "
+                  type="text"
+                  formControlName="city"
+                  autocomplete="address-level2"
+                />
+
+                <p
+                  class="checkout-form__error"
+                  *ngIf="
+                    checkoutForm.get('city')?.invalid &&
+                    checkoutForm.get('city')?.touched
+                  "
+                >
+                  <small *ngIf="checkoutForm.get('city')?.errors?.['required']">
+                    City is required.
+                  </small>
+
+                  <small *ngIf="checkoutForm.get('city')?.errors?.['minlength']">
+                    City must be at least 2 characters.
+                  </small>
+
+                  <small *ngIf="checkoutForm.get('city')?.errors?.['pattern']">
+                    City contains invalid characters.
+                  </small>
+                </p>
               </div>
             </div>
 
+            <!-- STATE -->
             <div class="col-12 col-md-6">
               <div class="checkout-form__group">
-                <label class="checkout-form__label" for="checkoutState">State / Province</label>
-                <input id="checkoutState" class="checkout-form__input" type="text" autocomplete="address-level1" />
+                <label class="checkout-form__label" for="checkoutState">
+                  State / Province
+                </label>
+
+                <input
+                  id="checkoutState"
+                  class="checkout-form__input"
+                  [class.checkout-form__input--error]="
+                    checkoutForm.get('state')?.invalid &&
+                    checkoutForm.get('state')?.touched
+                  "
+                  type="text"
+                  formControlName="state"
+                  autocomplete="address-level1"
+                />
+
+                <p
+                  class="checkout-form__error"
+                  *ngIf="
+                    checkoutForm.get('state')?.invalid &&
+                    checkoutForm.get('state')?.touched
+                  "
+                >
+                  <small *ngIf="checkoutForm.get('state')?.errors?.['required']">
+                    State or province is required.
+                  </small>
+
+                  <small
+                    *ngIf="checkoutForm.get('state')?.errors?.['minlength']"
+                  >
+                    State must be at least 2 characters.
+                  </small>
+
+                  <small *ngIf="checkoutForm.get('state')?.errors?.['pattern']">
+                    State contains invalid characters.
+                  </small>
+                </p>
               </div>
             </div>
 
+            <!-- DELIVERY LOCATION -->
+            <div class="col-12">
+              <div class="checkout-form__group">
+                <label class="checkout-form__label" for="deliveryLocation">
+                  Delivery Location
+                </label>
+
+                <input
+                  id="deliveryLocation"
+                  class="checkout-form__input"
+                  [class.checkout-form__input--error]="
+                    checkoutForm.get('deliveryLocation')?.invalid &&
+                    checkoutForm.get('deliveryLocation')?.touched
+                  "
+                  type="text"
+                  formControlName="deliveryLocation"
+                  placeholder="Enter your delivery area"
+                />
+
+                <p
+                  class="checkout-form__error"
+                  *ngIf="
+                    checkoutForm.get('deliveryLocation')?.invalid &&
+                    checkoutForm.get('deliveryLocation')?.touched
+                  "
+                >
+                  <small
+                    *ngIf="
+                      checkoutForm.get('deliveryLocation')?.errors?.['required']
+                    "
+                  >
+                    Delivery location is required.
+                  </small>
+
+                  <small
+                    *ngIf="
+                      checkoutForm.get('deliveryLocation')?.errors?.[
+                        'minlength'
+                      ]
+                    "
+                  >
+                    Please enter a valid delivery location.
+                  </small>
+                </p>
+              </div>
+            </div>
+
+            <!-- COUNTRY -->
             <div class="col-12 col-md-6">
               <div class="checkout-form__group">
-                <label class="checkout-form__label" for="checkoutCountry">Country</label>
-                <select id="checkoutCountry" class="checkout-form__select" autocomplete="country">
-                  <option value="NG" selected>Nigeria</option>
-                  <option value="US">United States</option>
-                  <option value="GB">United Kingdom</option>
-                  <option value="CA">Canada</option>
+                <label class="checkout-form__label" for="checkoutCountry">
+                  Country
+                </label>
+
+                <select
+                  id="checkoutCountry"
+                  class="checkout-form__select"
+                  [class.checkout-form__input--error]="
+                    checkoutForm.get('country')?.invalid &&
+                    checkoutForm.get('country')?.touched
+                  "
+                  formControlName="country"
+                  autocomplete="country"
+                >
+                  <option value="">Select country</option>
+
+                  <option
+                    *ngFor="let country of countries"
+                    [value]="country.code"
+                  >
+                    {{ country.name }}
+                  </option>
                 </select>
+
+                <p
+                  class="checkout-form__error"
+                  *ngIf="
+                    checkoutForm.get('country')?.invalid &&
+                    checkoutForm.get('country')?.touched
+                  "
+                >
+                  Please select a country.
+                </p>
               </div>
             </div>
 
+            <!-- POSTAL CODE -->
             <div class="col-12 col-md-6">
               <div class="checkout-form__group">
-                <label class="checkout-form__label" for="checkoutZip">Postal / ZIP Code</label>
-                <input id="checkoutZip" class="checkout-form__input" type="text" autocomplete="postal-code" />
+                <label class="checkout-form__label" for="checkoutZip">
+                  Postal / ZIP Code
+                </label>
+
+                <input
+                  id="checkoutZip"
+                  class="checkout-form__input"
+                  [class.checkout-form__input--error]="
+                    checkoutForm.get('postalCode')?.invalid &&
+                    checkoutForm.get('postalCode')?.touched
+                  "
+                  type="text"
+                  formControlName="postalCode"
+                  autocomplete="postal-code"
+                />
+
+                <p
+                  class="checkout-form__error"
+                  *ngIf="
+                    checkoutForm.get('postalCode')?.invalid &&
+                    checkoutForm.get('postalCode')?.touched
+                  "
+                >
+                  <small
+                    *ngIf="checkoutForm.get('postalCode')?.errors?.['required']"
+                  >
+                    Postal / ZIP code is required.
+                  </small>
+
+                  <small
+                    *ngIf="checkoutForm.get('postalCode')?.errors?.['pattern']"
+                  >
+                    Please enter a valid postal / ZIP code.
+                  </small>
+                </p>
               </div>
             </div>
-
           </div>
 
-          <!-- Shipping Method -->
+          <!-- ======================================================
+               SHIPPING METHOD
+          ======================================================= -->
+
           <div class="checkout-form__shipping">
             <h3 class="checkout-form__subtitle">Shipping Method</h3>
 
+            <!-- STANDARD -->
             <label class="checkout-radio">
-              <input type="radio" name="shippingMethod" class="checkout-radio__input" checked />
-              <span class="checkout-radio__label">Standard Shipping</span>
-              <span class="checkout-radio__price">&#8358;3,000</span>
+              <input
+                type="radio"
+                formControlName="shippingMethod"
+                value="standard"
+                class="checkout-radio__input"
+              />
+
+              <small class="checkout-radio__label"> Standard Shipping </small>
+
+              <small class="checkout-radio__price">
+                {{
+                  standardShipping !== null
+                    ? "$" + (standardShipping | number: "1.2-2")
+                    : "Select a country"
+                }}
+              </small>
+            </label>
+
+            <!-- EXPRESS -->
+            <label class="checkout-radio">
+              <input
+                type="radio"
+                formControlName="shippingMethod"
+                value="express"
+                class="checkout-radio__input"
+              />
+
+              <small class="checkout-radio__label"> Express Shipping </small>
+
+              <small class="checkout-radio__price">
+                {{
+                  expressShipping !== null
+                    ? "$" + (expressShipping | number: "1.2-2")
+                    : "Select a country"
+                }}
+              </small>
+            </label>
+
+            <p
+              class="checkout-form__error"
+              *ngIf="
+                checkoutForm.get('shippingMethod')?.invalid &&
+                checkoutForm.get('shippingMethod')?.touched
+              "
+            >
+              Please select a shipping method.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           RIGHT COLUMN — ORDER SUMMARY + PAYMENT
+      ============================================================= -->
+
+      <div class="col-12 col-lg-5">
+        <!-- ORDER SUMMARY -->
+        <div class="checkout-card order-summary">
+          <h2 class="checkout-card__title">Your Order</h2>
+
+          <ul class="order-summary__list">
+            <li class="order-summary__item" *ngFor="let item of cartItems">
+              <small>
+                {{ item.product.name }}
+                × {{ item.quantity }}
+              </small>
+
+              <small>
+                ${{ item.product.price * item.quantity | number: "1.2-2" }}
+              </small>
+            </li>
+          </ul>
+
+          <div class="order-summary__row">
+            <small>Subtotal</small>
+
+            <small> ${{ subtotal | number: "1.2-2" }} </small>
+          </div>
+
+          <div class="order-summary__row">
+            <small>Shipping</small>
+
+            <small>
+              {{
+                shippingCost !== null
+                  ? "$" + (shippingCost | number: "1.2-2")
+                  : "Select a country"
+              }}
+            </small>
+          </div>
+
+          <hr class="order-summary__divider" />
+
+          <div class="order-summary__row order-summary__row--total">
+            <small>Total</small>
+
+            <small>
+              {{ total !== null ? "$" + (total | number: "1.2-2") : "—" }}
+            </small>
+          </div>
+        </div>
+
+        <!-- PAYMENT METHOD -->
+        <div class="checkout-card payment-method">
+          <h2 class="checkout-card__title">Payment Method</h2>
+
+          <div class="payment-method__options">
+            <label class="checkout-radio">
+              <input
+                type="radio"
+                formControlName="paymentMethod"
+                value="card"
+                class="checkout-radio__input"
+              />
+
+              <small class="checkout-radio__label"> Card </small>
             </label>
 
             <label class="checkout-radio">
-              <input type="radio" name="shippingMethod" class="checkout-radio__input" />
-              <span class="checkout-radio__label">Express Shipping</span>
-              <span class="checkout-radio__price">&#8358;6,000</span>
+              <input
+                type="radio"
+                formControlName="paymentMethod"
+                value="bank-transfer"
+                class="checkout-radio__input"
+              />
+
+              <small class="checkout-radio__label"> Bank Transfer </small>
+            </label>
+
+            <label class="checkout-radio">
+              <input
+                type="radio"
+                formControlName="paymentMethod"
+                value="ussd"
+                class="checkout-radio__input"
+              />
+
+              <small class="checkout-radio__label"> USSD </small>
+            </label>
+
+            <label class="checkout-radio">
+              <input
+                type="radio"
+                formControlName="paymentMethod"
+                value="apple-pay"
+                class="checkout-radio__input"
+              />
+
+              <small class="checkout-radio__label"> Apple Pay </small>
+            </label>
+
+            <label class="checkout-radio">
+              <input
+                type="radio"
+                formControlName="paymentMethod"
+                value="google-pay"
+                class="checkout-radio__input"
+              />
+
+              <small class="checkout-radio__label"> Google Pay </small>
+            </label>
+
+            <label class="checkout-radio">
+              <input
+                type="radio"
+                formControlName="paymentMethod"
+                value="crypto"
+                class="checkout-radio__input"
+              />
+
+              <small class="checkout-radio__label"> Crypto </small>
             </label>
           </div>
-        </form>
+
+          <p
+            class="checkout-form__error"
+            *ngIf="
+              checkoutForm.get('paymentMethod')?.invalid &&
+              checkoutForm.get('paymentMethod')?.touched
+            "
+          >
+            Please select a payment method.
+          </p>
+
+          <!-- PAYMENT BUTTON -->
+          <button class="checkout__submit" type="submit">
+            Pay
+            {{ total !== null ? "$" + (total | number: "1.2-2") : "" }}
+          </button>
+        </div>
       </div>
     </div>
-
-    <!-- RIGHT COLUMN — Order Summary (top) + Payment Method (below) -->
-    <div class="col-12 col-lg-5">
-
-      <div class="checkout-card order-summary">
-        <h2 class="checkout-card__title">Your Order</h2>
-
-        <ul class="order-summary__list">
-          <li class="order-summary__item">
-            <span>Sissy Dress</span>
-            <span>&#8358;30,000</span>
-          </li>
-          <li class="order-summary__item">
-            <span>Ebook</span>
-            <span>&#8358;5,000</span>
-          </li>
-        </ul>
-
-        <div class="order-summary__row">
-          <span>Subtotal</span>
-          <span>&#8358;35,000</span>
-        </div>
-        <div class="order-summary__row">
-          <span>Shipping</span>
-          <span>&#8358;3,000</span>
-        </div>
-
-        <hr class="order-summary__divider" />
-
-        <div class="order-summary__row order-summary__row--total">
-          <span>Total</span>
-          <span>&#8358;38,000</span>
-        </div>
-      </div>
-
-      <div class="checkout-card payment-method">
-        <h2 class="checkout-card__title">Payment Method</h2>
-
-        <div class="payment-method__options">
-
-          <label class="checkout-radio">
-            <input type="radio" name="paymentMethod" class="checkout-radio__input" checked />
-            <span class="checkout-radio__label">Card</span>
-          </label>
-
-          <label class="checkout-radio">
-            <input type="radio" name="paymentMethod" class="checkout-radio__input" />
-            <span class="checkout-radio__label">Bank Transfer</span>
-          </label>
-
-          <label class="checkout-radio">
-            <input type="radio" name="paymentMethod" class="checkout-radio__input" />
-            <span class="checkout-radio__label">USSD</span>
-          </label>
-
-          <label class="checkout-radio">
-            <input type="radio" name="paymentMethod" class="checkout-radio__input" />
-            <span class="checkout-radio__label">Apple Pay</span>
-          </label>
-
-          <label class="checkout-radio">
-            <input type="radio" name="paymentMethod" class="checkout-radio__input" />
-            <span class="checkout-radio__label">Google Pay</span>
-          </label>
-
-          <label class="checkout-radio">
-            <input type="radio" name="paymentMethod" class="checkout-radio__input" />
-            <span class="checkout-radio__label">Crypto</span>
-          </label>
-
-        </div>
-
-        <button class="checkout__submit" type="submit">Pay &#8358;38,000</button>
-      </div>
-
-    </div>
-
-  </div>
+  </form>
 </main>

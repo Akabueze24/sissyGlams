@@ -2,31 +2,30 @@
   <!-- Breadcrumb -->
   <nav aria-label="breadcrumb" class="product-view__breadcrumb-nav">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/">Home</a></li>
-      <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
+      <li class="breadcrumb-item">
+        <a routerLink="/">Home</a>
+      </li>
+
+      <li class="breadcrumb-item">
+        <a routerLink="/shop">Shop</a>
+      </li>
+
       <li class="breadcrumb-item active" aria-current="page">
-        Blush Satin Wrap Dress
+        {{ product?.name }}
       </li>
     </ol>
   </nav>
 
+  <!-- ============================================================
+       PRODUCT MAIN
+  ============================================================= -->
   <div class="row product-view__main gy-4 gy-lg-0">
-    <!-- ============================================================
-         LEFT — Gallery
-         Later: [src]="selectedVariant.mainImage" on the main image,
-         and *ngFor="let shot of selectedVariant.gallery" on the
-         thumbnail strip below. Both are driven by whichever variant
-         swatch is selected in the Color option (right column).
-    ============================================================ -->
+    <!-- ==========================================================
+         LEFT — PRODUCT GALLERY
+    =========================================================== -->
     <div class="col-12 col-lg-6">
       <section class="product-gallery" aria-label="Product images">
-        <!--
-          Main image slider for the CURRENTLY selected variant (Pink).
-          thumbs-swiper=".product-gallery__thumbs" is Swiper Element's
-          native declarative thumb-sync — no TypeScript required.
-          Later: *ngFor="let shot of selectedVariant.gallery" over the
-          slides below, swapped whenever the variant selector changes.
-        -->
+        <!-- Main image slider -->
         <div class="product-gallery__main">
           <swiper-container
             class="product-gallery__main-swiper"
@@ -35,48 +34,17 @@
             space-between="0"
             loop="false"
           >
-            <swiper-slide>
+            <swiper-slide *ngFor="let image of galleryImages">
               <img
                 class="product-gallery__main-img"
-                src="https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+%E2%80%94+Front"
-                alt="Blush Satin Wrap Dress in Pink, front view"
-                data-current-variant="pink"
-              />
-            </swiper-slide>
-            <swiper-slide>
-              <img
-                class="product-gallery__main-img"
-                src="https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+%E2%80%94+Back"
-                alt="Blush Satin Wrap Dress in Pink, back view"
-                data-current-variant="pink"
-              />
-            </swiper-slide>
-            <swiper-slide>
-              <img
-                class="product-gallery__main-img"
-                src="https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+%E2%80%94+Side"
-                alt="Blush Satin Wrap Dress in Pink, side view"
-                data-current-variant="pink"
-              />
-            </swiper-slide>
-            <swiper-slide>
-              <img
-                class="product-gallery__main-img"
-                src="https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+%E2%80%94+Detail"
-                alt="Blush Satin Wrap Dress in Pink, fabric detail"
-                data-current-variant="pink"
+                [src]="image"
+                [alt]="product?.name"
               />
             </swiper-slide>
           </swiper-container>
         </div>
 
-        <!--
-          Thumbnail nav swiper for the currently selected variant.
-          free-mode + watch-slides-progress lets Swiper toggle
-          .swiper-slide-thumb-active on the active .gallery-thumb
-          automatically — that's what drives the pink active border,
-          no click handlers needed.
-        -->
+        <!-- Thumbnail slider -->
         <swiper-container
           class="product-gallery__thumbs"
           slides-per-view="4"
@@ -85,228 +53,201 @@
           watch-slides-progress="true"
           aria-label="Product image angles"
         >
-          <swiper-slide class="gallery-thumb">
-            <img
-              src="https://placehold.co/160x160/ffd6e8/e8558c?text=Front"
-              alt="Front view"
-            />
-          </swiper-slide>
-          <swiper-slide class="gallery-thumb">
-            <img
-              src="https://placehold.co/160x160/ffd6e8/e8558c?text=Back"
-              alt="Back view"
-            />
-          </swiper-slide>
-          <swiper-slider class="gallery-thumb">
-            <img
-              src="https://placehold.co/160x160/ffd6e8/e8558c?text=Side"
-              alt="Side view"
-            />
-          </swiper-slider>
-          <swiper-slide class="gallery-thumb">
-            <img
-              src="https://placehold.co/160x160/ffd6e8/e8558c?text=Detail"
-              alt="Fabric detail view"
-            />
+          <swiper-slide
+            class="gallery-thumb"
+            *ngFor="let image of galleryImages"
+          >
+            <img [src]="image" [alt]="product?.name" />
           </swiper-slide>
         </swiper-container>
       </section>
     </div>
 
-    <!-- ============================================================
-         RIGHT — Product info + options
-    ============================================================ -->
+    <!-- ==========================================================
+         RIGHT — PRODUCT INFORMATION
+    =========================================================== -->
     <div class="col-12 col-lg-6">
       <div class="product-info">
-        <p class="product-info__brand">Sissy Dream</p>
-        <h1 class="product-info__name">Blush Satin Wrap Dress</h1>
+        <!-- Brand -->
+        <p class="product-info__brand">
+          {{ product?.brand }}
+        </p>
 
+        <!-- Product name -->
+        <h1 class="product-info__name">
+          {{ product?.name }}
+        </h1>
+
+        <!-- Rating -->
         <div
           class="product-info__rating"
-          aria-label="Rating 4.5 out of 5 stars"
+          [attr.aria-label]="'Rating ' + product?.rating + ' out of 5 stars'"
         >
           <span class="product-info__stars">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-            ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-            ><i class="fa-solid fa-star-half-stroke"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star-half-stroke"></i>
           </span>
-          <span class="product-info__review-count">(28 reviews)</span>
+
+          <span class="product-info__review-count">
+            ({{ product?.reviewCount }} reviews)
+          </span>
         </div>
 
+        <!-- Price -->
         <div class="product-info__price">
-          <span class="product-info__badge">-28%</span>
-          <span class="product-info__price-old">$59.99</span>
-          <span class="product-info__price-current">$42.99</span>
+          <!-- Discount badge -->
+          <span class="product-info__badge" *ngIf="product?.oldPrice">
+            -
+            {{
+              ((product!.oldPrice! - product!.price) / product!.oldPrice!) * 100
+                | number: "1.0-0"
+            }}%
+          </span>
+
+          <!-- Old price -->
+          <span class="product-info__price-old" *ngIf="product?.oldPrice">
+            ${{ product?.oldPrice | number: "1.2-2" }}
+          </span>
+
+          <!-- Current price -->
+          <span class="product-info__price-current">
+            ${{ product?.price | number: "1.2-2" }}
+          </span>
         </div>
 
+        <!-- Description -->
         <p class="product-info__description">
-          A soft satin wrap dress with a flattering tie waist and flowing skirt
-          — designed to feel elegant and move beautifully, from everyday wear to
-          your next special occasion.
+          {{ product?.productDetails?.description }}
         </p>
 
         <hr class="product-info__divider" />
 
-        <!-- ==========================================================
+        <!-- ========================================================
              PRODUCT OPTIONS
-             These are example option groups for UI review — not every
-             product will have all three. Each group is fully static
-             (radio + label, :checked drives the styling) so it can be
-             wired to real option data later without changing markup.
-        ========================================================== -->
+        ========================================================= -->
+
         <div class="product-options">
-          <!-- COLOR / VARIANT — this is the master variant selector.
-               data-variant on each input is the hook a later
-               (change) handler / [(ngModel)] would read to swap the
-               gallery above to that variant's image set. -->
-          <div class="product-option">
+          <!-- ======================================================
+               COLORS
+          ======================================================= -->
+          <div class="product-option" *ngIf="product?.colors?.length">
             <h2 class="product-option__label">
-              Color: <span class="product-option__value">Pink</span>
+              Color:
+              <span class="product-option__value">
+                {{ selectedColor?.name }}
+              </span>
             </h2>
+
             <div
               class="variant-swatches"
               role="group"
               aria-label="Select color variant"
             >
-              <input
-                type="radio"
-                class="btn-check"
-                name="productVariant"
-                id="variantPink"
-                data-variant="pink"
-                checked
-              />
-              <label class="variant-swatch" for="variantPink">
-                <img
-                  class="variant-swatch__img"
-                  src="https://placehold.co/80x80/ffd6e8/e8558c?text=Pink"
-                  alt=""
+              <ng-container
+                *ngFor="let color of product?.colors; let first = first"
+              >
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="productVariant"
+                  [id]="'variant-' + color.value"
+                  [value]="color.value"
+                  [checked]="selectedColor?.value === color.value"
+                  (change)="selectColor(color)"
                 />
-                <span class="variant-swatch__label">Pink</span>
-              </label>
 
-              <input
-                type="radio"
-                class="btn-check"
-                name="productVariant"
-                id="variantBlack"
-                data-variant="black"
-              />
-              <label class="variant-swatch" for="variantBlack">
-                <img
-                  class="variant-swatch__img"
-                  src="https://placehold.co/80x80/2b2b2b/ffffff?text=Black"
-                  alt=""
-                />
-                <span class="variant-swatch__label">Black</span>
-              </label>
+                <label class="variant-swatch" [for]="'variant-' + color.value">
+                  <img
+                    class="variant-swatch__img"
+                    [src]="color.image"
+                    [alt]="color.name"
+                  />
 
-              <input
-                type="radio"
-                class="btn-check"
-                name="productVariant"
-                id="variantRed"
-                data-variant="red"
-              />
-              <label class="variant-swatch" for="variantRed">
-                <img
-                  class="variant-swatch__img"
-                  src="https://placehold.co/80x80/c62841/ffffff?text=Red"
-                  alt=""
-                />
-                <span class="variant-swatch__label">Red</span>
-              </label>
+                  <span class="variant-swatch__label">
+                    {{ color.name }}
+                  </span>
+                </label>
+              </ng-container>
             </div>
           </div>
 
-          <!-- SIZE — independent of variant/color -->
-          <div class="product-option">
+          <!-- ======================================================
+               SIZES
+          ======================================================= -->
+          <div class="product-option" *ngIf="product?.sizes?.length">
             <h2 class="product-option__label">
-              Size: <span class="product-option__value">M</span>
+              Size:
+              <span class="product-option__value">
+                {{ selectedSize?.value }}
+              </span>
             </h2>
+
             <div class="choice-buttons" role="group" aria-label="Select size">
-              <input
-                type="radio"
-                class="btn-check"
-                name="productSize"
-                id="sizeS"
-              />
-              <label class="choice-btn" for="sizeS">S</label>
+              <ng-container
+                *ngFor="let size of product?.sizes; let first = first"
+              >
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="productSize"
+                  [id]="'size-' + size.value"
+                  [value]="size.value"
+                  [checked]="selectedSize?.value === size.value"
+                  (change)="selectSize(size)"
+                />
 
-              <input
-                type="radio"
-                class="btn-check"
-                name="productSize"
-                id="sizeM"
-                checked
-              />
-              <label class="choice-btn" for="sizeM">M</label>
-
-              <input
-                type="radio"
-                class="btn-check"
-                name="productSize"
-                id="sizeL"
-              />
-              <label class="choice-btn" for="sizeL">L</label>
-
-              <input
-                type="radio"
-                class="btn-check"
-                name="productSize"
-                id="sizeXL"
-              />
-              <label class="choice-btn" for="sizeXL">XL</label>
+                <label class="choice-btn" [for]="'size-' + size.value">
+                  {{ size.value }}
+                </label>
+              </ng-container>
             </div>
           </div>
 
-          <!-- LENGTH — shown here as a UI example (e.g. for wigs); not
-               every product type will render this group -->
-          <div class="product-option">
+          <!-- ======================================================
+               LENGTH
+               Only appears for products that have lengths.
+          ======================================================= -->
+          <div class="product-option" *ngIf="product?.lengths?.length">
             <h2 class="product-option__label">
-              Length: <span class="product-option__value">20"</span>
+              Length:
+              <span class="product-option__value">
+                {{ selectedLength?.value }}
+              </span>
             </h2>
+
             <div class="choice-buttons" role="group" aria-label="Select length">
-              <input
-                type="radio"
-                class="btn-check"
-                name="productLength"
-                id="length18"
-              />
-              <label class="choice-btn" for="length18">18"</label>
+              <ng-container
+                *ngFor="let length of product?.lengths; let first = first"
+              >
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="productLength"
+                  [id]="'length-' + length.value"
+                  [value]="length.value"
+                  [checked]="selectedLength?.value === length.value"
+                  (change)="selectLength(length)"
+                />
 
-              <input
-                type="radio"
-                class="btn-check"
-                name="productLength"
-                id="length20"
-                checked
-              />
-              <label class="choice-btn" for="length20">20"</label>
-
-              <input
-                type="radio"
-                class="btn-check"
-                name="productLength"
-                id="length22"
-              />
-              <label class="choice-btn" for="length22">22"</label>
-
-              <input
-                type="radio"
-                class="btn-check"
-                name="productLength"
-                id="length24"
-              />
-              <label class="choice-btn" for="length24">24"</label>
+                <label class="choice-btn" [for]="'length-' + length.value">
+                  {{ length.value }}
+                </label>
+              </ng-container>
             </div>
           </div>
         </div>
 
         <hr class="product-info__divider" />
 
-        <!-- QUANTITY + ADD TO BAG + WISHLIST -->
+        <!-- ========================================================
+             QUANTITY + ADD TO BAG + WISHLIST
+        ========================================================= -->
+
         <div class="product-actions">
+          <!-- Quantity -->
           <div
             class="quantity-stepper"
             role="group"
@@ -316,29 +257,49 @@
               class="quantity-stepper__btn"
               type="button"
               aria-label="Decrease quantity"
+              (click)="decreaseQuantity()"
             >
               <i class="fa-solid fa-minus" aria-hidden="true"></i>
             </button>
-            <span class="quantity-stepper__value" aria-live="polite">1</span>
+
+            <span class="quantity-stepper__value" aria-live="polite">
+              {{ quantity }}
+            </span>
+
             <button
               class="quantity-stepper__btn"
               type="button"
               aria-label="Increase quantity"
+              (click)="increaseQuantity()"
             >
               <i class="fa-solid fa-plus" aria-hidden="true"></i>
             </button>
           </div>
 
-          <button class="product-actions__add-to-bag" type="button">
+          <!-- Add to bag -->
+          <button
+            class="product-actions__add-to-bag"
+            type="button"
+            (click)="addToCart()"
+          >
             Add to Bag
           </button>
 
+          <!-- Wishlist -->
           <button
             class="product-actions__wishlist"
             type="button"
-            aria-label="Add to wishlist"
+            [attr.aria-label]="
+              isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'
+            "
+            (click)="toggleWishlist()"
           >
-            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            <i
+              class="fa-heart"
+              
+              [class.fa-solid]="isWishlisted"
+              [class.fa-regular]="!isWishlisted"
+            ></i>
           </button>
         </div>
       </div>
@@ -346,8 +307,8 @@
   </div>
 
   <!-- ============================================================
-       PRODUCT DETAILS — Bootstrap tabs, no custom TS
-  ============================================================ -->
+       PRODUCT DETAILS
+  ============================================================= -->
   <section class="product-details" aria-label="Product details">
     <nav>
       <div
@@ -355,6 +316,7 @@
         id="productDetailsTabs"
         role="tablist"
       >
+        <!-- Description -->
         <button
           class="nav-link active"
           id="tab-description-btn"
@@ -367,6 +329,8 @@
         >
           Description
         </button>
+
+        <!-- Product Details -->
         <button
           class="nav-link"
           id="tab-details-btn"
@@ -379,6 +343,8 @@
         >
           Product Details
         </button>
+
+        <!-- Shipping & Returns -->
         <button
           class="nav-link"
           id="tab-shipping-btn"
@@ -391,6 +357,8 @@
         >
           Shipping &amp; Returns
         </button>
+
+        <!-- Reviews -->
         <button
           class="nav-link"
           id="tab-reviews-btn"
@@ -406,10 +374,17 @@
       </div>
     </nav>
 
+    <!-- ==========================================================
+         TAB CONTENT
+    =========================================================== -->
+
     <div
       class="tab-content product-details__content"
       id="productDetailsTabsContent"
     >
+      <!-- ========================================================
+           DESCRIPTION
+      ========================================================= -->
       <div
         class="tab-pane fade show active"
         id="tab-description"
@@ -417,14 +392,13 @@
         aria-labelledby="tab-description-btn"
       >
         <p>
-          A soft satin wrap dress with a flattering tie waist and flowing skirt.
-          Designed to drape gently over the body, this piece moves beautifully
-          whether you're dressing up for an evening out or wearing it for
-          everyday comfort. Finished with delicate seaming and a smooth,
-          cool-to-the-touch fabric.
+          {{ product?.productDetails?.description }}
         </p>
       </div>
 
+      <!-- ========================================================
+           PRODUCT DETAILS
+      ========================================================= -->
       <div
         class="tab-pane fade"
         id="tab-details"
@@ -432,13 +406,15 @@
         aria-labelledby="tab-details-btn"
       >
         <ul class="product-details__list">
-          <li>Fabric: 95% satin polyester, 5% spandex</li>
-          <li>Wrap-tie waist with adjustable fit</li>
-          <li>Machine washable, cold, gentle cycle</li>
-          <li>Imported</li>
+          <li *ngFor="let detail of product?.productDetails?.details">
+            {{ detail }}
+          </li>
         </ul>
       </div>
 
+      <!-- ========================================================
+           SHIPPING & RETURNS
+      ========================================================= -->
       <div
         class="tab-pane fade"
         id="tab-shipping"
@@ -446,13 +422,17 @@
         aria-labelledby="tab-shipping-btn"
       >
         <p>
-          Free worldwide shipping on orders over $50. Orders are processed
-          within 1&ndash;2 business days and typically arrive within 5&ndash;10
-          business days depending on destination. Returns are accepted within 30
-          days of delivery for unworn items with tags attached.
+          {{ product?.productDetails?.shipping }}
+        </p>
+
+        <p>
+          {{ product?.productDetails?.returns }}
         </p>
       </div>
 
+      <!-- ========================================================
+           REVIEWS
+      ========================================================= -->
       <div
         class="tab-pane fade"
         id="tab-reviews"

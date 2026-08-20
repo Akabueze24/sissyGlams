@@ -1,0 +1,338 @@
+@import '../../../styles/variables';
+
+// ============================================================
+// Page shell
+// ============================================================
+.order-confirmation {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 2.5rem 1rem 4rem;
+
+  @media (min-width: 768px) {
+    padding: 3.5rem 1.25rem 5rem;
+  }
+}
+
+// ============================================================
+// 1. Success header
+// ============================================================
+.order-confirmation__header {
+  text-align: center;
+  margin-bottom: 2.25rem;
+}
+
+.order-confirmation__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: $brand-pink-light;
+  color: $brand-pink-dark;
+  font-size: 1.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.order-confirmation__title {
+  font-family: $font-heading;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: $color-text-dark;
+  margin-bottom: 0.6rem;
+
+  @media (min-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.order-confirmation__message {
+  font-family: $font-body;
+  font-size: 0.9rem;
+  color: $color-text-muted;
+  max-width: 480px;
+  margin: 0 auto 0.85rem;
+  line-height: 1.6;
+}
+
+.order-confirmation__number {
+  font-family: $font-body;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: $brand-pink-dark;
+  margin: 0;
+}
+
+// ============================================================
+// Shared card + content rhythm
+// ============================================================
+.order-confirmation__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.order-confirmation__card {
+  background-color: $color-white;
+  border: 1px solid $color-border;
+  border-radius: 0.65rem;
+  padding: 1.5rem;
+
+  @media (min-width: 768px) {
+    padding: 1.75rem;
+  }
+}
+
+.order-confirmation__card-title {
+  font-family: $font-heading;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: $color-text-dark;
+  margin-bottom: 1.1rem;
+}
+
+// ============================================================
+// 2. Order summary
+// ============================================================
+.order-summary__list {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+}
+
+.order-summary__item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid $color-border;
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.order-summary__image {
+  flex: 0 0 auto;
+  width: 60px;
+  height: 60px;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.order-summary__details {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.order-summary__name {
+  margin: 0 0 0.2rem;
+  font-family: $font-body;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: $color-text-dark;
+}
+
+.order-summary__meta {
+  margin: 0;
+  font-family: $font-body;
+  font-size: 0.75rem;
+  color: $color-text-muted;
+}
+
+.order-summary__price {
+  flex: 0 0 auto;
+  margin: 0;
+  font-family: $font-body;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: $color-text-dark;
+}
+
+.order-summary__totals {
+  padding-top: 1rem;
+  border-top: 1px solid $color-border;
+}
+
+.order-summary__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: $font-body;
+  font-size: 0.85rem;
+  color: $color-text-dark;
+  margin-bottom: 0.6rem;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.order-summary__divider {
+  border: none;
+  border-top: 1px solid $color-border;
+  margin: 0.85rem 0;
+}
+
+.order-summary__row--total {
+  font-family: $font-heading;
+  font-size: 1rem;
+  font-weight: 700;
+
+  span:last-child {
+    font-size: 1.3rem;
+    color: $brand-pink-dark;
+  }
+}
+
+// ============================================================
+// 3 & 4. Shipping + Payment — side by side on desktop
+// ============================================================
+.order-confirmation__details-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+
+    .order-confirmation__card {
+      flex: 1 1 0%;
+    }
+  }
+}
+
+.shipping-info__address {
+  font-family: $font-body;
+  font-style: normal;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: $color-text-dark;
+  margin-bottom: 1.1rem;
+}
+
+.shipping-info__method {
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 1px solid $color-border;
+  font-family: $font-body;
+  font-size: 0.85rem;
+  color: $color-text-dark;
+}
+
+.shipping-info__label {
+  font-weight: 600;
+  margin-right: 0.3rem;
+}
+
+.payment-info__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: $font-body;
+  font-size: 0.85rem;
+  color: $color-text-dark;
+  margin: 0 0 0.85rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.payment-info__label {
+  font-weight: 600;
+  color: $color-text-muted;
+}
+
+// Status badge — modifiers ready for Paid / Failed later
+.payment-info__status {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+
+  &--pending {
+    background-color: $brand-pink-light;
+    color: $brand-pink-dark;
+  }
+
+  &--paid {
+    background-color: rgba($color-border, 0.6);
+    color: $color-text-dark;
+  }
+
+  &--failed {
+    background-color: $brand-pink-light;
+    color: $brand-pink-dark;
+  }
+}
+
+// ============================================================
+// 5. What's next
+// ============================================================
+.whats-next__list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-family: $font-body;
+  font-size: 0.85rem;
+  color: $color-text-muted;
+  line-height: 1.9;
+}
+
+// ============================================================
+// 6. Actions
+// ============================================================
+.order-confirmation__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 2.25rem;
+
+  @media (min-width: 576px) {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.order-confirmation__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  padding: 0 1.75rem;
+  border-radius: 0.4rem;
+  font-family: $font-body;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  &--primary {
+    background-color: $brand-pink;
+    color: $color-white;
+    border: 1px solid $brand-pink;
+
+    &:hover {
+      background-color: $brand-pink-dark;
+      border-color: $brand-pink-dark;
+    }
+  }
+
+  &--secondary {
+    background-color: $color-white;
+    color: $color-text-dark;
+    border: 1px solid $color-border;
+
+    &:hover {
+      border-color: $brand-pink;
+      color: $brand-pink-dark;
+    }
+  }
+}

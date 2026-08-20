@@ -42,16 +42,14 @@
         <!-- Shop by Category -->
         <nav aria-label="Shop by category" class="shop-category-nav">
           <h2 class="shop-filters__title">Shop by Category</h2>
-         <app-category-sidebar></app-category-sidebar>
+          <app-category-sidebar></app-category-sidebar>
         </nav>
 
         <!-- Price -->
         <section class="price-filter" aria-labelledby="priceFilterHeading">
           <h2 class="shop-filters__title" id="priceFilterHeading">Price</h2>
 
-        <app-price-filter></app-price-filter>
-
-          
+          <app-price-filter></app-price-filter>
         </section>
 
         <!-- Rating -->
@@ -91,7 +89,14 @@
         </div>
       </div>
 
-      <app-product-card></app-product-card>
+      <div
+        class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 g-lg-4 product-grid"
+      >
+        <app-product-card
+          *ngFor="let product of products"
+          [product]="product"
+        ></app-product-card>
+      </div>
 
       <nav aria-label="Product pagination" class="shop-pagination-nav">
         <ul class="pagination">

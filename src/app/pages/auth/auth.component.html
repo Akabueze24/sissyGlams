@@ -1,14 +1,11 @@
-<div
-  class="auth-overlay"
-  *ngIf="isOpen"
-  (click)="close()"
-  role="presentation"
->
+<div class="auth-overlay" *ngIf="isOpen" (click)="close()" role="presentation">
   <div
     class="auth-modal"
     role="dialog"
     aria-modal="true"
-    [attr.aria-labelledby]="authMode === 'login' ? 'authLoginHeading' : 'authRegisterHeading'"
+    [attr.aria-labelledby]="
+      authMode === 'login' ? 'authLoginHeading' : 'authRegisterHeading'
+    "
     (click)="$event.stopPropagation()"
   >
     <button
@@ -21,7 +18,9 @@
     </button>
 
     <div class="auth-modal__brand">
-      <span class="auth-modal__brand-word">Sissy<span class="auth-modal__brand-accent">Dream</span></span>
+      <span class="auth-modal__brand-word">
+        Sissy<span class="auth-modal__brand-accent">Dream</span>
+      </span>
     </div>
 
     <!-- ============================================================
@@ -29,23 +28,53 @@
     ============================================================ -->
     <div class="auth-modal__view" *ngIf="authMode === 'login'">
       <h2 id="authLoginHeading" class="auth-modal__heading">Welcome Back</h2>
+
       <p class="auth-modal__subtext">Sign in to your Sissy Dream account.</p>
 
-      <form class="auth-form">
-
+      <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <!-- EMAIL -->
         <div class="auth-form__group">
-          <label for="loginEmail" class="auth-form__label">Email Address</label>
+          <label for="loginEmail" class="auth-form__label">
+            Email Address
+          </label>
+
           <input
             id="loginEmail"
             class="auth-form__input"
             type="email"
             placeholder="you@example.com"
             autocomplete="email"
+            formControlName="email"
           />
+
+          <!-- Email validation -->
+          <p
+            class="auth-form__error"
+            aria-live="polite"
+            *ngIf="
+              loginForm.get('email')?.touched &&
+              loginForm.get('email')?.hasError('required')
+            "
+          >
+            Email address is required.
+          </p>
+
+          <p
+            class="auth-form__error"
+            aria-live="polite"
+            *ngIf="
+              loginForm.get('email')?.touched &&
+              loginForm.get('email')?.hasError('email')
+            "
+          >
+            Please enter a valid email address.
+          </p>
         </div>
 
+        <!-- PASSWORD -->
         <div class="auth-form__group">
-          <label for="loginPassword" class="auth-form__label">Password</label>
+          <label for="loginPassword" class="auth-form__label"> Password </label>
+
           <div class="auth-form__password-wrap">
             <input
               id="loginPassword"
@@ -53,41 +82,78 @@
               [type]="showPassword ? 'text' : 'password'"
               placeholder="Enter your password"
               autocomplete="current-password"
+              formControlName="password"
             />
+
             <button
               class="auth-form__password-toggle"
               type="button"
               (click)="togglePasswordVisibility()"
-              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+              [attr.aria-label]="
+                showPassword ? 'Hide password' : 'Show password'
+              "
             >
-              <i class="fa-regular" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword" aria-hidden="true"></i>
+              <i
+                class="fa-regular"
+                [class.fa-eye]="!showPassword"
+                [class.fa-eye-slash]="showPassword"
+                aria-hidden="true"
+              ></i>
             </button>
           </div>
-          <!-- Error message placeholder — populated once real validation exists -->
-          <p class="auth-form__error" aria-live="polite"></p>
+
+          <!-- Password validation -->
+          <p
+            class="auth-form__error"
+            aria-live="polite"
+            *ngIf="
+              loginForm.get('password')?.touched &&
+              loginForm.get('password')?.hasError('required')
+            "
+          >
+            Password is required.
+          </p>
         </div>
 
+        <!-- REMEMBER + FORGOT PASSWORD -->
         <div class="auth-form__row">
           <label class="auth-form__checkbox">
-            <input type="checkbox" />
+            <input type="checkbox" formControlName="rememberMe" />
+
             <span>Remember me</span>
           </label>
-          <a class="auth-form__link" href="/forgot-password">Forgot Password?</a>
+
+          <a class="auth-form__link" href="/forgot-password">
+            Forgot Password?
+          </a>
         </div>
 
+        <!-- SUBMIT -->
         <button class="auth-form__submit" type="submit">Sign In</button>
       </form>
 
-      <div class="auth-divider"><span>Or continue with</span></div>
+      <!-- SOCIAL LOGIN -->
+      <div class="auth-divider">
+        <span>Or continue with</span>
+      </div>
 
       <button class="auth-social-btn" type="button">
         <i class="fa-brands fa-google" aria-hidden="true"></i>
+
         <span>Continue with Google</span>
       </button>
 
+      <!-- SWITCH TO REGISTER -->
       <p class="auth-modal__switch">
         Don't have an account?
-        <button class="auth-modal__switch-link" type="button" (click)="switchTo('register')">Create Account</button>
+
+        <button
+          class="auth-modal__switch-link"
+          type="button"
+          (click)="switchTo('register')"
+        >
+          Create Account
+        </button>
       </p>
     </div>
 
@@ -95,47 +161,142 @@
          REGISTER VIEW
     ============================================================ -->
     <div class="auth-modal__view" *ngIf="authMode === 'register'">
-      <h2 id="authRegisterHeading" class="auth-modal__heading">Create Your Account</h2>
-      <p class="auth-modal__subtext">Join Sissy Dream and enjoy a more personalized shopping experience.</p>
+      <h2 id="authRegisterHeading" class="auth-modal__heading">
+        Create Your Account
+      </h2>
 
-      <form class="auth-form">
+      <p class="auth-modal__subtext">
+        Join Sissy Dream and enjoy a more personalized shopping experience.
+      </p>
 
+      <form
+        class="auth-form"
+        [formGroup]="registerForm"
+        (ngSubmit)="onRegister()"
+      >
+        <!-- FIRST + LAST NAME -->
         <div class="auth-form__row-group">
+          <!-- FIRST NAME -->
           <div class="auth-form__group">
-            <label for="registerFirstName" class="auth-form__label">First Name</label>
+            <label for="registerFirstName" class="auth-form__label">
+              First Name
+            </label>
+
             <input
               id="registerFirstName"
               class="auth-form__input"
               type="text"
               placeholder="Jane"
               autocomplete="given-name"
+              formControlName="firstName"
             />
+
+            <p
+              class="auth-form__error"
+              aria-live="polite"
+              *ngIf="
+                registerForm.get('firstName')?.touched &&
+                registerForm.get('firstName')?.hasError('required')
+              "
+            >
+              First name is required.
+            </p>
+
+            <p
+              class="auth-form__error"
+              aria-live="polite"
+              *ngIf="
+                registerForm.get('firstName')?.touched &&
+                registerForm.get('firstName')?.hasError('minlength')
+              "
+            >
+              First name must be at least 2 characters.
+            </p>
           </div>
+
+          <!-- LAST NAME -->
           <div class="auth-form__group">
-            <label for="registerLastName" class="auth-form__label">Last Name</label>
+            <label for="registerLastName" class="auth-form__label">
+              Last Name
+            </label>
+
             <input
               id="registerLastName"
               class="auth-form__input"
               type="text"
               placeholder="Doe"
               autocomplete="family-name"
+              formControlName="lastName"
             />
+
+            <p
+              class="auth-form__error"
+              aria-live="polite"
+              *ngIf="
+                registerForm.get('lastName')?.touched &&
+                registerForm.get('lastName')?.hasError('required')
+              "
+            >
+              Last name is required.
+            </p>
+
+            <p
+              class="auth-form__error"
+              aria-live="polite"
+              *ngIf="
+                registerForm.get('lastName')?.touched &&
+                registerForm.get('lastName')?.hasError('minlength')
+              "
+            >
+              Last name must be at least 2 characters.
+            </p>
           </div>
         </div>
 
+        <!-- EMAIL -->
         <div class="auth-form__group">
-          <label for="registerEmail" class="auth-form__label">Email Address</label>
+          <label for="registerEmail" class="auth-form__label">
+            Email Address
+          </label>
+
           <input
             id="registerEmail"
             class="auth-form__input"
             type="email"
             placeholder="you@example.com"
             autocomplete="email"
+            formControlName="email"
           />
+
+          <p
+            class="auth-form__error"
+            aria-live="polite"
+            *ngIf="
+              registerForm.get('email')?.touched &&
+              registerForm.get('email')?.hasError('required')
+            "
+          >
+            Email address is required.
+          </p>
+
+          <p
+            class="auth-form__error"
+            aria-live="polite"
+            *ngIf="
+              registerForm.get('email')?.touched &&
+              registerForm.get('email')?.hasError('email')
+            "
+          >
+            Please enter a valid email address.
+          </p>
         </div>
 
+        <!-- PASSWORD -->
         <div class="auth-form__group">
-          <label for="registerPassword" class="auth-form__label">Password</label>
+          <label for="registerPassword" class="auth-form__label">
+            Password
+          </label>
+
           <div class="auth-form__password-wrap">
             <input
               id="registerPassword"
@@ -143,26 +304,63 @@
               [type]="showPassword ? 'text' : 'password'"
               placeholder="Create a password"
               autocomplete="new-password"
+              formControlName="password"
             />
+
             <button
               class="auth-form__password-toggle"
               type="button"
               (click)="togglePasswordVisibility()"
-              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+              [attr.aria-label]="
+                showPassword ? 'Hide password' : 'Show password'
+              "
             >
-              <i class="fa-regular" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword" aria-hidden="true"></i>
+              <i
+                class="fa-regular"
+                [class.fa-eye]="!showPassword"
+                [class.fa-eye-slash]="showPassword"
+                aria-hidden="true"
+              ></i>
             </button>
           </div>
-          <!-- Password strength placeholder — visual only, no scoring logic yet -->
+
+          <!-- PASSWORD STRENGTH -->
           <div class="auth-form__strength" aria-hidden="true">
             <span class="auth-form__strength-bar"></span>
             <span class="auth-form__strength-bar"></span>
             <span class="auth-form__strength-bar"></span>
           </div>
+
+          <!-- PASSWORD ERROR -->
+          <p
+            class="auth-form__error"
+            aria-live="polite"
+            *ngIf="
+              registerForm.get('password')?.touched &&
+              registerForm.get('password')?.hasError('required')
+            "
+          >
+            Password is required.
+          </p>
+
+          <p
+            class="auth-form__error"
+            aria-live="polite"
+            *ngIf="
+              registerForm.get('password')?.touched &&
+              registerForm.get('password')?.hasError('minlength')
+            "
+          >
+            Password must be at least 8 characters.
+          </p>
         </div>
 
+        <!-- CONFIRM PASSWORD -->
         <div class="auth-form__group">
-          <label for="registerConfirmPassword" class="auth-form__label">Confirm Password</label>
+          <label for="registerConfirmPassword" class="auth-form__label">
+            Confirm Password
+          </label>
+
           <div class="auth-form__password-wrap">
             <input
               id="registerConfirmPassword"
@@ -170,32 +368,79 @@
               [type]="showConfirmPassword ? 'text' : 'password'"
               placeholder="Re-enter your password"
               autocomplete="new-password"
+              formControlName="confirmPassword"
             />
+
             <button
               class="auth-form__password-toggle"
               type="button"
               (click)="toggleConfirmPasswordVisibility()"
-              [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'"
+              [attr.aria-label]="
+                showConfirmPassword ? 'Hide password' : 'Show password'
+              "
             >
-              <i class="fa-regular" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword" aria-hidden="true"></i>
+              <i
+                class="fa-regular"
+                [class.fa-eye]="!showConfirmPassword"
+                [class.fa-eye-slash]="showConfirmPassword"
+                aria-hidden="true"
+              ></i>
             </button>
           </div>
-          <p class="auth-form__error" aria-live="polite"></p>
+
+          <!-- CONFIRM PASSWORD REQUIRED -->
+          <p
+            class="auth-form__error"
+            aria-live="polite"
+            *ngIf="
+              registerForm.get('confirmPassword')?.touched &&
+              registerForm.get('confirmPassword')?.hasError('required')
+            "
+          >
+            Please confirm your password.
+          </p>
         </div>
 
+        <!-- TERMS -->
         <label class="auth-form__checkbox auth-form__checkbox--terms">
-          <input type="checkbox" />
-          <span>I agree to the <a href="/terms">Terms &amp; Conditions</a> and <a href="/privacy">Privacy Policy</a>.</span>
+          <input type="checkbox" formControlName="termsAccepted" />
+
+          <span>
+            I agree to the
+            <a href="/terms">Terms &amp; Conditions</a>
+            and
+            <a href="/privacy">Privacy Policy</a>.
+          </span>
         </label>
 
+        <!-- TERMS ERROR -->
+        <p
+          class="auth-form__error"
+          aria-live="polite"
+          *ngIf="
+            registerForm.get('termsAccepted')?.touched &&
+            registerForm.get('termsAccepted')?.hasError('required')
+          "
+        >
+          You must accept the Terms &amp; Conditions and Privacy Policy.
+        </p>
+
+        <!-- SUBMIT -->
         <button class="auth-form__submit" type="submit">Create Account</button>
       </form>
 
+      <!-- SWITCH TO LOGIN -->
       <p class="auth-modal__switch">
         Already have an account?
-        <button class="auth-modal__switch-link" type="button" (click)="switchTo('login')">Sign In</button>
+
+        <button
+          class="auth-modal__switch-link"
+          type="button"
+          (click)="switchTo('login')"
+        >
+          Sign In
+        </button>
       </p>
     </div>
-
   </div>
 </div>

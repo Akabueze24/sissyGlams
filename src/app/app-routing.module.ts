@@ -16,15 +16,17 @@ import { PaymentMethodComponent } from './account/pages/payment-method/payment-m
 import { EditAccountComponent } from './account/pages/edit-account/edit-account.component';
 import { CustomerSupportComponent } from './account/pages/customer-support/customer-support.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component';
+import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'shop', component: ShopComponent },
-  { path: 'product-view', component: ProductViewComponent },
+  { path: 'product-view/:slug', component: ProductViewComponent },
   { path: 'cart', component: CartComponent },
   { path: 'wishlist', component: WishlistComponent },
   { path: 'checkout', component: CheckoutComponent },
+  { path: 'order-confirmation', component: OrderConfirmationComponent},
 
   {
     path: 'account',
@@ -40,36 +42,36 @@ const routes: Routes = [
       },
       {
         path: 'orders',
-        component:OrdersComponent
+        component: OrdersComponent,
       },
       {
         path: 'downloads',
-        component:DownloadComponent
+        component: DownloadComponent,
       },
       {
         path: 'address',
-        component:EditAddressComponent
+        component: EditAddressComponent,
       },
       {
         path: 'address/billing',
-        component:BillingComponent
+        component: BillingComponent,
       },
       {
         path: 'address/shipping',
-        component:ShippingComponent
+        component: ShippingComponent,
       },
       {
         path: 'payment',
-        component:PaymentMethodComponent
+        component: PaymentMethodComponent,
       },
       {
         path: 'edit-account',
-        component:EditAccountComponent
+        component: EditAccountComponent,
       },
       {
         path: 'customer-support',
-        component:CustomerSupportComponent
-      }
+        component: CustomerSupportComponent,
+      },
     ],
   },
 ];

@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './shared/header/header.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchComponent } from './shared/search/search.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -31,6 +31,7 @@ import { PaymentMethodComponent } from './account/pages/payment-method/payment-m
 import { EditAccountComponent } from './account/pages/edit-account/edit-account.component';
 import { CustomerSupportComponent } from './account/pages/customer-support/customer-support.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component';
+import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
 
 register();
 
@@ -63,9 +64,11 @@ register();
     EditAccountComponent,
     CustomerSupportComponent,
     CheckoutComponent,
+    OrderConfirmationComponent,
+  
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, ReactiveFormsModule],
   providers: [],
   bootstrap: [AppComponent],
 })

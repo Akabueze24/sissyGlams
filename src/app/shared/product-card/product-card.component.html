@@ -1,388 +1,70 @@
-<div
-  class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 g-lg-4 product-grid"
->
-  <div class="col">
-    <article class="product-card">
-      <div class="product-card__media">
-        <span class="product-card__badge">-31%</span>
-        <button
-          class="product-card__wishlist"
-          type="button"
-          aria-label="Add to wishlist"
-          *ngIf="!wishlistMode"
-        >
-          <i class="fa-regular fa-heart"></i>
-        </button>
-        <img
-          class="product-card__img"
-          src="https://placehold.co/400x400/ffe6f0/e8558c?text=Eyeliner+Stamp"
-          alt="Wing It Eyeliner Stamp"
-        />
-      </div>
-      <div class="product-card__body">
-        <h3 class="product-card__name">
-          <a href="/product/wing-it-eyeliner-stamp">Wing It Eyeliner Stamp</a>
-        </h3>
-        <div class="product-card__rating" aria-label="Rating 5 out of 5 stars">
-          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i>
-          <span class="product-card__reviews">(3)</span>
-        </div>
-        <div class="product-card__price">
-          <span class="product-card__price--old">$14.45</span>
-          <span class="product-card__price--current">$9.95</span>
-        </div>
-      </div>
+<div class="col">
+  <article class="product-card">
+    <div class="product-card__media">
+      <span class="product-card__badge" *ngIf="product.oldPrice">
+        -{{
+          ((product.oldPrice - product.price) / product.oldPrice) * 100
+            | number: "1.0-0"
+        }}%
+      </span>
 
-      <button *ngIf="wishlistMode" class="product-card__remove" type="button">
-        Remove from Wishlist
+      <button
+        class="product-card__wishlist"
+        type="button"
+        [attr.aria-label]="
+          isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'
+        "
+        *ngIf="!wishlistMode"
+        (click)="toggleWishlist(); $event.stopPropagation()"
+      >
+        <i
+          class="fa-heart"
+          [class.fa-solid]="isWishlisted"
+          [class.fa-regular]="!isWishlisted"
+        ></i>
       </button>
-    </article>
-  </div>
 
-  <div class="col">
-    <article class="product-card">
-      <div class="product-card__media">
-        <span class="product-card__badge">-31%</span>
-        <button
-          class="product-card__wishlist"
-          type="button"
-          aria-label="Add to wishlist"
-        >
-          <i class="fa-regular fa-heart"></i>
-        </button>
-        <img
-          class="product-card__img"
-          src="https://placehold.co/400x400/ffd6e8/e8558c?text=Thigh+Socks"
-          alt="Candy Stripe Cozy Thigh Socks"
-        />
-      </div>
-      <div class="product-card__body">
-        <h3 class="product-card__name">
-          <a href="/product/candy-stripe-cozy-thigh-socks"
-            >Candy Stripe Cozy Thigh Socks</a
-          >
-        </h3>
-        <div class="product-card__rating" aria-label="Rating 5 out of 5 stars">
-          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i>
-          <span class="product-card__reviews">(4)</span>
-        </div>
-        <div class="product-card__price">
-          <span class="product-card__price--old">$14.45</span>
-          <span class="product-card__price--current">$9.95</span>
-        </div>
-      </div>
-    </article>
-  </div>
+      <img
+        class="product-card__img"
+        [src]="product.images[0]"
+        [alt]="product.name"
+      />
+    </div>
 
-  <div class="col">
-    <article class="product-card">
-      <div class="product-card__media">
-        <span class="product-card__badge">-26%</span>
-        <button
-          class="product-card__wishlist"
-          type="button"
-          aria-label="Add to wishlist"
-        >
-          <i class="fa-regular fa-heart"></i>
-        </button>
-        <img
-          class="product-card__img"
-          src="https://placehold.co/400x400/ffc2dc/e8558c?text=Rip+Resist+Tights"
-          alt="Femboy Rip Resist Tights"
-        />
-      </div>
-      <div class="product-card__body">
-        <h3 class="product-card__name">
-          <a href="/product/femboy-rip-resist-tights"
-            >Femboy Rip Resist Tights</a
-          >
-        </h3>
-        <div class="product-card__rating" aria-label="Rating 5 out of 5 stars">
-          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i>
-          <span class="product-card__reviews">(3)</span>
-        </div>
-        <div class="product-card__price">
-          <span class="product-card__price--old">$13.45</span>
-          <span class="product-card__price--current">$9.95</span>
-        </div>
-      </div>
-    </article>
-  </div>
+    <div class="product-card__body">
+      <h3 class="product-card__name">
+        <a [routerLink]="['/product-view', product.slug]">
+          {{ product.name }}
+        </a>
+      </h3>
 
-  <div class="col">
-    <article class="product-card">
-      <div class="product-card__media">
-        <span class="product-card__badge">-25%</span>
-        <button
-          class="product-card__wishlist"
-          type="button"
-          aria-label="Add to wishlist"
-        >
-          <i class="fa-regular fa-heart"></i>
-        </button>
-        <img
-          class="product-card__img"
-          src="https://placehold.co/400x400/ffe0ee/e8558c?text=Chastity+Cage"
-          alt="Feminized Chastity Cage"
-        />
-      </div>
-      <div class="product-card__body">
-        <h3 class="product-card__name">
-          <a href="/product/feminized-chastity-cage"
-            >&ldquo;Feminized&rdquo; Chastity Cage</a
-          >
-        </h3>
-        <div
-          class="product-card__rating"
-          aria-label="Rating 4.67 out of 5 stars"
-        >
-          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star-half-stroke"></i>
-          <span class="product-card__reviews">(39)</span>
-        </div>
-        <div class="product-card__price">
-          <span class="product-card__price--old">$24.49</span>
-          <span class="product-card__price--current">$18.45</span>
-        </div>
-      </div>
-    </article>
-  </div>
+      <div
+        class="product-card__rating"
+        [attr.aria-label]="'Rating ' + product.rating + ' out of 5 stars'"
+      >
+        <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+          <i *ngIf="star <= product.rating" class="fa-solid fa-star"></i>
+        </ng-container>
 
-  <div class="col">
-    <article class="product-card">
-      <div class="product-card__media">
-        <span class="product-card__badge">-35%</span>
-        <button
-          class="product-card__wishlist"
-          type="button"
-          aria-label="Add to wishlist"
-        >
-          <i class="fa-regular fa-heart"></i>
-        </button>
-        <img
-          class="product-card__img"
-          src="https://placehold.co/400x400/ffcfe0/e8558c?text=Lace-Up+Heels"
-          alt="Locked Sissy Lace-Up Heels"
-        />
+        <span class="product-card__reviews"> ({{ product.reviewCount }}) </span>
       </div>
-      <div class="product-card__body">
-        <h3 class="product-card__name">
-          <a href="/product/locked-sissy-lace-up-heels"
-            >Locked Sissy Lace-Up Heels</a
-          >
-        </h3>
-        <div
-          class="product-card__rating"
-          aria-label="Rating 4.26 out of 5 stars"
-        >
-          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star-half-stroke"></i>
-          <span class="product-card__reviews">(23)</span>
-        </div>
-        <div class="product-card__price">
-          <span class="product-card__price--old">$168.49</span>
-          <span class="product-card__price--current">$109.49</span>
-        </div>
-      </div>
-    </article>
-  </div>
 
-  <div class="col">
-    <article class="product-card">
-      <div class="product-card__media">
-        <span class="product-card__badge">-31%</span>
-        <button
-          class="product-card__wishlist"
-          type="button"
-          aria-label="Add to wishlist"
-        >
-          <i class="fa-regular fa-heart"></i>
-        </button>
-        <img
-          class="product-card__img"
-          src="https://placehold.co/400x400/ffd6e8/e8558c?text=Lip+Gloss+Duo"
-          alt="Blush Petal Lip Gloss Duo"
-        />
-      </div>
-      <div class="product-card__body">
-        <h3 class="product-card__name">
-          <a href="/product/blush-petal-lip-gloss-duo"
-            >Blush Petal Lip Gloss Duo</a
-          >
-        </h3>
-        <div
-          class="product-card__rating"
-          aria-label="Rating 4.5 out of 5 stars"
-        >
-          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star-half-stroke"></i>
-          <span class="product-card__reviews">(12)</span>
-        </div>
-        <div class="product-card__price">
-          <span class="product-card__price--old">$12.99</span>
-          <span class="product-card__price--current">$8.99</span>
-        </div>
-      </div>
-    </article>
-  </div>
+      <div class="product-card__price">
+        <span class="product-card__price--old" *ngIf="product.oldPrice">
+          ${{ product.oldPrice }}
+        </span>
 
-  <div class="col">
-    <article class="product-card">
-      <div class="product-card__media">
-        <span class="product-card__badge">-33%</span>
-        <button
-          class="product-card__wishlist"
-          type="button"
-          aria-label="Add to wishlist"
-        >
-          <i class="fa-regular fa-heart"></i>
-        </button>
-        <img
-          class="product-card__img"
-          src="https://placehold.co/400x400/ffc2dc/e8558c?text=Ankle+Socks"
-          alt="Satin Ruffle Ankle Socks"
-        />
+        <span class="product-card__price--current"> ${{ product.price }} </span>
       </div>
-      <div class="product-card__body">
-        <h3 class="product-card__name">
-          <a href="/product/satin-ruffle-ankle-socks"
-            >Satin Ruffle Ankle Socks</a
-          >
-        </h3>
-        <div class="product-card__rating" aria-label="Rating 5 out of 5 stars">
-          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i>
-          <span class="product-card__reviews">(8)</span>
-        </div>
-        <div class="product-card__price">
-          <span class="product-card__price--old">$11.95</span>
-          <span class="product-card__price--current">$7.95</span>
-        </div>
-      </div>
-    </article>
-  </div>
+    </div>
 
-  <div class="col">
-    <article class="product-card">
-      <div class="product-card__media">
-        <span class="product-card__badge">-25%</span>
-        <button
-          class="product-card__wishlist"
-          type="button"
-          aria-label="Add to wishlist"
-        >
-          <i class="fa-regular fa-heart"></i>
-        </button>
-        <img
-          class="product-card__img"
-          src="https://placehold.co/400x400/ffe0ee/e8558c?text=Clip-In+Bangs"
-          alt="Soft Curl Clip-In Bangs"
-        />
-      </div>
-      <div class="product-card__body">
-        <h3 class="product-card__name">
-          <a href="/product/soft-curl-clip-in-bangs">Soft Curl Clip-In Bangs</a>
-        </h3>
-        <div class="product-card__rating" aria-label="Rating 4 out of 5 stars">
-          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-regular fa-star"></i>
-          <span class="product-card__reviews">(15)</span>
-        </div>
-        <div class="product-card__price">
-          <span class="product-card__price--old">$19.99</span>
-          <span class="product-card__price--current">$14.99</span>
-        </div>
-      </div>
-    </article>
-  </div>
-
-  <div class="col">
-    <article class="product-card">
-      <div class="product-card__media">
-        <span class="product-card__badge">-27%</span>
-        <button
-          class="product-card__wishlist"
-          type="button"
-          aria-label="Add to wishlist"
-        >
-          <i class="fa-regular fa-heart"></i>
-        </button>
-        <img
-          class="product-card__img"
-          src="https://placehold.co/400x400/ffcfe0/e8558c?text=Garter+Belt"
-          alt="Pastel Bow Garter Belt"
-        />
-      </div>
-      <div class="product-card__body">
-        <h3 class="product-card__name">
-          <a href="/product/pastel-bow-garter-belt">Pastel Bow Garter Belt</a>
-        </h3>
-        <div
-          class="product-card__rating"
-          aria-label="Rating 4.5 out of 5 stars"
-        >
-          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star-half-stroke"></i>
-          <span class="product-card__reviews">(21)</span>
-        </div>
-        <div class="product-card__price">
-          <span class="product-card__price--old">$22.49</span>
-          <span class="product-card__price--current">$16.49</span>
-        </div>
-      </div>
-    </article>
-  </div>
-
-  <div class="col">
-    <article class="product-card">
-      <div class="product-card__media">
-        <span class="product-card__badge">-29%</span>
-        <button
-          class="product-card__wishlist"
-          type="button"
-          aria-label="Add to wishlist"
-        >
-          <i class="fa-regular fa-heart"></i>
-        </button>
-        <img
-          class="product-card__img"
-          src="https://placehold.co/400x400/ffd6e8/e8558c?text=Waist+Trainer"
-          alt="Cloud Soft Waist Trainer"
-        />
-      </div>
-      <div class="product-card__body">
-        <h3 class="product-card__name">
-          <a href="/product/cloud-soft-waist-trainer"
-            >Cloud Soft Waist Trainer</a
-          >
-        </h3>
-        <div
-          class="product-card__rating"
-          aria-label="Rating 3.5 out of 5 stars"
-        >
-          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star"></i
-          ><i class="fa-solid fa-star-half-stroke"></i
-          ><i class="fa-regular fa-star"></i>
-          <span class="product-card__reviews">(6)</span>
-        </div>
-        <div class="product-card__price">
-          <span class="product-card__price--old">$34.99</span>
-          <span class="product-card__price--current">$24.99</span>
-        </div>
-      </div>
-    </article>
-  </div>
+    <button
+      *ngIf="wishlistMode"
+      class="product-card__remove"
+      type="button"
+      (click)="removeFromWishlist()"
+    >
+      Remove from Wishlist
+    </button>
+  </article>
 </div>
