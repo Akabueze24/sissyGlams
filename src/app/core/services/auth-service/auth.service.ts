@@ -1,9 +1,17 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { Login } from '../../models/auth-models/login.mdel';
 import { Register } from '../../models/auth-models/register.model';
 import { User } from '../../models/auth-models/user.model';
+
+// New type for the modal request
+export type AuthMode = 'login' | 'register';
+
+export interface AuthModalRequest {
+  mode: AuthMode;
+  redirectUrl?: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -13,12 +21,29 @@ export class AuthService {
   // AUTHENTICATED USER
   // ============================================================
 
-  private currentUserSubject = new BehaviorSubject<User | null>(
-    this.loadUser(),
-  );
+  private currentUserSubject = new BehaviorSubject<User | null>(this.loadUser());
+  currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
 
-  currentUser$: Observable<User | null> =
-    this.currentUserSubject.asObservable();
+  // ============================================================
+  // AUTH MODAL CONTROL (NEW)
+  // ============================================================
+
+  // This Subject is used to tell the AuthComponent to open
+  private authModalRequestSubject = new Subject<AuthModalRequest>();
+
+  // Components can subscribe to this
+  authModalRequest$ = this.authModalRequestSubject.asObservable();
+
+  /**
+   * Call this method from anywhere (Guard, Header, Checkout, etc.)
+   * to open the Auth modal.
+   */
+  openAuthModal(mode: AuthMode = 'login', redirectUrl: string = '/account'): void {
+    this.authModalRequestSubject.next({
+      mode,
+      redirectUrl,
+    });
+  }
 
   // ============================================================
   // REGISTER
@@ -61,7 +86,6 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('sissy-dream-user');
-
     this.currentUserSubject.next(null);
   }
 
@@ -87,7 +111,6 @@ export class AuthService {
 
   private saveUser(user: User): void {
     localStorage.setItem('sissy-dream-user', JSON.stringify(user));
-
     this.currentUserSubject.next(user);
   }
 

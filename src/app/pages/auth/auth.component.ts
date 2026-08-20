@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { Login } from 'src/app/core/models/auth-models/login.mdel';
 import { Register } from 'src/app/core/models/auth-models/register.model';
@@ -41,6 +42,8 @@ export class AuthComponent implements OnInit {
 
   registerForm!: FormGroup;
 
+  private modalSubscription!: Subscription;
+
   // ============================================================
   // CONSTRUCTOR
   // ============================================================
@@ -58,6 +61,20 @@ export class AuthComponent implements OnInit {
   ngOnInit(): void {
     this.createLoginForm();
     this.createRegisterForm();
+
+    //  Listen for requests to open the modal
+    this.modalSubscription = this.authService.authModalRequest$.subscribe(
+      (request) => {
+        this.open(request.mode, request.redirectUrl || '/account');
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    // Very important: always unsubscribe to avoid memory leaks
+    if (this.modalSubscription) {
+      this.modalSubscription.unsubscribe();
+    }
   }
 
   // ============================================================

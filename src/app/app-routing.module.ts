@@ -17,6 +17,7 @@ import { EditAccountComponent } from './account/pages/edit-account/edit-account.
 import { CustomerSupportComponent } from './account/pages/customer-support/customer-support.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component';
 import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
+import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -31,6 +32,7 @@ const routes: Routes = [
   {
     path: 'account',
     component: AccountLayoutComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
