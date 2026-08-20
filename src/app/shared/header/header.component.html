@@ -109,10 +109,10 @@
         <a
           class="mobile-account-btn"
           aria-label="Account"
-          (click)="openAccountAuth()"
+          (click)="onAccountClick()"
         >
           <i class="fa-regular fa-user"></i>
-          <span>Account</span>
+          <span>{{ currentUser ? (currentUser.firstName || 'My Account') : 'Account' }}</span>
         </a>
 
         <a class="cart-icon-btn" routerLink="/cart" aria-label="Cart">
@@ -167,10 +167,10 @@
 
         <a
           class="header-actions__item header-actions__item--login"
-          (click)="openAccountAuth()"
+          (click)="onAccountClick()"
         >
           <i class="fa-regular fa-user"></i>
-          <span>Account</span>
+          <span>{{ currentUser ? (currentUser.firstName || 'My Account') : 'Account' }}</span>
         </a>
 
         <span class="header-actions__divider" aria-hidden="true"></span>
@@ -512,5 +512,4 @@
       </div>
     </div>
   </nav>
-  <app-auth #authModal></app-auth>
 </header>

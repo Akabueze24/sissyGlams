@@ -1,22 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { CartService } from 'src/app/core/services/cart-service/cart.service';
 import { WishlistService } from 'src/app/core/services/wishlist-service/wishlist.service';
-import { AuthComponent } from 'src/app/pages/auth/auth.component';
-
+import { AuthService } from 'src/app/core/services/auth-service/auth.service';
+import { User } from 'src/app/core/models/auth-models/user.model';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit {
-  // ============================================================
-  // AUTH MODAL
-  // ============================================================
-
-  @ViewChild('authModal') authModal!: AuthComponent;
-
+export class HeaderComponent implements OnInit, OnDestroy {
   // ============================================================
   // CART
   // ============================================================
@@ -31,23 +27,30 @@ export class HeaderComponent implements OnInit {
   wishlistCount = 0;
 
   // ============================================================
+  // AUTH
+  // ============================================================
+
+  currentUser: User | null = null;
+
+  private userSubscription!: Subscription;
+
+  // ============================================================
   // CONSTRUCTOR
   // ============================================================
 
   constructor(
     private cartService: CartService,
-    private wishlistService: WishlistService
+    private wishlistService: WishlistService,
+    private authService: AuthService,
+    private router: Router,
   ) {}
 
   // ============================================================
-  // INITIALIZE
+  // LIFECYCLE
   // ============================================================
 
   ngOnInit(): void {
-    // =========================
-    // CART
-    // =========================
-
+    // Cart
     this.cartService.cartCount$.subscribe((count) => {
       this.cartCount = count;
     });
@@ -56,20 +59,37 @@ export class HeaderComponent implements OnInit {
       this.cartTotal = total;
     });
 
-    // =========================
-    // WISHLIST
-    // =========================
-
+    // Wishlist
     this.wishlistService.wishlistItems$.subscribe((items) => {
       this.wishlistCount = items.length;
     });
+
+    // Auth
+    this.userSubscription = this.authService.currentUser$.subscribe((user) => {
+      this.currentUser = user;
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   // ============================================================
-  // OPEN ACCOUNT AUTH
+  // AUTH ACTIONS
   // ============================================================
 
-  openAccountAuth(): void {
-    this.authModal.open('login', '/account');
+  onAccountClick(): void {
+    if (this.currentUser) {
+      this.router.navigate(['/account']);
+    } else {
+      this.authService.openAuthModal('login', '/account');
+    }
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 }

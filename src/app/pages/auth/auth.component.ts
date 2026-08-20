@@ -1,29 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { Login } from 'src/app/core/models/auth-models/login.mdel';
 import { Register } from 'src/app/core/models/auth-models/register.model';
-import { AuthService } from 'src/app/core/services/auth-service/auth.service';
-
-type AuthMode = 'login' | 'register';
+import {
+  AuthService,
+  AuthMode,
+} from 'src/app/core/services/auth-service/auth.service';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss'],
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, OnDestroy {
   // ============================================================
-  // MODAL
+  // MODAL STATE
   // ============================================================
 
   isOpen = false;
-
   authMode: AuthMode = 'login';
-
-  // Where the user should go after login or registration
   redirectUrl = '/account';
 
   // ============================================================
@@ -31,7 +29,6 @@ export class AuthComponent implements OnInit {
   // ============================================================
 
   showPassword = false;
-
   showConfirmPassword = false;
 
   // ============================================================
@@ -39,8 +36,11 @@ export class AuthComponent implements OnInit {
   // ============================================================
 
   loginForm!: FormGroup;
-
   registerForm!: FormGroup;
+
+  // ============================================================
+  // SUBSCRIPTION
+  // ============================================================
 
   private modalSubscription!: Subscription;
 
@@ -51,62 +51,53 @@ export class AuthComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {}
 
   // ============================================================
-  // INITIALIZE
+  // LIFECYCLE
   // ============================================================
 
   ngOnInit(): void {
+    console.log('AuthComponent: ngOnInit ran - component is alive');
     this.createLoginForm();
     this.createRegisterForm();
 
-    //  Listen for requests to open the modal
+    // Listen for requests to open the modal (from Guard, Header, etc.)
     this.modalSubscription = this.authService.authModalRequest$.subscribe(
       (request) => {
+        console.log('3. AuthComponent: received request', request);
         this.open(request.mode, request.redirectUrl || '/account');
-      }
+      },
     );
   }
 
   ngOnDestroy(): void {
-    // Very important: always unsubscribe to avoid memory leaks
+    // Always unsubscribe to avoid memory leaks
     if (this.modalSubscription) {
       this.modalSubscription.unsubscribe();
     }
   }
 
   // ============================================================
-  // CREATE LOGIN FORM
+  // FORM CREATION
   // ============================================================
 
   private createLoginForm(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-
       password: ['', [Validators.required]],
-
       rememberMe: [false],
     });
   }
 
-  // ============================================================
-  // CREATE REGISTER FORM
-  // ============================================================
-
   private createRegisterForm(): void {
     this.registerForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
-
       lastName: ['', [Validators.required, Validators.minLength(2)]],
-
       email: ['', [Validators.required, Validators.email]],
-
       password: ['', [Validators.required, Validators.minLength(8)]],
-
       confirmPassword: ['', [Validators.required]],
-
       termsAccepted: [false, Validators.requiredTrue],
     });
   }
@@ -125,14 +116,10 @@ export class AuthComponent implements OnInit {
 
     this.authService.login(loginData);
 
-    // Only redirect if authentication was successful
     if (this.authService.isAuthenticated()) {
       this.close();
-
       this.router.navigate([this.redirectUrl]);
     }
-
-    console.log('Login data:', loginData);
   }
 
   // ============================================================
@@ -149,43 +136,25 @@ export class AuthComponent implements OnInit {
 
     this.authService.register(registerData);
 
-    // Registration automatically authenticates the new user
     if (this.authService.isAuthenticated()) {
       this.close();
-
       this.router.navigate([this.redirectUrl]);
     }
-
-    console.log('Register data:', registerData);
   }
 
   // ============================================================
-  // OPEN MODAL
+  // MODAL CONTROLS
   // ============================================================
 
-  open(
-    mode: AuthMode = 'login',
-    redirectUrl: string = '/account'
-  ): void {
+  open(mode: AuthMode = 'login', redirectUrl: string = '/account'): void {
     this.authMode = mode;
-
-    // Remember where the user wanted to go
     this.redirectUrl = redirectUrl;
-
     this.isOpen = true;
   }
-
-  // ============================================================
-  // CLOSE MODAL
-  // ============================================================
 
   close(): void {
     this.isOpen = false;
   }
-
-  // ============================================================
-  // SWITCH BETWEEN LOGIN AND REGISTER
-  // ============================================================
 
   switchTo(mode: AuthMode): void {
     this.authMode = mode;

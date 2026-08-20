@@ -1,4 +1,4 @@
-<div class="col">
+<div class="col" *ngIf="product">
   <article class="product-card">
     <div class="product-card__media">
       <span class="product-card__badge" *ngIf="product.oldPrice">
@@ -46,7 +46,9 @@
           <i *ngIf="star <= product.rating" class="fa-solid fa-star"></i>
         </ng-container>
 
-        <span class="product-card__reviews"> ({{ product.reviewCount }}) </span>
+        <span class="product-card__reviews">
+          ({{ product.reviewCount }})
+        </span>
       </div>
 
       <div class="product-card__price">
@@ -54,7 +56,9 @@
           ${{ product.oldPrice }}
         </span>
 
-        <span class="product-card__price--current"> ${{ product.price }} </span>
+        <span class="product-card__price--current">
+          ${{ product.price }}
+        </span>
       </div>
     </div>
 
