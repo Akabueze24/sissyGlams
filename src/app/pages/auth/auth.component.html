@@ -399,6 +399,17 @@
           >
             Please confirm your password.
           </p>
+
+          <p
+            class="auth-form__error"
+            aria-live="polite"
+            *ngIf="
+              registerForm.hasError('passwordMismatch') &&
+              registerForm.get('confirmPassword')?.touched
+            "
+          >
+            Passwords do not match.
+          </p>
         </div>
 
         <!-- TERMS -->

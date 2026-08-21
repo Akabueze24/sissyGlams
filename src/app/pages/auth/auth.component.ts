@@ -1,5 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -92,14 +98,19 @@ export class AuthComponent implements OnInit, OnDestroy {
   }
 
   private createRegisterForm(): void {
-    this.registerForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', [Validators.required]],
-      termsAccepted: [false, Validators.requiredTrue],
-    });
+    this.registerForm = this.fb.group(
+      {
+        firstName: ['', [Validators.required, Validators.minLength(2)]],
+        lastName: ['', [Validators.required, Validators.minLength(2)]],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(8)]],
+        confirmPassword: ['', [Validators.required]],
+        termsAccepted: [false, Validators.requiredTrue],
+      },
+      {
+        validators: this.passwordMatchValidator,
+      },
+    );
   }
 
   // ============================================================
@@ -170,5 +181,18 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   toggleConfirmPasswordVisibility(): void {
     this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
+  private passwordMatchValidator(
+    control: AbstractControl,
+  ): ValidationErrors | null {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
+
+    if (password !== confirmPassword) {
+      return { passwordMismatch: true };
+    }
+
+    return null;
   }
 }

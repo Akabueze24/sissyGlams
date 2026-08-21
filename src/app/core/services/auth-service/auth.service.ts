@@ -4,14 +4,11 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Login } from '../../models/auth-models/login.mdel';
 import { Register } from '../../models/auth-models/register.model';
 import { User } from '../../models/auth-models/user.model';
+import { AuthModalRequest } from '../../models/auth-models/auth-modal-request.model';
 
 // New type for the modal request
 export type AuthMode = 'login' | 'register';
 
-export interface AuthModalRequest {
-  mode: AuthMode;
-  redirectUrl?: string;
-}
 
 @Injectable({
   providedIn: 'root',
