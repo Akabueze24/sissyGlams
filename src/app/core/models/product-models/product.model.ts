@@ -1,49 +1,89 @@
 import { Category } from './category.model';
-import { Subcategory } from './subcategory.model';
-
 import { ProductSize } from './size.model';
-
 import { Collection } from './collection.model';
-import { ProductDetails } from './product-detals.model';
 import { ProductColor } from './product-color.model';
 import { ProductLength } from './product-length.model';
 import { ColorGallery } from './color-gallery.model';
-
+import { ProductDetails } from './product-detals.model';
 
 export interface Product {
-  // Basic information
+  // ========================================
+  // BASIC INFORMATION
+  // ========================================
+
   id: string;
   name: string;
   slug: string;
   brand: string;
 
-  // Classification
+  // ========================================
+  // CLASSIFICATION
+  // ========================================
+
   category: Category;
+
+  /**
+   * Stores the slug of the subcategory.
+   *
+   * Examples:
+   * 'casual-dresses'
+   * 'fantasy-dresses'
+   * 'lingerie-sets'
+   * 'corsets'
+   * 'pants'
+   */
   subcategory?: string;
 
-  // Images
+  // ========================================
+  // IMAGES
+  // ========================================
+
   images: string[];
 
-  // Pricing
+  // ========================================
+  // PRICING
+  // ========================================
+
   price: number;
   oldPrice?: number;
 
-  // Product information
+  // ========================================
+  // PRODUCT INFORMATION
+  // ========================================
+
   productDetails: ProductDetails;
 
-  // Product options
+  // ========================================
+  // PRODUCT OPTIONS
+  // ========================================
+
   colors?: ProductColor[];
+
+  /**
+   * Different image galleries for each color.
+   */
   colorGalleries?: ColorGallery[];
+
   sizes?: ProductSize[];
+
   lengths?: ProductLength[];
 
-  // Reviews
+  // ========================================
+  // REVIEWS
+  // ========================================
+
   rating: number;
   reviewCount: number;
 
-  // Collections
+  // ========================================
+  // COLLECTIONS
+  // ========================================
+
   collections?: Collection[];
 
-  // Store status
+  // ========================================
+  // STORE STATUS
+  // ========================================
+
   active: boolean;
 }

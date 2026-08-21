@@ -1,595 +1,1487 @@
-import { Product } from '../models/product-models/product.model';
+import { Product } from "../models/product-models/product.model";
 
 export const PRODUCTS: Product[] = [
+
+  // ============================================================
+  // DRESSES → CASUAL DRESSES
+  // ============================================================
+
   {
     id: 'dress-001',
     name: 'Blush Satin Wrap Dress',
     slug: 'blush-satin-wrap-dress',
-    brand: 'Sissy Glams',
+    brand: 'Sissy Dream',
 
     category: 'dresses',
+    subcategory: 'casual-dresses',
 
-    subcategory: {
-      name: 'Mini Dresses',
-      slug: 'mini-dresses',
-      category: 'dresses'
-    },
-
-    // Default gallery
     images: [
-      'https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+Front',
-      'https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+Back',
-      'https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+Side',
-      'https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+Detail'
+      'https://placehold.co/800x1000?text=Blush+Wrap+Dress+1',
+      'https://placehold.co/800x1000?text=Blush+Wrap+Dress+2',
+      'https://placehold.co/800x1000?text=Blush+Wrap+Dress+3',
+      'https://placehold.co/800x1000?text=Blush+Wrap+Dress+4',
     ],
 
-    // Pricing
-    price: 42.99,
-    oldPrice: 59.99,
+    price: 59.99,
+    oldPrice: 74.99,
 
-    // Description, details, shipping and returns
     productDetails: {
       description:
-        'A soft satin wrap dress with a flattering tie waist and flowing skirt — designed to feel elegant and move beautifully, from everyday wear to your next special occasion.',
+        'A soft satin wrap dress designed with a flattering silhouette and elegant feminine finish.',
 
       details: [
-        'Fabric: 95% satin polyester, 5% spandex',
-        'Wrap-tie waist with adjustable fit',
-        'Machine washable, cold, gentle cycle',
-        'Imported'
+        'Soft satin fabric',
+        'Wrap-front design',
+        'Adjustable waist tie',
+        'Elegant flowing silhouette',
+        'Suitable for casual and evening styling',
       ],
 
-      shipping:
-        'Free worldwide shipping on orders over $50. Orders are processed within 1–2 business days and typically arrive within 5–10 business days depending on destination.',
+      shipping: 'Ships within 1–3 business days.',
 
       returns:
-        'Returns are accepted within 30 days of delivery for unworn items with tags attached.'
+        'Eligible for return according to the Sissy Dream return policy.',
     },
 
-    // Colors customers can select
     colors: [
       {
-        name: 'Pink',
-        value: 'pink',
+        name: 'Blush Pink',
+        value: '#E8A9B8',
         image:
-          'https://placehold.co/80x80/ffd6e8/e8558c?text=Pink'
+          'https://placehold.co/800x1000?text=Blush+Pink',
       },
       {
         name: 'Black',
-        value: 'black',
+        value: '#111111',
         image:
-          'https://placehold.co/80x80/2b2b2b/ffffff?text=Black'
+          'https://placehold.co/800x1000?text=Black',
       },
       {
-        name: 'Red',
-        value: 'red',
+        name: 'Wine',
+        value: '#722F37',
         image:
-          'https://placehold.co/80x80/c62841/ffffff?text=Red'
-      }
+          'https://placehold.co/800x1000?text=Wine',
+      },
     ],
 
-    // Images belonging to each color
     colorGalleries: [
       {
         color: {
-          name: 'Pink',
-          value: 'pink',
+          name: 'Blush Pink',
+          value: '#E8A9B8',
           image:
-            'https://placehold.co/80x80/ffd6e8/e8558c?text=Pink'
+            'https://placehold.co/800x1000?text=Blush+Pink',
         },
 
         images: [
-          'https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+Front',
-          'https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+Back',
-          'https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+Side',
-          'https://placehold.co/800x800/ffd6e8/e8558c?text=Pink+Detail'
-        ]
+          'https://placehold.co/800x1000?text=Blush+Pink+1',
+          'https://placehold.co/800x1000?text=Blush+Pink+2',
+          'https://placehold.co/800x1000?text=Blush+Pink+3',
+          'https://placehold.co/800x1000?text=Blush+Pink+4',
+        ],
       },
 
       {
         color: {
           name: 'Black',
-          value: 'black',
+          value: '#111111',
           image:
-            'https://placehold.co/80x80/2b2b2b/ffffff?text=Black'
+            'https://placehold.co/800x1000?text=Black',
         },
 
         images: [
-          'https://placehold.co/800x800/2b2b2b/ffffff?text=Black+Front',
-          'https://placehold.co/800x800/2b2b2b/ffffff?text=Black+Back',
-          'https://placehold.co/800x800/2b2b2b/ffffff?text=Black+Side',
-          'https://placehold.co/800x800/2b2b2b/ffffff?text=Black+Detail'
-        ]
+          'https://placehold.co/800x1000?text=Black+1',
+          'https://placehold.co/800x1000?text=Black+2',
+          'https://placehold.co/800x1000?text=Black+3',
+          'https://placehold.co/800x1000?text=Black+4',
+        ],
       },
 
       {
         color: {
-          name: 'Red',
-          value: 'red',
+          name: 'Wine',
+          value: '#722F37',
           image:
-            'https://placehold.co/800x800/c62841/ffffff?text=Red'
+            'https://placehold.co/800x1000?text=Wine',
         },
 
         images: [
-          'https://placehold.co/800x800/c62841/ffffff?text=Red+Front',
-          'https://placehold.co/800x800/c62841/ffffff?text=Red+Back',
-          'https://placehold.co/800x800/c62841/ffffff?text=Red+Side',
-          'https://placehold.co/800x800/c62841/ffffff?text=Red+Detail'
-        ]
-      }
+          'https://placehold.co/800x1000?text=Wine+1',
+          'https://placehold.co/800x1000?text=Wine+2',
+          'https://placehold.co/800x1000?text=Wine+3',
+          'https://placehold.co/800x1000?text=Wine+4',
+        ],
+      },
     ],
 
-    // Sizes
     sizes: [
-      {
-        name: 'Small',
-        value: 'S'
-      },
-      {
-        name: 'Medium',
-        value: 'M'
-      },
-      {
-        name: 'Large',
-        value: 'L'
-      },
-      {
-        name: 'Extra Large',
-        value: 'XL'
-      }
+      { name: 'Small', value: 'S' },
+      { name: 'Medium', value: 'M' },
+      { name: 'Large', value: 'L' },
+      { name: 'Extra Large', value: 'XL' },
     ],
 
-    // Reviews
-    rating: 4.5,
-    reviewCount: 28,
+    rating: 4.8,
+    reviewCount: 36,
 
-    // Collections
     collections: [
       {
         name: 'New Arrivals',
-        slug: 'new-arrivals'
+        slug: 'new-arrivals',
       },
       {
         name: 'Best Sellers',
-        slug: 'best-sellers'
-      }
+        slug: 'best-sellers',
+      },
     ],
 
-    active: true
+    active: true,
   },
+
+  // ------------------------------------------------------------
+
   {
-  id: 'dress-002',
-  name: 'Midnight Ruched Mini Dress',
-  slug: 'midnight-ruched-mini-dress',
-  brand: 'Sissy Glams',
+    id: 'dress-002',
+    name: 'Everyday Ribbed Midi Dress',
+    slug: 'everyday-ribbed-midi-dress',
+    brand: 'Sissy Dream',
 
-  category: 'dresses',
+    category: 'dresses',
+    subcategory: 'casual-dresses',
 
-  subcategory: {
-    name: 'Mini Dresses',
-    slug: 'mini-dresses',
-    category: 'dresses'
+    images: [
+      'https://placehold.co/800x1000?text=Ribbed+Midi+Dress+1',
+      'https://placehold.co/800x1000?text=Ribbed+Midi+Dress+2',
+      'https://placehold.co/800x1000?text=Ribbed+Midi+Dress+3',
+      'https://placehold.co/800x1000?text=Ribbed+Midi+Dress+4',
+    ],
+
+    price: 44.99,
+
+    productDetails: {
+      description:
+        'A comfortable ribbed midi dress with a simple silhouette for everyday styling.',
+
+      details: [
+        'Stretch ribbed fabric',
+        'Midi length',
+        'Fitted silhouette',
+        'Soft everyday material',
+      ],
+
+      shipping: 'Ships within 1–3 business days.',
+
+      returns:
+        'Eligible for return according to the Sissy Dream return policy.',
+    },
+
+    colors: [
+      {
+        name: 'Cream',
+        value: '#F5F0E6',
+        image:
+          'https://placehold.co/800x1000?text=Cream',
+      },
+      {
+        name: 'Black',
+        value: '#111111',
+        image:
+          'https://placehold.co/800x1000?text=Black',
+      },
+    ],
+
+    colorGalleries: [
+      {
+        color: {
+          name: 'Cream',
+          value: '#F5F0E6',
+          image:
+            'https://placehold.co/800x1000?text=Cream',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Cream+1',
+          'https://placehold.co/800x1000?text=Cream+2',
+          'https://placehold.co/800x1000?text=Cream+3',
+          'https://placehold.co/800x1000?text=Cream+4',
+        ],
+      },
+
+      {
+        color: {
+          name: 'Black',
+          value: '#111111',
+          image:
+            'https://placehold.co/800x1000?text=Black',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Black+1',
+          'https://placehold.co/800x1000?text=Black+2',
+          'https://placehold.co/800x1000?text=Black+3',
+          'https://placehold.co/800x1000?text=Black+4',
+        ],
+      },
+    ],
+
+    sizes: [
+      { name: 'Small', value: 'S' },
+      { name: 'Medium', value: 'M' },
+      { name: 'Large', value: 'L' },
+      { name: 'Extra Large', value: 'XL' },
+    ],
+
+    rating: 4.6,
+    reviewCount: 21,
+
+    collections: [
+      {
+        name: 'New Arrivals',
+        slug: 'new-arrivals',
+      },
+    ],
+
+    active: true,
   },
+
+  // ============================================================
+  // DRESSES → FANTASY DRESSES
+  // ============================================================
+
+  {
+    id: 'dress-003',
+    name: 'Princess Satin Ball Gown',
+    slug: 'princess-satin-ball-gown',
+    brand: 'Sissy Dream',
+
+    category: 'dresses',
+    subcategory: 'fantasy-dresses',
+
+    images: [
+      'https://placehold.co/800x1000?text=Princess+Gown+1',
+      'https://placehold.co/800x1000?text=Princess+Gown+2',
+      'https://placehold.co/800x1000?text=Princess+Gown+3',
+      'https://placehold.co/800x1000?text=Princess+Gown+4',
+    ],
+
+    price: 119.99,
+    oldPrice: 149.99,
+
+    productDetails: {
+      description:
+        'A dramatic satin ball gown inspired by classic princess silhouettes.',
+
+      details: [
+        'Luxurious satin finish',
+        'Full flowing skirt',
+        'Structured bodice',
+        'Elegant fantasy styling',
+      ],
+
+      shipping: 'Ships within 2–4 business days.',
+
+      returns:
+        'Eligible for return according to the Sissy Dream return policy.',
+    },
+
+    colors: [
+      {
+        name: 'Pink',
+        value: '#E8A0B8',
+        image:
+          'https://placehold.co/800x1000?text=Pink',
+      },
+      {
+        name: 'Royal Blue',
+        value: '#4169E1',
+        image:
+          'https://placehold.co/800x1000?text=Royal+Blue',
+      },
+    ],
+
+    colorGalleries: [
+      {
+        color: {
+          name: 'Pink',
+          value: '#E8A0B8',
+          image:
+            'https://placehold.co/800x1000?text=Pink',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Pink+Gown+1',
+          'https://placehold.co/800x1000?text=Pink+Gown+2',
+          'https://placehold.co/800x1000?text=Pink+Gown+3',
+          'https://placehold.co/800x1000?text=Pink+Gown+4',
+        ],
+      },
+
+      {
+        color: {
+          name: 'Royal Blue',
+          value: '#4169E1',
+          image:
+            'https://placehold.co/800x1000?text=Royal+Blue',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Blue+Gown+1',
+          'https://placehold.co/800x1000?text=Blue+Gown+2',
+          'https://placehold.co/800x1000?text=Blue+Gown+3',
+          'https://placehold.co/800x1000?text=Blue+Gown+4',
+        ],
+      },
+    ],
+
+    sizes: [
+      { name: 'Small', value: 'S' },
+      { name: 'Medium', value: 'M' },
+      { name: 'Large', value: 'L' },
+      { name: 'Extra Large', value: 'XL' },
+    ],
+
+    rating: 4.9,
+    reviewCount: 18,
+
+    collections: [
+      {
+        name: 'Featured',
+        slug: 'featured',
+      },
+      {
+        name: 'New Arrivals',
+        slug: 'new-arrivals',
+      },
+    ],
+
+    active: true,
+  },
+
+  // ------------------------------------------------------------
+
+  {
+    id: 'dress-004',
+    name: 'Ruffled Sissy Dress',
+    slug: 'ruffled-sissy-dress',
+    brand: 'Sissy Dream',
+
+    category: 'dresses',
+    subcategory: 'fantasy-dresses',
+
+    images: [
+      'https://placehold.co/800x1000?text=Ruffled+Dress+1',
+      'https://placehold.co/800x1000?text=Ruffled+Dress+2',
+      'https://placehold.co/800x1000?text=Ruffled+Dress+3',
+      'https://placehold.co/800x1000?text=Ruffled+Dress+4',
+    ],
+
+    price: 89.99,
+
+    productDetails: {
+      description:
+        'A playful fantasy dress featuring layered ruffles and a feminine silhouette.',
+
+      details: [
+        'Layered ruffle skirt',
+        'Feminine silhouette',
+        'Soft fabric',
+        'Fantasy-inspired styling',
+      ],
+
+      shipping: 'Ships within 1–3 business days.',
+
+      returns:
+        'Eligible for return according to the Sissy Dream return policy.',
+    },
+
+    colors: [
+      {
+        name: 'Baby Pink',
+        value: '#F4B6C2',
+        image:
+          'https://placehold.co/800x1000?text=Baby+Pink',
+      },
+      {
+        name: 'Lavender',
+        value: '#B57EDC',
+        image:
+          'https://placehold.co/800x1000?text=Lavender',
+      },
+    ],
+
+    colorGalleries: [
+      {
+        color: {
+          name: 'Baby Pink',
+          value: '#F4B6C2',
+          image:
+            'https://placehold.co/800x1000?text=Baby+Pink',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Pink+Ruffle+1',
+          'https://placehold.co/800x1000?text=Pink+Ruffle+2',
+          'https://placehold.co/800x1000?text=Pink+Ruffle+3',
+          'https://placehold.co/800x1000?text=Pink+Ruffle+4',
+        ],
+      },
+
+      {
+        color: {
+          name: 'Lavender',
+          value: '#B57EDC',
+          image:
+            'https://placehold.co/800x1000?text=Lavender',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Lavender+1',
+          'https://placehold.co/800x1000?text=Lavender+2',
+          'https://placehold.co/800x1000?text=Lavender+3',
+          'https://placehold.co/800x1000?text=Lavender+4',
+        ],
+      },
+    ],
+
+    sizes: [
+      { name: 'Small', value: 'S' },
+      { name: 'Medium', value: 'M' },
+      { name: 'Large', value: 'L' },
+    ],
+
+    rating: 4.7,
+    reviewCount: 29,
+
+    collections: [
+      {
+        name: 'Best Sellers',
+        slug: 'best-sellers',
+      },
+    ],
+
+    active: true,
+  },
+
+  // ============================================================
+  // DRESSES → MATCHING SETS
+  // ============================================================
+
+  {
+    id: 'dress-005',
+    name: 'Satin Crop Top & Skirt Set',
+    slug: 'satin-crop-top-skirt-set',
+    brand: 'Sissy Dream',
+
+    category: 'dresses',
+    subcategory: 'matching-sets',
+
+    images: [
+      'https://placehold.co/800x1000?text=Satin+Set+1',
+      'https://placehold.co/800x1000?text=Satin+Set+2',
+      'https://placehold.co/800x1000?text=Satin+Set+3',
+      'https://placehold.co/800x1000?text=Satin+Set+4',
+    ],
+
+    price: 69.99,
+    oldPrice: 84.99,
+
+    productDetails: {
+      description:
+        'A coordinated satin crop top and skirt set designed for an elegant matching look.',
+
+      details: [
+        'Two-piece matching set',
+        'Soft satin fabric',
+        'Adjustable fit',
+        'Can be styled together or separately',
+      ],
+
+      shipping: 'Ships within 1–3 business days.',
+
+      returns:
+        'Eligible for return according to the Sissy Dream return policy.',
+    },
+
+    colors: [
+      {
+        name: 'Pink',
+        value: '#E8A0B8',
+        image:
+          'https://placehold.co/800x1000?text=Pink',
+      },
+      {
+        name: 'Black',
+        value: '#111111',
+        image:
+          'https://placehold.co/800x1000?text=Black',
+      },
+    ],
+
+    colorGalleries: [
+      {
+        color: {
+          name: 'Pink',
+          value: '#E8A0B8',
+          image:
+            'https://placehold.co/800x1000?text=Pink',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Pink+Set+1',
+          'https://placehold.co/800x1000?text=Pink+Set+2',
+          'https://placehold.co/800x1000?text=Pink+Set+3',
+          'https://placehold.co/800x1000?text=Pink+Set+4',
+        ],
+      },
+
+      {
+        color: {
+          name: 'Black',
+          value: '#111111',
+          image:
+            'https://placehold.co/800x1000?text=Black',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Black+Set+1',
+          'https://placehold.co/800x1000?text=Black+Set+2',
+          'https://placehold.co/800x1000?text=Black+Set+3',
+          'https://placehold.co/800x1000?text=Black+Set+4',
+        ],
+      },
+    ],
+
+    sizes: [
+      { name: 'Small', value: 'S' },
+      { name: 'Medium', value: 'M' },
+      { name: 'Large', value: 'L' },
+      { name: 'Extra Large', value: 'XL' },
+    ],
+
+    rating: 4.5,
+    reviewCount: 17,
+
+    collections: [
+      {
+        name: 'New Arrivals',
+        slug: 'new-arrivals',
+      },
+    ],
+
+    active: true,
+  },
+
+  // ============================================================
+  // LINGERIE → BRAS
+  // ============================================================
+
+  {
+    id: 'lingerie-001',
+    name: 'Lace Push-Up Bra',
+    slug: 'lace-push-up-bra',
+    brand: 'Sissy Dream',
+
+    category: 'lingerie',
+    subcategory: 'bras',
+
+    images: [
+      'https://placehold.co/800x1000?text=Lace+Push+Up+Bra+1',
+      'https://placehold.co/800x1000?text=Lace+Push+Up+Bra+2',
+      'https://placehold.co/800x1000?text=Lace+Push+Up+Bra+3',
+      'https://placehold.co/800x1000?text=Lace+Push+Up+Bra+4',
+    ],
+
+    price: 34.99,
+
+    productDetails: {
+      description:
+        'A delicate lace push-up bra combining feminine styling with supportive construction.',
+
+      details: [
+        'Floral lace fabric',
+        'Push-up cups',
+        'Adjustable shoulder straps',
+        'Hook-and-eye back closure',
+      ],
+
+      shipping: 'Ships within 1–3 business days.',
+
+      returns:
+        'Eligible for return according to the Sissy Dream return policy.',
+    },
+
+    colors: [
+      {
+        name: 'Black',
+        value: '#111111',
+        image:
+          'https://placehold.co/800x1000?text=Black',
+      },
+      {
+        name: 'Pink',
+        value: '#E8A0B8',
+        image:
+          'https://placehold.co/800x1000?text=Pink',
+      },
+    ],
+
+    colorGalleries: [
+      {
+        color: {
+          name: 'Black',
+          value: '#111111',
+          image:
+            'https://placehold.co/800x1000?text=Black',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Black+Bra+1',
+          'https://placehold.co/800x1000?text=Black+Bra+2',
+          'https://placehold.co/800x1000?text=Black+Bra+3',
+          'https://placehold.co/800x1000?text=Black+Bra+4',
+        ],
+      },
+
+      {
+        color: {
+          name: 'Pink',
+          value: '#E8A0B8',
+          image:
+            'https://placehold.co/800x1000?text=Pink',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Pink+Bra+1',
+          'https://placehold.co/800x1000?text=Pink+Bra+2',
+          'https://placehold.co/800x1000?text=Pink+Bra+3',
+          'https://placehold.co/800x1000?text=Pink+Bra+4',
+        ],
+      },
+    ],
+
+    sizes: [
+      { name: 'Small', value: 'S' },
+      { name: 'Medium', value: 'M' },
+      { name: 'Large', value: 'L' },
+    ],
+
+    rating: 4.6,
+    reviewCount: 31,
+
+    collections: [
+      {
+        name: 'Best Sellers',
+        slug: 'best-sellers',
+      },
+    ],
+
+    active: true,
+  },
+
+  // ============================================================
+  // LINGERIE → LINGERIE SETS
+  // ============================================================
+
+  {
+    id: 'lingerie-002',
+    name: 'Floral Lace Lingerie Set',
+    slug: 'floral-lace-lingerie-set',
+    brand: 'Sissy Dream',
+
+    category: 'lingerie',
+    subcategory: 'lingerie-sets',
+
+    images: [
+      'https://placehold.co/800x1000?text=Floral+Lace+Set+1',
+      'https://placehold.co/800x1000?text=Floral+Lace+Set+2',
+      'https://placehold.co/800x1000?text=Floral+Lace+Set+3',
+      'https://placehold.co/800x1000?text=Floral+Lace+Set+4',
+    ],
+
+    price: 49.99,
+    oldPrice: 64.99,
+
+    productDetails: {
+      description:
+        'A coordinated floral lace set designed with delicate details and a comfortable fit.',
+
+      details: [
+        'Three-piece coordinated design',
+        'Floral lace',
+        'Adjustable straps',
+        'Soft stretch construction',
+      ],
+
+      shipping: 'Ships within 1–3 business days.',
+
+      returns:
+        'Eligible for return according to the Sissy Dream return policy.',
+    },
+
+    colors: [
+      {
+        name: 'Black',
+        value: '#111111',
+        image:
+          'https://placehold.co/800x1000?text=Black',
+      },
+      {
+        name: 'Burgundy',
+        value: '#800020',
+        image:
+          'https://placehold.co/800x1000?text=Burgundy',
+      },
+    ],
+
+    colorGalleries: [
+      {
+        color: {
+          name: 'Black',
+          value: '#111111',
+          image:
+            'https://placehold.co/800x1000?text=Black',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Black+Set+1',
+          'https://placehold.co/800x1000?text=Black+Set+2',
+          'https://placehold.co/800x1000?text=Black+Set+3',
+          'https://placehold.co/800x1000?text=Black+Set+4',
+        ],
+      },
+
+      {
+        color: {
+          name: 'Burgundy',
+          value: '#800020',
+          image:
+            'https://placehold.co/800x1000?text=Burgundy',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Burgundy+Set+1',
+          'https://placehold.co/800x1000?text=Burgundy+Set+2',
+          'https://placehold.co/800x1000?text=Burgundy+Set+3',
+          'https://placehold.co/800x1000?text=Burgundy+Set+4',
+        ],
+      },
+    ],
+
+    sizes: [
+      { name: 'Small', value: 'S' },
+      { name: 'Medium', value: 'M' },
+      { name: 'Large', value: 'L' },
+    ],
+
+    rating: 4.8,
+    reviewCount: 42,
+
+    collections: [
+      {
+        name: 'Best Sellers',
+        slug: 'best-sellers',
+      },
+      {
+        name: 'Featured',
+        slug: 'featured',
+      },
+    ],
+
+    active: true,
+  },
+
+  // ============================================================
+  // LINGERIE → GARTER BELTS
+  // ============================================================
+
+  {
+    id: 'lingerie-003',
+    name: 'Satin Strap Garter Belt',
+    slug: 'satin-strap-garter-belt',
+    brand: 'Sissy Dream',
+
+    category: 'lingerie',
+    subcategory: 'garter-belts',
+
+    images: [
+      'https://placehold.co/800x1000?text=Satin+Garter+1',
+      'https://placehold.co/800x1000?text=Satin+Garter+2',
+      'https://placehold.co/800x1000?text=Satin+Garter+3',
+      'https://placehold.co/800x1000?text=Satin+Garter+4',
+    ],
+
+    price: 29.99,
+
+    productDetails: {
+      description:
+        'A satin garter belt with adjustable straps and elegant detailing.',
+
+      details: [
+        'Smooth satin finish',
+        'Adjustable garter straps',
+        'Hook-and-eye closure',
+        'Comfortable stretch waistband',
+      ],
+
+      shipping: 'Ships within 1–3 business days.',
+
+      returns:
+        'Eligible for return according to the Sissy Dream return policy.',
+    },
+
+    colors: [
+      {
+        name: 'Black',
+        value: '#111111',
+        image:
+          'https://placehold.co/800x1000?text=Black',
+      },
+      {
+        name: 'Pink',
+        value: '#E8A0B8',
+        image:
+          'https://placehold.co/800x1000?text=Pink',
+      },
+    ],
+
+    colorGalleries: [
+      {
+        color: {
+          name: 'Black',
+          value: '#111111',
+          image:
+            'https://placehold.co/800x1000?text=Black',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Black+Garter+1',
+          'https://placehold.co/800x1000?text=Black+Garter+2',
+          'https://placehold.co/800x1000?text=Black+Garter+3',
+          'https://placehold.co/800x1000?text=Black+Garter+4',
+        ],
+      },
+
+      {
+        color: {
+          name: 'Pink',
+          value: '#E8A0B8',
+          image:
+            'https://placehold.co/800x1000?text=Pink',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Pink+Garter+1',
+          'https://placehold.co/800x1000?text=Pink+Garter+2',
+          'https://placehold.co/800x1000?text=Pink+Garter+3',
+          'https://placehold.co/800x1000?text=Pink+Garter+4',
+        ],
+      },
+    ],
+
+    sizes: [
+      { name: 'Small', value: 'S' },
+      { name: 'Medium', value: 'M' },
+      { name: 'Large', value: 'L' },
+    ],
+
+    rating: 4.5,
+    reviewCount: 19,
+
+    collections: [
+      {
+        name: 'New Arrivals',
+        slug: 'new-arrivals',
+      },
+    ],
+
+    active: true,
+  },
+
+  // ============================================================
+  // SHAPERS → CORSETS
+  // ============================================================
+
+  {
+    id: 'shaper-001',
+    name: 'Classic Steel-Boned Corset',
+    slug: 'classic-steel-boned-corset',
+    brand: 'Sissy Dream',
+
+    category: 'shapers',
+    subcategory: 'corsets',
+
+    images: [
+      'https://placehold.co/800x1000?text=Steel+Boned+Corset+1',
+      'https://placehold.co/800x1000?text=Steel+Boned+Corset+2',
+      'https://placehold.co/800x1000?text=Steel+Boned+Corset+3',
+      'https://placehold.co/800x1000?text=Steel+Boned+Corset+4',
+    ],
+
+    price: 79.99,
+    oldPrice: 94.99,
+
+    productDetails: {
+      description:
+        'A structured steel-boned corset designed to create a classic fitted silhouette.',
+
+      details: [
+        'Steel boning',
+        'Adjustable lace-up back',
+        'Structured waist design',
+        'Durable fabric construction',
+      ],
+
+      shipping: 'Ships within 2–4 business days.',
+
+      returns:
+        'Eligible for return according to the Sissy Dream return policy.',
+    },
+
+    colors: [
+      {
+        name: 'Black',
+        value: '#111111',
+        image:
+          'https://placehold.co/800x1000?text=Black',
+      },
+      {
+        name: 'Pink',
+        value: '#E8A0B8',
+        image:
+          'https://placehold.co/800x1000?text=Pink',
+      },
+    ],
+
+    colorGalleries: [
+      {
+        color: {
+          name: 'Black',
+          value: '#111111',
+          image:
+            'https://placehold.co/800x1000?text=Black',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Black+Corset+1',
+          'https://placehold.co/800x1000?text=Black+Corset+2',
+          'https://placehold.co/800x1000?text=Black+Corset+3',
+          'https://placehold.co/800x1000?text=Black+Corset+4',
+        ],
+      },
+
+      {
+        color: {
+          name: 'Pink',
+          value: '#E8A0B8',
+          image:
+            'https://placehold.co/800x1000?text=Pink',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Pink+Corset+1',
+          'https://placehold.co/800x1000?text=Pink+Corset+2',
+          'https://placehold.co/800x1000?text=Pink+Corset+3',
+          'https://placehold.co/800x1000?text=Pink+Corset+4',
+        ],
+      },
+    ],
+
+    sizes: [
+      { name: 'Small', value: 'S' },
+      { name: 'Medium', value: 'M' },
+      { name: 'Large', value: 'L' },
+      { name: 'Extra Large', value: 'XL' },
+    ],
+
+    rating: 4.7,
+    reviewCount: 27,
+
+    collections: [
+      {
+        name: 'Best Sellers',
+        slug: 'best-sellers',
+      },
+    ],
+
+    active: true,
+  },
+
+  // ============================================================
+  // SHAPERS → WAIST & BODY SHAPERS
+  // ============================================================
+
+  {
+    id: 'shaper-002',
+    name: 'Satin Waist-Cincher Shaper',
+    slug: 'satin-waist-cincher-shaper',
+    brand: 'Sissy Dream',
+
+    category: 'shapers',
+    subcategory: 'corsets',
+
+    images: [
+      'https://placehold.co/800x1000?text=Waist+Cincher+1',
+      'https://placehold.co/800x1000?text=Waist+Cincher+2',
+      'https://placehold.co/800x1000?text=Waist+Cincher+3',
+      'https://placehold.co/800x1000?text=Waist+Cincher+4',
+    ],
+
+    price: 54.99,
+
+    productDetails: {
+      description:
+        'A satin waist-cincher designed for a smooth and sculpted appearance.',
+
+      details: [
+        'Satin exterior',
+        'Flexible boning',
+        'Adjustable closure',
+        'Designed for a fitted silhouette',
+      ],
+
+      shipping: 'Ships within 1–3 business days.',
+
+      returns:
+        'Eligible for return according to the Sissy Dream return policy.',
+    },
+
+    colors: [
+      {
+        name: 'Black',
+        value: '#111111',
+        image:
+          'https://placehold.co/800x1000?text=Black',
+      },
+      {
+        name: 'Nude',
+        value: '#D2A679',
+        image:
+          'https://placehold.co/800x1000?text=Nude',
+      },
+    ],
+
+    colorGalleries: [
+      {
+        color: {
+          name: 'Black',
+          value: '#111111',
+          image:
+            'https://placehold.co/800x1000?text=Black',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Black+Cincher+1',
+          'https://placehold.co/800x1000?text=Black+Cincher+2',
+          'https://placehold.co/800x1000?text=Black+Cincher+3',
+          'https://placehold.co/800x1000?text=Black+Cincher+4',
+        ],
+      },
+
+      {
+        color: {
+          name: 'Nude',
+          value: '#D2A679',
+          image:
+            'https://placehold.co/800x1000?text=Nude',
+        },
+
+        images: [
+          'https://placehold.co/800x1000?text=Nude+Cincher+1',
+          'https://placehold.co/800x1000?text=Nude+Cincher+2',
+          'https://placehold.co/800x1000?text=Nude+Cincher+3',
+          'https://placehold.co/800x1000?text=Nude+Cincher+4',
+        ],
+      },
+    ],
+
+    sizes: [
+      { name: 'Small', value: 'S' },
+      { name: 'Medium', value: 'M' },
+      { name: 'Large', value: 'L' },
+      { name: 'Extra Large', value: 'XL' },
+    ],
+
+    rating: 4.6,
+    reviewCount: 23,
+
+    collections: [
+      {
+        name: 'New Arrivals',
+        slug: 'new-arrivals',
+      },
+    ],
+
+    active: true,
+  },
+
+  // ============================================================
+// SHAPERS — CORSETS
+// ============================================================
+
+{
+  id: 'corset-001',
+  name: 'Classic Steel-Boned Corset',
+  slug: 'classic-steel-boned-corset',
+  brand: 'Sissy Dream',
+  category: 'shapers',
+  subcategory: 'corsets',
 
   images: [
-    'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Front',
-    'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Back',
-    'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Side',
-    'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Detail'
+    'https://placehold.co/800x1000?text=Classic+Corset+1',
+    'https://placehold.co/800x1000?text=Classic+Corset+2',
+    'https://placehold.co/800x1000?text=Classic+Corset+3',
+    'https://placehold.co/800x1000?text=Classic+Corset+4',
   ],
 
-  price: 36.99,
-  oldPrice: 49.99,
+  price: 79.99,
+  oldPrice: 99.99,
 
   productDetails: {
     description:
-      'A sleek ruched mini dress designed with a flattering fitted silhouette and soft stretch fabric. Perfect for nights out, parties and special occasions.',
-
+      'A structured steel-boned corset designed to create a defined waist while providing comfortable support.',
     details: [
-      'Fabric: 92% polyester, 8% spandex',
-      'Adjustable side ruching',
-      'Fitted mini silhouette',
-      'Machine washable, cold, gentle cycle',
-      'Imported'
+      'Steel-boned construction',
+      'Adjustable lace-up back',
+      'Structured waist design',
+      'Suitable for styling and special occasions',
     ],
-
-    shipping:
-      'Free worldwide shipping on orders over $50. Orders are processed within 1–2 business days and typically arrive within 5–10 business days depending on destination.',
-
-    returns:
-      'Returns are accepted within 30 days of delivery for unworn items with tags attached.'
+    shipping: 'Ships within 2–5 business days.',
+    returns: 'Eligible for return according to store policy.',
   },
 
   colors: [
     {
       name: 'Black',
-      value: 'black',
-      image:
-        'https://placehold.co/80x80/1f1f1f/ffffff?text=Black'
+      value: '#000000',
+      image: 'https://placehold.co/100x100?text=Black',
     },
     {
-      name: 'Wine',
-      value: 'wine',
-      image:
-        'https://placehold.co/80x80/72243a/ffffff?text=Wine'
+      name: 'Pink',
+      value: '#e91e63',
+      image: 'https://placehold.co/100x100?text=Pink',
     },
     {
-      name: 'Ivory',
-      value: 'ivory',
-      image:
-        'https://placehold.co/80x80/f5eee5/333333?text=Ivory'
-    }
+      name: 'White',
+      value: '#ffffff',
+      image: 'https://placehold.co/100x100?text=White',
+    },
   ],
 
   colorGalleries: [
     {
       color: {
         name: 'Black',
-        value: 'black',
-        image:
-          'https://placehold.co/80x80/1f1f1f/ffffff?text=Black'
+        value: '#000000',
+        image: 'https://placehold.co/100x100?text=Black',
       },
-
       images: [
-        'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Front',
-        'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Back',
-        'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Side',
-        'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Detail'
-      ]
+        'https://placehold.co/800x1000?text=Black+Corset+Front',
+        'https://placehold.co/800x1000?text=Black+Corset+Side',
+        'https://placehold.co/800x1000?text=Black+Corset+Back',
+        'https://placehold.co/800x1000?text=Black+Corset+Detail',
+      ],
     },
-
     {
       color: {
-        name: 'Wine',
-        value: 'wine',
-        image:
-          'https://placehold.co/80x80/72243a/ffffff?text=Wine'
+        name: 'Pink',
+        value: '#e91e63',
+        image: 'https://placehold.co/100x100?text=Pink',
       },
-
       images: [
-        'https://placehold.co/800x800/72243a/ffffff?text=Wine+Front',
-        'https://placehold.co/800x800/72243a/ffffff?text=Wine+Back',
-        'https://placehold.co/800x800/72243a/ffffff?text=Wine+Side',
-        'https://placehold.co/800x800/72243a/ffffff?text=Wine+Detail'
-      ]
+        'https://placehold.co/800x1000?text=Pink+Corset+Front',
+        'https://placehold.co/800x1000?text=Pink+Corset+Side',
+        'https://placehold.co/800x1000?text=Pink+Corset+Back',
+        'https://placehold.co/800x1000?text=Pink+Corset+Detail',
+      ],
     },
-
     {
       color: {
-        name: 'Ivory',
-        value: 'ivory',
-        image:
-          'https://placehold.co/80x80/f5eee5/333333?text=Ivory'
+        name: 'White',
+        value: '#ffffff',
+        image: 'https://placehold.co/100x100?text=White',
       },
-
       images: [
-        'https://placehold.co/800x800/f5eee5/333333?text=Ivory+Front',
-        'https://placehold.co/800x800/f5eee5/333333?text=Ivory+Back',
-        'https://placehold.co/800x800/f5eee5/333333?text=Ivory+Side',
-        'https://placehold.co/800x800/f5eee5/333333?text=Ivory+Detail'
-      ]
-    }
+        'https://placehold.co/800x1000?text=White+Corset+Front',
+        'https://placehold.co/800x1000?text=White+Corset+Side',
+        'https://placehold.co/800x1000?text=White+Corset+Back',
+        'https://placehold.co/800x1000?text=White+Corset+Detail',
+      ],
+    },
   ],
 
   sizes: [
-    {
-      name: 'Small',
-      value: 'S'
-    },
-    {
-      name: 'Medium',
-      value: 'M'
-    },
-    {
-      name: 'Large',
-      value: 'L'
-    },
-    {
-      name: 'Extra Large',
-      value: 'XL'
-    }
+    { name: 'Small', value: 'S' },
+    { name: 'Medium', value: 'M' },
+    { name: 'Large', value: 'L' },
+    { name: 'X-Large', value: 'XL' },
   ],
 
   rating: 4.7,
-  reviewCount: 41,
+  reviewCount: 38,
 
   collections: [
     {
-      name: 'New Arrivals',
-      slug: 'new-arrivals'
-    },
-    {
       name: 'Best Sellers',
-      slug: 'best-sellers'
-    }
+      slug: 'best-sellers',
+    },
   ],
 
-  active: true
+  active: true,
 },
 
+// ============================================================
+// SHAPERS — CORSETS
+// ============================================================
+
 {
-  id: 'wig-001',
-  name: 'Silky Straight Lace Front Wig',
-  slug: 'silky-straight-lace-front-wig',
-  brand: 'Sissy Glams',
-
-  category: 'wigs',
-
-  subcategory: {
-    name: 'Straight Wigs',
-    slug: 'straight-wigs',
-    category: 'wigs'
-  },
+  id: 'corset-002',
+  name: 'Satin Waist-Cincher Corset',
+  slug: 'satin-waist-cincher-corset',
+  brand: 'Sissy Dream',
+  category: 'shapers',
+  subcategory: 'corsets',
 
   images: [
-    'https://placehold.co/800x800/2b211d/ffffff?text=Natural+Black+Front',
-    'https://placehold.co/800x800/2b211d/ffffff?text=Natural+Black+Back',
-    'https://placehold.co/800x800/2b211d/ffffff?text=Natural+Black+Side',
-    'https://placehold.co/800x800/2b211d/ffffff?text=Natural+Black+Detail'
+    'https://placehold.co/800x1000?text=Satin+Corset+1',
+    'https://placehold.co/800x1000?text=Satin+Corset+2',
+    'https://placehold.co/800x1000?text=Satin+Corset+3',
+    'https://placehold.co/800x1000?text=Satin+Corset+4',
   ],
 
-  price: 129.99,
-  oldPrice: 159.99,
+  price: 64.99,
 
   productDetails: {
     description:
-      'A silky straight lace front wig with a natural-looking hairline and soft, flowing strands. Designed for a sleek everyday look with effortless styling.',
-
+      'A satin-finish waist cincher with a classic silhouette and adjustable back closure.',
     details: [
-      'Hair type: Premium synthetic fiber',
-      'Lace front construction',
-      'Pre-styled straight texture',
-      'Adjustable inner straps',
-      'Heat-resistant fiber'
+      'Smooth satin finish',
+      'Structured waist support',
+      'Adjustable back closure',
+      'Designed for comfortable everyday styling',
     ],
-
-    shipping:
-      'Free worldwide shipping on orders over $50. Orders are processed within 1–2 business days and typically arrive within 5–10 business days depending on destination.',
-
-    returns:
-      'Returns are accepted within 30 days of delivery for unused wigs that remain in their original condition.'
+    shipping: 'Ships within 2–5 business days.',
+    returns: 'Eligible for return according to store policy.',
   },
 
   colors: [
     {
-      name: 'Natural Black',
-      value: 'natural-black',
-      image:
-        'https://placehold.co/80x80/2b211d/ffffff?text=Natural+Black'
-    },
-    {
-      name: 'Dark Brown',
-      value: 'dark-brown',
-      image:
-        'https://placehold.co/80x80/4a2c20/ffffff?text=Dark+Brown'
-    },
-    {
-      name: 'Burgundy',
-      value: 'burgundy',
-      image:
-        'https://placehold.co/80x80/641f35/ffffff?text=Burgundy'
-    }
-  ],
-
-  colorGalleries: [
-    {
-      color: {
-        name: 'Natural Black',
-        value: 'natural-black',
-        image:
-          'https://placehold.co/80x80/2b211d/ffffff?text=Natural+Black'
-      },
-
-      images: [
-        'https://placehold.co/800x800/2b211d/ffffff?text=Natural+Black+Front',
-        'https://placehold.co/800x800/2b211d/ffffff?text=Natural+Black+Back',
-        'https://placehold.co/800x800/2b211d/ffffff?text=Natural+Black+Side',
-        'https://placehold.co/800x800/2b211d/ffffff?text=Natural+Black+Detail'
-      ]
-    },
-
-    {
-      color: {
-        name: 'Dark Brown',
-        value: 'dark-brown',
-        image:
-          'https://placehold.co/80x80/4a2c20/ffffff?text=Dark+Brown'
-      },
-
-      images: [
-        'https://placehold.co/800x800/4a2c20/ffffff?text=Dark+Brown+Front',
-        'https://placehold.co/800x800/4a2c20/ffffff?text=Dark+Brown+Back',
-        'https://placehold.co/800x800/4a2c20/ffffff?text=Dark+Brown+Side',
-        'https://placehold.co/800x800/4a2c20/ffffff?text=Dark+Brown+Detail'
-      ]
-    },
-
-    {
-      color: {
-        name: 'Burgundy',
-        value: 'burgundy',
-        image:
-          'https://placehold.co/80x80/641f35/ffffff?text=Burgundy'
-      },
-
-      images: [
-        'https://placehold.co/800x800/641f35/ffffff?text=Burgundy+Front',
-        'https://placehold.co/800x800/641f35/ffffff?text=Burgundy+Back',
-        'https://placehold.co/800x800/641f35/ffffff?text=Burgundy+Side',
-        'https://placehold.co/800x800/641f35/ffffff?text=Burgundy+Detail'
-      ]
-    }
-  ],
-
-  sizes: [],
-
-  lengths: [
-    {
-      name: '18 inches',
-      value: '18'
-    },
-    {
-      name: '20 inches',
-      value: '20'
-    },
-    {
-      name: '22 inches',
-      value: '22'
-    },
-    {
-      name: '24 inches',
-      value: '24'
-    }
-  ],
-
-  rating: 4.8,
-  reviewCount: 56,
-
-  collections: [
-    {
-      name: 'New Arrivals',
-      slug: 'new-arrivals'
-    },
-    {
-      name: 'Best Sellers',
-      slug: 'best-sellers'
-    }
-  ],
-
-  active: true
-},
-
-{
-  id: 'top-001',
-  name: 'Satin Cowl Neck Crop Top',
-  slug: 'satin-cowl-neck-crop-top',
-  brand: 'Sissy Glams',
-
-  category: 'tops',
-
-  subcategory: {
-    name: 'Crop Tops',
-    slug: 'crop-tops',
-    category: 'tops'
-  },
-
-  images: [
-    'https://placehold.co/800x800/f3c6d8/333333?text=Blush+Front',
-    'https://placehold.co/800x800/f3c6d8/333333?text=Blush+Back',
-    'https://placehold.co/800x800/f3c6d8/333333?text=Blush+Side',
-    'https://placehold.co/800x800/f3c6d8/333333?text=Blush+Detail'
-  ],
-
-  price: 24.99,
-  oldPrice: 32.99,
-
-  productDetails: {
-    description:
-      'A feminine satin crop top featuring a soft cowl neckline and delicate adjustable straps. A versatile piece that pairs beautifully with skirts, trousers and jeans.',
-
-    details: [
-      'Fabric: 100% polyester satin',
-      'Cowl neckline',
-      'Adjustable shoulder straps',
-      'Cropped silhouette',
-      'Imported'
-    ],
-
-    shipping:
-      'Free worldwide shipping on orders over $50. Orders are processed within 1–2 business days and typically arrive within 5–10 business days depending on destination.',
-
-    returns:
-      'Returns are accepted within 30 days of delivery for unworn items with tags attached.'
-  },
-
-  colors: [
-    {
-      name: 'Blush',
-      value: 'blush',
-      image:
-        'https://placehold.co/80x80/f3c6d8/333333?text=Blush'
-    },
-    {
-      name: 'Champagne',
-      value: 'champagne',
-      image:
-        'https://placehold.co/80x80/e8d5b5/333333?text=Champagne'
+      name: 'Pink',
+      value: '#f48fb1',
+      image: 'https://placehold.co/100x100?text=Pink',
     },
     {
       name: 'Black',
-      value: 'black',
-      image:
-        'https://placehold.co/80x80/1f1f1f/ffffff?text=Black'
-    }
+      value: '#000000',
+      image: 'https://placehold.co/100x100?text=Black',
+    },
   ],
 
   colorGalleries: [
     {
       color: {
-        name: 'Blush',
-        value: 'blush',
-        image:
-          'https://placehold.co/80x80/f3c6d8/333333?text=Blush'
+        name: 'Pink',
+        value: '#f48fb1',
+        image: 'https://placehold.co/100x100?text=Pink',
       },
-
       images: [
-        'https://placehold.co/800x800/f3c6d8/333333?text=Blush+Front',
-        'https://placehold.co/800x800/f3c6d8/333333?text=Blush+Back',
-        'https://placehold.co/800x800/f3c6d8/333333?text=Blush+Side',
-        'https://placehold.co/800x800/f3c6d8/333333?text=Blush+Detail'
-      ]
+        'https://placehold.co/800x1000?text=Pink+Front',
+        'https://placehold.co/800x1000?text=Pink+Side',
+        'https://placehold.co/800x1000?text=Pink+Back',
+        'https://placehold.co/800x1000?text=Pink+Detail',
+      ],
     },
-
-    {
-      color: {
-        name: 'Champagne',
-        value: 'champagne',
-        image:
-          'https://placehold.co/80x80/e8d5b5/333333?text=Champagne'
-      },
-
-      images: [
-        'https://placehold.co/800x800/e8d5b5/333333?text=Champagne+Front',
-        'https://placehold.co/800x800/e8d5b5/333333?text=Champagne+Back',
-        'https://placehold.co/800x800/e8d5b5/333333?text=Champagne+Side',
-        'https://placehold.co/800x800/e8d5b5/333333?text=Champagne+Detail'
-      ]
-    },
-
     {
       color: {
         name: 'Black',
-        value: 'black',
-        image:
-          'https://placehold.co/80x80/1f1f1f/ffffff?text=Black'
+        value: '#000000',
+        image: 'https://placehold.co/100x100?text=Black',
       },
-
       images: [
-        'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Front',
-        'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Back',
-        'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Side',
-        'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Detail'
-      ]
-    }
+        'https://placehold.co/800x1000?text=Black+Front',
+        'https://placehold.co/800x1000?text=Black+Side',
+        'https://placehold.co/800x1000?text=Black+Back',
+        'https://placehold.co/800x1000?text=Black+Detail',
+      ],
+    },
   ],
 
   sizes: [
+    { name: 'Small', value: 'S' },
+    { name: 'Medium', value: 'M' },
+    { name: 'Large', value: 'L' },
+    { name: 'X-Large', value: 'XL' },
+  ],
+
+  rating: 4.5,
+  reviewCount: 24,
+
+  collections: [
     {
-      name: 'Small',
-      value: 'S'
+      name: 'New Arrivals',
+      slug: 'new-arrivals',
+    },
+  ],
+
+  active: true,
+},
+
+// ============================================================
+// SHAPERS — CORSETS
+// ============================================================
+
+{
+  id: 'corset-003',
+  name: 'Lace-Up Underbust Corset',
+  slug: 'lace-up-underbust-corset',
+  brand: 'Sissy Dream',
+  category: 'shapers',
+  subcategory: 'corsets',
+
+  images: [
+    'https://placehold.co/800x1000?text=Underbust+Corset+1',
+    'https://placehold.co/800x1000?text=Underbust+Corset+2',
+    'https://placehold.co/800x1000?text=Underbust+Corset+3',
+    'https://placehold.co/800x1000?text=Underbust+Corset+4',
+  ],
+
+  price: 72.99,
+  oldPrice: 89.99,
+
+  productDetails: {
+    description:
+      'A classic underbust corset featuring a lace-up back and structured silhouette.',
+    details: [
+      'Underbust design',
+      'Adjustable lace-up back',
+      'Structured construction',
+      'Versatile styling piece',
+    ],
+    shipping: 'Ships within 2–5 business days.',
+    returns: 'Eligible for return according to store policy.',
+  },
+
+  colors: [
+    {
+      name: 'Black',
+      value: '#000000',
+      image: 'https://placehold.co/100x100?text=Black',
     },
     {
-      name: 'Medium',
-      value: 'M'
+      name: 'Red',
+      value: '#d32f2f',
+      image: 'https://placehold.co/100x100?text=Red',
+    },
+  ],
+
+  colorGalleries: [
+    {
+      color: {
+        name: 'Black',
+        value: '#000000',
+        image: 'https://placehold.co/100x100?text=Black',
+      },
+      images: [
+        'https://placehold.co/800x1000?text=Black+Front',
+        'https://placehold.co/800x1000?text=Black+Side',
+        'https://placehold.co/800x1000?text=Black+Back',
+        'https://placehold.co/800x1000?text=Black+Detail',
+      ],
     },
     {
-      name: 'Large',
-      value: 'L'
+      color: {
+        name: 'Red',
+        value: '#d32f2f',
+        image: 'https://placehold.co/100x100?text=Red',
+      },
+      images: [
+        'https://placehold.co/800x1000?text=Red+Front',
+        'https://placehold.co/800x1000?text=Red+Side',
+        'https://placehold.co/800x1000?text=Red+Back',
+        'https://placehold.co/800x1000?text=Red+Detail',
+      ],
+    },
+  ],
+
+  sizes: [
+    { name: 'Small', value: 'S' },
+    { name: 'Medium', value: 'M' },
+    { name: 'Large', value: 'L' },
+    { name: 'X-Large', value: 'XL' },
+  ],
+
+  rating: 4.8,
+  reviewCount: 51,
+
+  collections: [
+    {
+      name: 'Best Sellers',
+      slug: 'best-sellers',
     },
     {
-      name: 'Extra Large',
-      value: 'XL'
-    }
+      name: 'New Arrivals',
+      slug: 'new-arrivals',
+    },
+  ],
+
+  active: true,
+},
+
+// ============================================================
+// SHAPERS — FAKE BOOBS
+// ============================================================
+
+{
+  id: 'fake-boobs-001',
+  name: 'Classic Silicone Breast Forms',
+  slug: 'classic-silicone-breast-forms',
+  brand: 'Sissy Dream',
+  category: 'shapers',
+  subcategory: 'fake-boobs',
+
+  images: [
+    'https://placehold.co/800x1000?text=Breast+Forms+1',
+    'https://placehold.co/800x1000?text=Breast+Forms+2',
+    'https://placehold.co/800x1000?text=Breast+Forms+3',
+    'https://placehold.co/800x1000?text=Breast+Forms+4',
+  ],
+
+  price: 119.99,
+
+  productDetails: {
+    description:
+      'Soft silicone breast forms designed for a natural-looking silhouette.',
+    details: [
+      'Soft silicone construction',
+      'Smooth outer finish',
+      'Balanced symmetrical shape',
+      'Designed for comfortable wear',
+    ],
+    shipping: 'Ships within 2–5 business days.',
+    returns: 'Eligible for return according to store policy.',
+  },
+
+  colors: [
+    {
+      name: 'Natural',
+      value: '#e8b89a',
+      image: 'https://placehold.co/100x100?text=Natural',
+    },
+  ],
+
+  colorGalleries: [
+    {
+      color: {
+        name: 'Natural',
+        value: '#e8b89a',
+        image: 'https://placehold.co/100x100?text=Natural',
+      },
+      images: [
+        'https://placehold.co/800x1000?text=Breast+Forms+Front',
+        'https://placehold.co/800x1000?text=Breast+Forms+Side',
+        'https://placehold.co/800x1000?text=Breast+Forms+Back',
+        'https://placehold.co/800x1000?text=Breast+Forms+Detail',
+      ],
+    },
   ],
 
   rating: 4.6,
@@ -597,158 +1489,107 @@ export const PRODUCTS: Product[] = [
 
   collections: [
     {
-      name: 'New Arrivals',
-      slug: 'new-arrivals'
-    }
+      name: 'Featured',
+      slug: 'featured',
+    },
   ],
 
-  active: true
+  active: true,
 },
 
+// ============================================================
+// SHAPERS — BUTT ENHANCERS
+// ============================================================
+
 {
-  id: 'bottom-001',
-  name: 'High Waist Wide Leg Trousers',
-  slug: 'high-waist-wide-leg-trousers',
-  brand: 'Sissy Glams',
-
-  category: 'bottoms',
-
-  subcategory: {
-    name: 'Trousers',
-    slug: 'trousers',
-    category: 'bottoms'
-  },
+  id: 'butt-enhancer-001',
+  name: 'Contour Padded Hip Enhancer',
+  slug: 'contour-padded-hip-enhancer',
+  brand: 'Sissy Dream',
+  category: 'shapers',
+  subcategory: 'butt-enhancers',
 
   images: [
-    'https://placehold.co/800x800/e7d9ce/333333?text=Mocha+Front',
-    'https://placehold.co/800x800/e7d9ce/333333?text=Mocha+Back',
-    'https://placehold.co/800x800/e7d9ce/333333?text=Mocha+Side',
-    'https://placehold.co/800x800/e7d9ce/333333?text=Mocha+Detail'
+    'https://placehold.co/800x1000?text=Hip+Enhancer+1',
+    'https://placehold.co/800x1000?text=Hip+Enhancer+2',
+    'https://placehold.co/800x1000?text=Hip+Enhancer+3',
+    'https://placehold.co/800x1000?text=Hip+Enhancer+4',
   ],
 
-  price: 39.99,
-  oldPrice: 52.99,
+  price: 84.99,
 
   productDetails: {
     description:
-      'Elegant high-waisted trousers with a flowing wide-leg silhouette. Designed to create a polished look while keeping you comfortable throughout the day.',
-
+      'A padded shaping garment designed to create a smooth and contoured silhouette.',
     details: [
-      'Fabric: 95% polyester, 5% spandex',
-      'High-rise waist',
-      'Wide-leg silhouette',
-      'Side pockets',
-      'Concealed zip fastening',
-      'Imported'
+      'Lightweight padding',
+      'Contoured shape',
+      'Stretch fabric',
+      'Designed to fit comfortably under clothing',
     ],
-
-    shipping:
-      'Free worldwide shipping on orders over $50. Orders are processed within 1–2 business days and typically arrive within 5–10 business days depending on destination.',
-
-    returns:
-      'Returns are accepted within 30 days of delivery for unworn items with tags attached.'
+    shipping: 'Ships within 2–5 business days.',
+    returns: 'Eligible for return according to store policy.',
   },
 
   colors: [
     {
-      name: 'Mocha',
-      value: 'mocha',
-      image:
-        'https://placehold.co/80x80/e7d9ce/333333?text=Mocha'
-    },
-    {
       name: 'Black',
-      value: 'black',
-      image:
-        'https://placehold.co/80x80/1f1f1f/ffffff?text=Black'
+      value: '#000000',
+      image: 'https://placehold.co/100x100?text=Black',
     },
     {
-      name: 'Cream',
-      value: 'cream',
-      image:
-        'https://placehold.co/80x80/f3eadb/333333?text=Cream'
-    }
+      name: 'Nude',
+      value: '#d2a679',
+      image: 'https://placehold.co/100x100?text=Nude',
+    },
   ],
 
   colorGalleries: [
     {
       color: {
-        name: 'Mocha',
-        value: 'mocha',
-        image:
-          'https://placehold.co/80x80/e7d9ce/333333?text=Mocha'
-      },
-
-      images: [
-        'https://placehold.co/800x800/e7d9ce/333333?text=Mocha+Front',
-        'https://placehold.co/800x800/e7d9ce/333333?text=Mocha+Back',
-        'https://placehold.co/800x800/e7d9ce/333333?text=Mocha+Side',
-        'https://placehold.co/800x800/e7d9ce/333333?text=Mocha+Detail'
-      ]
-    },
-
-    {
-      color: {
         name: 'Black',
-        value: 'black',
-        image:
-          'https://placehold.co/80x80/1f1f1f/ffffff?text=Black'
+        value: '#000000',
+        image: 'https://placehold.co/100x100?text=Black',
       },
-
       images: [
-        'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Front',
-        'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Back',
-        'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Side',
-        'https://placehold.co/800x800/1f1f1f/ffffff?text=Black+Detail'
-      ]
+        'https://placehold.co/800x1000?text=Black+Front',
+        'https://placehold.co/800x1000?text=Black+Side',
+        'https://placehold.co/800x1000?text=Black+Back',
+        'https://placehold.co/800x1000?text=Black+Detail',
+      ],
     },
-
     {
       color: {
-        name: 'Cream',
-        value: 'cream',
-        image:
-          'https://placehold.co/80x80/f3eadb/333333?text=Cream'
+        name: 'Nude',
+        value: '#d2a679',
+        image: 'https://placehold.co/100x100?text=Nude',
       },
-
       images: [
-        'https://placehold.co/800x800/f3eadb/333333?text=Cream+Front',
-        'https://placehold.co/800x800/f3eadb/333333?text=Cream+Back',
-        'https://placehold.co/800x800/f3eadb/333333?text=Cream+Side',
-        'https://placehold.co/800x800/f3eadb/333333?text=Cream+Detail'
-      ]
-    }
+        'https://placehold.co/800x1000?text=Nude+Front',
+        'https://placehold.co/800x1000?text=Nude+Side',
+        'https://placehold.co/800x1000?text=Nude+Back',
+        'https://placehold.co/800x1000?text=Nude+Detail',
+      ],
+    },
   ],
 
   sizes: [
-    {
-      name: 'Small',
-      value: 'S'
-    },
-    {
-      name: 'Medium',
-      value: 'M'
-    },
-    {
-      name: 'Large',
-      value: 'L'
-    },
-    {
-      name: 'Extra Large',
-      value: 'XL'
-    }
+    { name: 'Small', value: 'S' },
+    { name: 'Medium', value: 'M' },
+    { name: 'Large', value: 'L' },
+    { name: 'X-Large', value: 'XL' },
   ],
 
   rating: 4.4,
-  reviewCount: 15,
+  reviewCount: 16,
 
   collections: [
     {
-      name: 'Best Sellers',
-      slug: 'best-sellers'
-    }
+      name: 'New Arrivals',
+      slug: 'new-arrivals',
+    },
   ],
 
-  active: true
+  active: true,
 },
 ];
