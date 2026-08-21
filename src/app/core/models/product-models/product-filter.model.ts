@@ -5,8 +5,9 @@ export interface ProductFilters {
   category?: Category;
   subcategory?: string;
   brand?: string;
-//   price?: PriceRange;
+  minPrice?: number;
+  maxPrice?: number;
   rating?: number;
   collection?: string;
-//   sort?: SortOption;
+  sort?: 'price-asc' | 'price-desc' | 'rating' | 'popular';
 }

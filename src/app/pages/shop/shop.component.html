@@ -55,7 +55,7 @@
         <!-- Rating -->
         <section class="rating-filter" aria-labelledby="ratingFilterHeading">
           <h2 class="shop-filters__title" id="ratingFilterHeading">Rating</h2>
-          <app-rating-filter></app-rating-filter>
+          <app-rating-filter (ratingChange)="onRatingChange($event)"></app-rating-filter>
         </section>
       </div>
     </aside>
@@ -74,7 +74,7 @@
           <span>Filters</span>
         </button>
 
-        <p class="shop-toolbar__count">Showing 1&ndash;12 of 48 results</p>
+        <p class="shop-toolbar__count"Showing >Showing {{ products.length }} results</p>
 
         <div class="shop-toolbar__sort">
           <label for="shopSort" class="shop-toolbar__sort-label">Sort by</label>

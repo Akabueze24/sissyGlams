@@ -11,17 +11,19 @@
     <div class="topbar__left d-flex align-items-center">
       <ul class="social-list list-unstyled d-flex align-items-center mb-0">
         <li>
-          <a href="#" aria-label="Facebook"
-            ><i class="fa-brands fa-facebook-f"></i
-          ></a>
+          <a href="#" aria-label="Facebook">
+            <i class="fa-brands fa-facebook-f"></i>
+          </a>
         </li>
         <li>
-          <a href="#" aria-label="Instagram"
-            ><i class="fa-brands fa-instagram"></i
-          ></a>
+          <a href="#" aria-label="Instagram">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
         </li>
         <li>
-          <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" aria-label="X">
+            <i class="fa-brands fa-x-twitter"></i>
+          </a>
         </li>
       </ul>
 
@@ -91,12 +93,11 @@
         </button>
 
         <a class="logo logo--mobile" href="/">
-          <span class="logo__word"
-            >Sissy<span class="logo__word--accent">Dream</span></span
-          >
+          <span class="logo__word">
+            Sissy<span class="logo__word--accent">Dream</span>
+          </span>
         </a>
 
-        <!-- Wishlist -->
         <a
           class="mobile-wishlist-btn"
           routerLink="/account/wishlist"
@@ -112,7 +113,9 @@
           (click)="onAccountClick()"
         >
           <i class="fa-regular fa-user"></i>
-          <span>{{ currentUser ? (currentUser.firstName || 'My Account') : 'Account' }}</span>
+          <span>
+            {{ currentUser ? (currentUser.firstName || 'My Account') : 'Account' }}
+          </span>
         </a>
 
         <a class="cart-icon-btn" routerLink="/cart" aria-label="Cart">
@@ -127,9 +130,9 @@
           <i class="fa-solid fa-face-smile"></i>
         </span>
         <span class="logo__text">
-          <span class="logo__word"
-            >Sissy<span class="logo__word--accent">Dream</span></span
-          >
+          <span class="logo__word">
+            Sissy<span class="logo__word--accent">Dream</span>
+          </span>
           <span class="logo__tagline">Sissy Maker Store</span>
         </span>
       </a>
@@ -159,7 +162,6 @@
             <i class="fa-regular fa-heart"></i>
             <span class="wishlist-badge">{{ wishlistCount }}</span>
           </span>
-
           <span>WISHLIST</span>
         </a>
 
@@ -170,7 +172,9 @@
           (click)="onAccountClick()"
         >
           <i class="fa-regular fa-user"></i>
-          <span>{{ currentUser ? (currentUser.firstName || 'My Account') : 'Account' }}</span>
+          <span>
+            {{ currentUser ? (currentUser.firstName || 'My Account') : 'Account' }}
+          </span>
         </a>
 
         <span class="header-actions__divider" aria-hidden="true"></span>
@@ -211,299 +215,72 @@
     <div class="category-nav__inner container-fluid">
       <div class="collapse navbar-collapse" id="categoryNavCollapse">
         <ul class="navbar-nav category-nav__list">
-          <li class="nav-item dropdown">
+          <!-- Fixed: New -->
+          <li class="nav-item">
             <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
+              class="nav-link"
+              routerLink="/shop"
+              [queryParams]="{ collection: 'new-arrivals' }"
             >
               New
             </a>
-
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/dresses"> New Items </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/mini"> Best Sellers </a>
-              </li>
-           
-            </ul>
           </li>
 
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Dresses
-            </a>
+          <!-- Dynamic categories -->
+          <li
+            class="nav-item"
+            *ngFor="let item of categoryNav"
+            [class.dropdown]="item.subcategories.length"
+          >
+            <ng-container *ngIf="item.subcategories.length; else simpleLink">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                {{ item.label }}
+              </a>
 
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/dresses"> All Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/bodycon">
-                  Bodycon Dresses
-                </a>
-              </li>
-            </ul>
+              <ul class="dropdown-menu">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/shop"
+                    [queryParams]="{ category: item.category }"
+                  >
+                    All {{ item.label }}
+                  </a>
+                </li>
+
+                <li *ngFor="let sub of item.subcategories">
+                  <a
+                    class="dropdown-item"
+                    routerLink="/shop"
+                    [queryParams]="{
+                      category: item.category,
+                      subcategory: sub.slug
+                    }"
+                  >
+                    {{ sub.name }}
+                  </a>
+                </li>
+              </ul>
+            </ng-container>
+
+            <ng-template #simpleLink>
+              <a
+                class="nav-link"
+                routerLink="/shop"
+                [queryParams]="{ category: item.category }"
+              >
+                {{ item.label }}
+              </a>
+            </ng-template>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="/wigs"> Wigs </a>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Lingerie
-            </a>
-
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/dresses"> All Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/bodycon">
-                  Bodycon Dresses
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Sharper
-            </a>
-
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/dresses"> All Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/bodycon">
-                  Bodycon Dresses
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="/wigs"> Shoes </a>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              tops
-            </a>
-
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/dresses"> All Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/bodycon">
-                  Bodycon Dresses
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Bottoms
-            </a>
-
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/dresses"> All Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/bodycon">
-                  Bodycon Dresses
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Sissy Toys
-            </a>
-
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/dresses"> All Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/bodycon">
-                  Bodycon Dresses
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Make Up
-            </a>
-
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/dresses"> All Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/bodycon">
-                  Bodycon Dresses
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Accessories
-            </a>
-
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/dresses"> All Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/bodycon">
-                  Bodycon Dresses
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Collections
-            </a>
-
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/dresses"> All Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/bodycon">
-                  Bodycon Dresses
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          <!-- <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Sissy Fun
-            </a>
-
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/dresses"> All Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/mini"> Mini Dresses </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/dresses/bodycon">
-                  Bodycon Dresses
-                </a>
-              </li>
-            </ul>
-          </li> -->
-
-          <li class="nav-item">
-            <a class="nav-link" href="/wigs"> Ebooks </a>
-          </li>
+         
         </ul>
       </div>
     </div>

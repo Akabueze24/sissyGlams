@@ -1,41 +1,58 @@
 <ul class="rating-filter__list">
-            <li>
-              <label class="rating-filter__option">
-                <input type="checkbox" class="rating-filter__checkbox" />
-                <span class="rating-filter__stars" aria-hidden="true">
-                  <i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i>
-                </span>
-                <span class="rating-filter__text">4 stars &amp; up</span>
-              </label>
-            </li>
-            <li>
-              <label class="rating-filter__option">
-                <input type="checkbox" class="rating-filter__checkbox" />
-                <span class="rating-filter__stars" aria-hidden="true">
-                  <i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-regular fa-star"></i
-                  ><i class="fa-regular fa-star"></i>
-                </span>
-                <span class="rating-filter__text">3 stars &amp; up</span>
-              </label>
-            </li>
-            <li>
-              <label class="rating-filter__option">
-                <input type="checkbox" class="rating-filter__checkbox" />
-                <span class="rating-filter__stars" aria-hidden="true">
-                  <i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-regular fa-star"></i
-                  ><i class="fa-regular fa-star"></i
-                  ><i class="fa-regular fa-star"></i>
-                </span>
-                <span class="rating-filter__text">2 stars &amp; up</span>
-              </label>
-            </li>
-          </ul>
+  <li>
+    <label class="rating-filter__option">
+      <input
+        type="checkbox"
+        class="rating-filter__checkbox"
+        [checked]="selectedRating === 4"
+        (change)="selectRating(4)"
+      />
+      <span class="rating-filter__stars" aria-hidden="true">
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+      </span>
+      <span class="rating-filter__text">4 stars &amp; up</span>
+    </label>
+  </li>
+
+  <li>
+    <label class="rating-filter__option">
+      <input
+        type="checkbox"
+        class="rating-filter__checkbox"
+        [checked]="selectedRating === 3"
+        (change)="selectRating(3)"
+      />
+      <span class="rating-filter__stars" aria-hidden="true">
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-regular fa-star"></i>
+        <i class="fa-regular fa-star"></i>
+      </span>
+      <span class="rating-filter__text">3 stars &amp; up</span>
+    </label>
+  </li>
+
+  <li>
+    <label class="rating-filter__option">
+      <input
+        type="checkbox"
+        class="rating-filter__checkbox"
+        [checked]="selectedRating === 2"
+        (change)="selectRating(2)"
+      />
+      <span class="rating-filter__stars" aria-hidden="true">
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-regular fa-star"></i>
+        <i class="fa-regular fa-star"></i>
+        <i class="fa-regular fa-star"></i>
+      </span>
+      <span class="rating-filter__text">2 stars &amp; up</span>
+    </label>
+  </li>
+</ul>

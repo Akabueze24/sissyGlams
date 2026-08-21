@@ -5,7 +5,10 @@ import { Subscription } from 'rxjs';
 import { CartService } from 'src/app/core/services/cart-service/cart.service';
 import { WishlistService } from 'src/app/core/services/wishlist-service/wishlist.service';
 import { AuthService } from 'src/app/core/services/auth-service/auth.service';
+import { ProductService } from 'src/app/core/services/product-service/product.service';
+
 import { User } from 'src/app/core/models/auth-models/user.model';
+import { CategoryNavItem } from 'src/app/core/models/product-models/category-nav-item.model';
 
 @Component({
   selector: 'app-header',
@@ -35,6 +38,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private userSubscription!: Subscription;
 
   // ============================================================
+  // CATEGORY NAV
+  // ============================================================
+
+  categoryNav: CategoryNavItem[] = [];
+
+  // ============================================================
   // CONSTRUCTOR
   // ============================================================
 
@@ -42,7 +51,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private cartService: CartService,
     private wishlistService: WishlistService,
     private authService: AuthService,
-    private router: Router,
+    private productService: ProductService,
+    private router: Router
   ) {}
 
   // ============================================================
@@ -68,6 +78,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.userSubscription = this.authService.currentUser$.subscribe((user) => {
       this.currentUser = user;
     });
+
+    // Category navigation
+    this.categoryNav = this.productService.getCategoryNav();
   }
 
   ngOnDestroy(): void {

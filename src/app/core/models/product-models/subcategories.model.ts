@@ -81,4 +81,15 @@ export const SUBCATEGORIES: Subcategory[] = [
   },
   { name: 'Earrings', slug: 'earrings', category: 'accessories' },
   { name: 'Purses', slug: 'purses', category: 'accessories' },
+
+  //collection
+  { name: 'Sissy Fitness', slug: 'sissy-fitness', category: 'collections' },
+  { name: 'Sissy Maid', slug: 'sissy-maid', category: 'collections' },
+  { name: 'Goth Style', slug: 'goth-style', category: 'collections' },
+  { name: 'DADDY / ABDL', slug: 'daddy-abdl', category: 'collections' },
+  { name: 'Lolita Fashion', slug: 'lolita-fashion', category: 'collections' },
+  { name: 'School Girl', slug: 'school-girl', category: 'collections' },
+  { name: 'Sissy Cosplay', slug: 'sissy-cosplay', category: 'collections' },
+  { name: 'BBC Addiction', slug: 'bbc-addiction', category: 'collections' },
+  { name: 'Feminize Your Space', slug: 'feminize-your-space', category: 'collections', },
 ];

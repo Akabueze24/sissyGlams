@@ -296,7 +296,6 @@
           >
             <i
               class="fa-heart"
-              
               [class.fa-solid]="isWishlisted"
               [class.fa-regular]="!isWishlisted"
             ></i>
@@ -441,6 +440,25 @@
       >
         <p>Customer reviews will appear here.</p>
       </div>
+    </div>
+  </section>
+  <section
+    class="related-products"
+    aria-label="Related products"
+    *ngIf="relatedProducts.length"
+  >
+    <div class="container-fluid">
+      <div class="section-heading">
+        <div class="section-heading__row">
+          <span class="section-heading__line" aria-hidden="true"></span>
+          <h2 class="section-heading__title">You May Also Like</h2>
+          <span class="section-heading__line" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <app-collection-slider
+        [products]="relatedProducts"
+      ></app-collection-slider>
     </div>
   </section>
 </main>

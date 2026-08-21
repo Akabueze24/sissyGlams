@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+
 import { ProductColor } from 'src/app/core/models/product-models/product-color.model';
 import { ProductLength } from 'src/app/core/models/product-models/product-length.model';
 import { Product } from 'src/app/core/models/product-models/product.model';
 import { ProductSize } from 'src/app/core/models/product-models/size.model';
+
 import { CartService } from 'src/app/core/services/cart-service/cart.service';
 import { ProductService } from 'src/app/core/services/product-service/product.service';
 import { WishlistService } from 'src/app/core/services/wishlist-service/wishlist.service';
@@ -13,8 +16,19 @@ import { WishlistService } from 'src/app/core/services/wishlist-service/wishlist
   templateUrl: './product-view.component.html',
   styleUrls: ['./product-view.component.scss'],
 })
-export class ProductViewComponent implements OnInit {
+export class ProductViewComponent implements OnInit, OnDestroy {
+  // ============================================================
+  // PRODUCT STATE
+  // ============================================================
+
   product?: Product;
+  relatedProducts: Product[] = [];
+  productNotFound = false;
+
+  // ============================================================
+  // SELECTION STATE
+  // ============================================================
+
   selectedColor?: ProductColor;
   selectedSize?: ProductSize;
   selectedLength?: ProductLength;
@@ -23,41 +37,108 @@ export class ProductViewComponent implements OnInit {
   quantity = 1;
   isWishlisted = false;
 
+  // ============================================================
+  // SUBSCRIPTIONS
+  // ============================================================
+
+  private routeSubscription!: Subscription;
+  private wishlistSubscription!: Subscription;
+
+  // ============================================================
+  // CONSTRUCTOR
+  // ============================================================
+
   constructor(
     private productService: ProductService,
     private route: ActivatedRoute,
     private cartService: CartService,
-    private wishlistService: WishlistService,
+    private wishlistService: WishlistService
   ) {}
 
+  // ============================================================
+  // LIFECYCLE
+  // ============================================================
+
   ngOnInit(): void {
-    const slug = this.route.snapshot.paramMap.get('slug');
-
-    if (slug) {
-      this.product = this.productService.getProductBySlug(slug);
-
-      if (this.product) {
-        this.isWishlisted = this.wishlistService.isInWishlist(this.product);
-      }
-
-      if (this.product?.colors?.length) {
-        this.selectedColor = this.product.colors[0];
-
-        this.updateGallery();
-      }
-      if (this.product?.sizes?.length) {
-        this.selectedSize = this.product.sizes[0];
-      }
-      if (this.product?.lengths) {
-        this.selectedLength = this.product.lengths[0];
-      }
-    }
-    this.wishlistService.wishlistItems$.subscribe(() => {
-      if (this.product) {
-        this.isWishlisted = this.wishlistService.isInWishlist(this.product);
-      }
+    this.routeSubscription = this.route.paramMap.subscribe((params) => {
+      const slug = params.get('slug');
+      this.loadProduct(slug);
     });
+
+    this.wishlistSubscription = this.wishlistService.wishlistItems$.subscribe(
+      () => {
+        if (this.product) {
+          this.isWishlisted = this.wishlistService.isInWishlist(this.product);
+        }
+      }
+    );
   }
+
+  ngOnDestroy(): void {
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+
+    if (this.wishlistSubscription) {
+      this.wishlistSubscription.unsubscribe();
+    }
+  }
+
+  // ============================================================
+  // LOAD PRODUCT
+  // ============================================================
+
+  private loadProduct(slug: string | null): void {
+    this.product = undefined;
+    this.relatedProducts = [];
+    this.productNotFound = false;
+    this.selectedColor = undefined;
+    this.selectedSize = undefined;
+    this.selectedLength = undefined;
+    this.galleryImages = [];
+    this.quantity = 1;
+    this.isWishlisted = false;
+
+    if (!slug) {
+      this.productNotFound = true;
+      return;
+    }
+
+    const found = this.productService.getProductBySlug(slug);
+
+    if (!found) {
+      this.productNotFound = true;
+      return;
+    }
+
+    this.product = found;
+    this.productNotFound = false;
+
+    this.isWishlisted = this.wishlistService.isInWishlist(this.product);
+
+    if (this.product.colors?.length) {
+      this.selectedColor = this.product.colors[0];
+    }
+
+    if (this.product.sizes?.length) {
+      this.selectedSize = this.product.sizes[0];
+    }
+
+    if (this.product.lengths?.length) {
+      this.selectedLength = this.product.lengths[0];
+    }
+
+    this.updateGallery();
+
+    this.relatedProducts = this.productService.getRelatedProducts(
+      this.product,
+      8
+    );
+  }
+
+  // ============================================================
+  // GALLERY + SELECTION
+  // ============================================================
 
   selectColor(color: ProductColor): void {
     this.selectedColor = color;
@@ -65,13 +146,18 @@ export class ProductViewComponent implements OnInit {
   }
 
   updateGallery(): void {
-    if (!this.product?.colorGalleries || !this.selectedColor) {
-      this.galleryImages = this.product?.images ?? [];
+    if (!this.product) {
+      this.galleryImages = [];
+      return;
+    }
+
+    if (!this.product.colorGalleries || !this.selectedColor) {
+      this.galleryImages = this.product.images ?? [];
       return;
     }
 
     const gallery = this.product.colorGalleries.find(
-      (gallery) => gallery.color.value === this.selectedColor?.value,
+      (item) => item.color.value === this.selectedColor?.value
     );
 
     this.galleryImages = gallery?.images ?? this.product.images;
@@ -85,6 +171,10 @@ export class ProductViewComponent implements OnInit {
     this.selectedLength = length;
   }
 
+  // ============================================================
+  // QUANTITY
+  // ============================================================
+
   increaseQuantity(): void {
     this.quantity++;
   }
@@ -94,6 +184,10 @@ export class ProductViewComponent implements OnInit {
       this.quantity--;
     }
   }
+
+  // ============================================================
+  // CART
+  // ============================================================
 
   addToCart(): void {
     if (!this.product) {
@@ -109,6 +203,10 @@ export class ProductViewComponent implements OnInit {
     });
   }
 
+  // ============================================================
+  // WISHLIST
+  // ============================================================
+
   toggleWishlist(): void {
     if (!this.product) {
       return;
@@ -116,10 +214,10 @@ export class ProductViewComponent implements OnInit {
 
     if (this.isWishlisted) {
       this.wishlistService.removeFromWishlist(this.product);
-      this.isWishlisted = false;
     } else {
       this.wishlistService.addToWishlist(this.product);
-      this.isWishlisted = true;
     }
+
+    this.isWishlisted = this.wishlistService.isInWishlist(this.product);
   }
 }

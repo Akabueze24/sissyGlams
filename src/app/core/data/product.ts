@@ -121,7 +121,7 @@ export const PRODUCTS: Product[] = [
       { name: 'Extra Large', value: 'XL' },
     ],
 
-    rating: 4.8,
+    rating: 2.5,
     reviewCount: 36,
 
     collections: [
@@ -231,7 +231,7 @@ export const PRODUCTS: Product[] = [
       { name: 'Extra Large', value: 'XL' },
     ],
 
-    rating: 4.6,
+    rating: 3.2,
     reviewCount: 21,
 
     collections: [
@@ -340,7 +340,7 @@ export const PRODUCTS: Product[] = [
       { name: 'Extra Large', value: 'XL' },
     ],
 
-    rating: 4.9,
+    rating: 2.0,
     reviewCount: 18,
 
     collections: [
@@ -449,7 +449,7 @@ export const PRODUCTS: Product[] = [
       { name: 'Large', value: 'L' },
     ],
 
-    rating: 4.7,
+    rating: 1.5,
     reviewCount: 29,
 
     collections: [
