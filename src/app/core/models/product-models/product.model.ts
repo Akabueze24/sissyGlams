@@ -19,7 +19,7 @@ export interface Product {
 
   // Classification
   category: Category;
-  subcategory: Subcategory;
+  subcategory?: string;
 
   // Images
   images: string[];

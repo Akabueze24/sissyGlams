@@ -1,0 +1,206 @@
+@import "../../../styles/variables";
+
+// ============================================================
+// TOAST CONTAINER
+// ============================================================
+
+.toast-container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  width: min(575px, calc(100vw - 2rem));
+
+  pointer-events: none;
+
+  @media (max-width: 575px) {
+    top: 1rem;
+    right: 1rem;
+    left: 1rem;
+
+    width: auto;
+  }
+}
+
+// ============================================================
+// TOAST ITEM
+// ============================================================
+
+.toast-item {
+  display: flex;
+  align-items: center;
+
+  min-height: 64px;
+  padding: 0.85rem 1rem;
+
+  background-color: $color-white;
+  border: 1px solid $color-border;
+  border-radius: 0.6rem;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+
+  font-family: $font-body;
+
+  pointer-events: auto;
+
+  animation: toast-slide-in 0.25s ease-out;
+
+  // ==========================================================
+  // ICON
+  // ==========================================================
+
+  &__icon {
+    flex-shrink: 0;
+
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 0.75rem;
+
+    font-size: 1rem;
+
+    i {
+      display: block;
+    }
+  }
+
+  // ==========================================================
+  // MESSAGE
+  // ==========================================================
+
+  &__message {
+    flex: 1;
+
+    font-size: 0.85rem;
+    line-height: 1.4;
+
+    color: $color-text-dark;
+  }
+
+  // ==========================================================
+  // CLOSE BUTTON
+  // ==========================================================
+
+  &__close {
+    flex-shrink: 0;
+
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-left: 0.5rem;
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background-color: transparent;
+    color: $color-text-muted;
+
+    cursor: pointer;
+
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease;
+
+    &:hover {
+      color: $color-text-dark;
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  // ==========================================================
+  // SUCCESS
+  // ==========================================================
+
+  &--success {
+    border-left: 4px solid #198754;
+
+    .toast-item__icon,
+    .toast-item__icon i {
+      color: #198754;
+    }
+  }
+
+  // ==========================================================
+  // ERROR
+  // ==========================================================
+
+  &--error {
+    border-left: 4px solid $brand-pink;
+
+    .toast-item__icon,
+    .toast-item__icon i {
+      color: $brand-pink;
+    }
+  }
+
+  // ==========================================================
+  // WARNING
+  // ==========================================================
+
+  &--warning {
+    border-left: 4px solid #f0ad4e;
+
+    .toast-item__icon,
+    .toast-item__icon i {
+      color: #f0ad4e;
+    }
+  }
+
+  // ==========================================================
+  // INFO
+  // ==========================================================
+
+  &--info {
+    border-left: 4px solid #0d6efd;
+
+    .toast-item__icon,
+    .toast-item__icon i {
+      color: #0d6efd;
+    }
+  }
+}
+
+// ============================================================
+// TOAST ANIMATION
+// ============================================================
+
+@keyframes toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// ============================================================
+// MOBILE
+// ============================================================
+
+@media (max-width: 575px) {
+  .toast-item {
+    min-height: 58px;
+    padding: 0.75rem 0.85rem;
+
+    &__message {
+      font-size: 0.82rem;
+    }
+  }
+}

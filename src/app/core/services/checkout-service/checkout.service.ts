@@ -7,13 +7,19 @@ import { SHIPPING_RATES } from '../../models/checkout-models/data/shipping.data'
 import { CheckoutPreferences } from '../../models/checkout-models/checkout-preferences.model';
 import { Order } from '../../models/order-models/order.model';
 
+import { ToastService } from '../toast-service/toast.service';
+
 @Injectable({
   providedIn: 'root',
 })
 export class CheckoutService {
   private readonly CHECKOUT_STORAGE_KEY = 'sissy-dream-checkout';
 
-  constructor() {}
+  // ============================================================
+  // CONSTRUCTOR
+  // ============================================================
+
+  constructor(private toastService: ToastService) {}
 
   // ============================================================
   // GET SHIPPING QUOTE
@@ -85,11 +91,14 @@ export class CheckoutService {
 
   saveCheckoutPreferences(data: CheckoutPreferences): void {
     localStorage.setItem(this.CHECKOUT_STORAGE_KEY, JSON.stringify(data));
+
+    this.toastService.success('Your checkout preferences have been saved.');
   }
 
   // ============================================================
   // LOAD CHECKOUT PREFERENCES
   // ============================================================
+
   getCheckoutPreferences(): CheckoutPreferences | null {
     const savedData = localStorage.getItem(this.CHECKOUT_STORAGE_KEY);
 
@@ -110,25 +119,9 @@ export class CheckoutService {
 
   clearCheckoutPreferences(): void {
     localStorage.removeItem(this.CHECKOUT_STORAGE_KEY);
+
+    this.toastService.info('Your checkout preferences have been cleared.');
   }
-
-  // ============================================================
-  // PREPARE CHECKOUT
-  // ============================================================
-
-  // prepareCheckout(
-  //   checkoutData: CheckoutData,
-  //   orderValue: number,
-  //   shippingCost: number | null,
-  //   total: number | null,
-  // ) {
-  //   return {
-  //     ...checkoutData,
-  //     orderValue,
-  //     shippingCost,
-  //     total,
-  //   };
-  // }
 
   // ============================================================
   // CREATE ORDER
@@ -141,7 +134,7 @@ export class CheckoutService {
     shippingCost: number,
     total: number,
   ): Order {
-    return {
+    const order: Order = {
       id: this.generateOrderId(),
 
       customer: {
@@ -187,6 +180,14 @@ export class CheckoutService {
 
       createdAt: new Date().toISOString(),
     };
+
+    // At this stage we have only created the order object.
+    // The real backend will eventually create and save
+    // the order in the database.
+
+    this.toastService.success('Your order has been prepared successfully.');
+
+    return order;
   }
 
   // ============================================================

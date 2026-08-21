@@ -32,6 +32,7 @@ import { EditAccountComponent } from './account/pages/edit-account/edit-account.
 import { CustomerSupportComponent } from './account/pages/customer-support/customer-support.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component';
 import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
+import { ToastComponent } from './shared/toast/toast.component';
 
 register();
 
@@ -65,6 +66,7 @@ register();
     CustomerSupportComponent,
     CheckoutComponent,
     OrderConfirmationComponent,
+    ToastComponent,
   
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

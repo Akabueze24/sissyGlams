@@ -1,4 +1,4 @@
-@import '../../../../styles/variables';
+@import "../../../../styles/variables";
 
 // ============================================================
 // Page header
@@ -98,23 +98,46 @@
   }
 }
 
-// --- Password field wrapper — icon is decorative only (no toggle yet) ---
+
+// ============================================================
+// Password fields
+// ============================================================
+
 .account-form__password {
   position: relative;
   display: flex;
   align-items: center;
 
   .account-form__input {
-    padding-right: 2.6rem;
+    padding-right: 2.8rem;
   }
 }
 
 .account-form__password-toggle {
   position: absolute;
   right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+
+  border: none;
+  background: transparent;
+  padding: 0;
+
   color: $color-text-muted;
   font-size: 0.85rem;
-  pointer-events: none;
+
+  cursor: pointer;
+
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $brand-pink;
+  }
+
+  &:focus {
+    outline: none;
+    color: $brand-pink;
+  }
 }
 
 // ============================================================
@@ -143,4 +166,8 @@
   &:hover {
     background-color: $brand-pink-dark;
   }
+}
+
+.account-form__error {
+  color: $brand-pink;
 }

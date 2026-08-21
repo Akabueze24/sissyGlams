@@ -6,9 +6,10 @@ import { Register } from '../../models/auth-models/register.model';
 import { User } from '../../models/auth-models/user.model';
 import { AuthModalRequest } from '../../models/auth-models/auth-modal-request.model';
 
+import { ToastService } from '../toast-service/toast.service';
+
 // New type for the modal request
 export type AuthMode = 'login' | 'register';
-
 
 @Injectable({
   providedIn: 'root',
@@ -18,11 +19,15 @@ export class AuthService {
   // AUTHENTICATED USER
   // ============================================================
 
-  private currentUserSubject = new BehaviorSubject<User | null>(this.loadUser());
-  currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
+  private currentUserSubject = new BehaviorSubject<User | null>(
+    this.loadUser(),
+  );
+
+  currentUser$: Observable<User | null> =
+    this.currentUserSubject.asObservable();
 
   // ============================================================
-  // AUTH MODAL CONTROL (NEW)
+  // AUTH MODAL CONTROL
   // ============================================================
 
   // This Subject is used to tell the AuthComponent to open
@@ -31,12 +36,26 @@ export class AuthService {
   // Components can subscribe to this
   authModalRequest$ = this.authModalRequestSubject.asObservable();
 
+  // ============================================================
+  // CONSTRUCTOR
+  // ============================================================
+
+  constructor(private toastService: ToastService) {}
+
+  // ============================================================
+  // OPEN AUTH MODAL
+  // ============================================================
+
   /**
    * Call this method from anywhere (Guard, Header, Checkout, etc.)
    * to open the Auth modal.
    */
-  openAuthModal(mode: AuthMode = 'login', redirectUrl: string = '/account'): void {
+  openAuthModal(
+    mode: AuthMode = 'login',
+    redirectUrl: string = '/account',
+  ): void {
     console.log('2. AuthService: openAuthModal called');
+
     this.authModalRequestSubject.next({
       mode,
       redirectUrl,
@@ -59,6 +78,9 @@ export class AuthService {
     };
 
     this.saveUser(user);
+
+    // Show success toast
+    this.toastService.success('Your account has been created successfully.');
   }
 
   // ============================================================
@@ -72,10 +94,16 @@ export class AuthService {
     const savedUser = this.loadUser();
 
     if (!savedUser) {
+      // User does not exist
+      this.toastService.error('Incorrect email or password.');
+
       return;
     }
 
     this.currentUserSubject.next(savedUser);
+
+    // Show success toast
+    this.toastService.success(`Welcome back, ${savedUser.firstName}!`);
   }
 
   // ============================================================
@@ -84,7 +112,11 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('sissy-dream-user');
+
     this.currentUserSubject.next(null);
+
+    // Show success toast
+    this.toastService.success('You have been logged out successfully.');
   }
 
   // ============================================================
@@ -109,6 +141,7 @@ export class AuthService {
 
   private saveUser(user: User): void {
     localStorage.setItem('sissy-dream-user', JSON.stringify(user));
+
     this.currentUserSubject.next(user);
   }
 
@@ -128,5 +161,16 @@ export class AuthService {
     } catch {
       return null;
     }
+  }
+
+  // ============================================================
+  // UPDATE USER
+  // ============================================================
+
+  updateUser(user: User): void {
+    this.saveUser(user);
+
+    // Show success toast
+    this.toastService.success('Your account has been updated successfully.');
   }
 }

@@ -1,0 +1,27 @@
+<div class="toast-container">
+  <div
+    class="toast-item"
+    *ngFor="let toast of toasts"
+    [ngClass]="'toast-item--' + toast.type"
+  >
+    <!-- ICON -->
+    <div class="toast-item__icon">
+      <i [class]="getIcon(toast.type)" aria-hidden="true"></i>
+    </div>
+
+    <!-- MESSAGE -->
+    <div class="toast-item__message">
+      {{ toast.message }}
+    </div>
+
+    <!-- CLOSE BUTTON -->
+    <button
+      type="button"
+      class="toast-item__close"
+      aria-label="Close notification"
+      (click)="removeToast(toast.id)"
+    >
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+  </div>
+</div>

@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+
 import { CartItem } from '../../models/cart-models/cart.model';
+import { ToastService } from '../toast-service/toast.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartService {
-  private cartItems: CartItem[] = this.loadCart();
-
   // ============================================================
   // CART ITEMS
   // ============================================================
+
+  private cartItems: CartItem[] = this.loadCart();
 
   private cartItemsSubject = new BehaviorSubject<CartItem[]>(this.cartItems);
 
@@ -35,6 +37,12 @@ export class CartService {
   );
 
   cartTotal$ = this.cartTotalSubject.asObservable();
+
+  // ============================================================
+  // CONSTRUCTOR
+  // ============================================================
+
+  constructor(private toastService: ToastService) {}
 
   // ============================================================
   // LOAD CART FROM LOCAL STORAGE
@@ -97,6 +105,9 @@ export class CartService {
     }
 
     this.updateCart();
+
+    // Toast notification
+    this.toastService.success('Product added to your cart.');
   }
 
   // ============================================================
@@ -116,7 +127,11 @@ export class CartService {
 
     if (index !== -1) {
       this.cartItems.splice(index, 1);
+
       this.updateCart();
+
+      // Toast notification
+      this.toastService.info('Product removed from your cart.');
     }
   }
 
@@ -126,6 +141,7 @@ export class CartService {
 
   increaseQuantity(item: CartItem): void {
     item.quantity++;
+
     this.updateCart();
   }
 
@@ -136,6 +152,7 @@ export class CartService {
   decreaseQuantity(item: CartItem): void {
     if (item.quantity > 1) {
       item.quantity--;
+
       this.updateCart();
     }
   }
@@ -184,5 +201,8 @@ export class CartService {
     this.cartItems = [];
 
     this.updateCart();
+
+    // Toast notification
+    this.toastService.info('Your cart has been cleared.');
   }
 }
