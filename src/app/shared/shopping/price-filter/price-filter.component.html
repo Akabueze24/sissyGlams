@@ -5,16 +5,25 @@
   <input
     type="range"
     class="price-filter__input price-filter__input--min"
+    [min]="absoluteMin"
+    [max]="absoluteMax"
+    [value]="minPrice"
+    (input)="onMinChange($event)"
     aria-label="Minimum price"
   />
+
   <input
     type="range"
     class="price-filter__input price-filter__input--max"
+    [min]="absoluteMin"
+    [max]="absoluteMax"
+    [value]="maxPrice"
+    (input)="onMaxChange($event)"
     aria-label="Maximum price"
   />
 </div>
 
 <div class="price-filter__values">
-  <span>Min: $100</span>
-  <span>Max: $1000</span>
+  <span>Min: ${{ minPrice }}</span>
+  <span>Max: ${{ maxPrice }}</span>
 </div>

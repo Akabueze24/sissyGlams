@@ -4,7 +4,7 @@ import { Collection } from './collection.model';
 import { ProductColor } from './product-color.model';
 import { ProductLength } from './product-length.model';
 import { ColorGallery } from './color-gallery.model';
-import { ProductDetails } from './product-detals.model';
+import { ProductDetails } from './product-details.model';
 
 export interface Product {
   // ========================================

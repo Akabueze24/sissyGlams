@@ -2,23 +2,32 @@
   <!-- Breadcrumb -->
   <nav aria-label="breadcrumb" class="shop-breadcrumb-nav">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/">Home</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Lingerie</li>
+      <li class="breadcrumb-item">
+        <a routerLink="/home">Home</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        {{ pageTitle }}
+      </li>
     </ol>
   </nav>
 
   <!-- Category title + description -->
   <header class="shop-header">
-    <h1 class="shop-header__title">Lingerie</h1>
-    <p class="shop-header__description">
-      Soft, delicate, and made to make you feel your most feminine self —
-      explore bras, panties, babydolls, corsets, and garter sets designed for
-      comfort and confidence.
-    </p>
+    <header class="shop-header">
+      <h1 class="shop-header__title">{{ pageTitle }}</h1>
+
+      <p
+        class="shop-header__description"
+        *ngIf="!filters.category && !filters.collection && !filters.subcategory"
+      >
+        Explore our full collection of dresses, lingerie, shapers, and more —
+        designed to help you look and feel your most confident self.
+      </p>
+    </header>
   </header>
 
   <div class="shop-layout">
-    <!-- Filter sidebar / mobile offcanvas — Category, Price, Rating ONLY -->
+    <!-- Filter sidebar / mobile offcanvas -->
     <aside
       class="offcanvas-lg offcanvas-start shop-filters"
       tabindex="-1"
@@ -48,19 +57,20 @@
         <!-- Price -->
         <section class="price-filter" aria-labelledby="priceFilterHeading">
           <h2 class="shop-filters__title" id="priceFilterHeading">Price</h2>
-
-          <app-price-filter></app-price-filter>
+          <app-price-filter (priceChange)="onPriceChange($event)"></app-price-filter>
         </section>
 
         <!-- Rating -->
         <section class="rating-filter" aria-labelledby="ratingFilterHeading">
           <h2 class="shop-filters__title" id="ratingFilterHeading">Rating</h2>
-          <app-rating-filter (ratingChange)="onRatingChange($event)"></app-rating-filter>
+          <app-rating-filter
+            (ratingChange)="onRatingChange($event)"
+          ></app-rating-filter>
         </section>
       </div>
     </aside>
 
-    <!-- Main content: toolbar + grid + pagination -->
+    <!-- Main content -->
     <div class="shop-main">
       <div class="shop-toolbar">
         <button
@@ -74,7 +84,12 @@
           <span>Filters</span>
         </button>
 
-        <p class="shop-toolbar__count"Showing >Showing {{ products.length }} results</p>
+        <p class="shop-toolbar__count">
+          Showing {{ products.length }} result<span
+            *ngIf="products.length !== 1"
+            >s</span
+          >
+        </p>
 
         <div class="shop-toolbar__sort">
           <label for="shopSort" class="shop-toolbar__sort-label">Sort by</label>
@@ -89,8 +104,16 @@
         </div>
       </div>
 
+      <!-- Empty state -->
+      <div *ngIf="!products.length" class="shop-empty text-center py-5">
+        <p>No products found for this filter.</p>
+        <a routerLink="/shop">View all products</a>
+      </div>
+
+      <!-- Product grid -->
       <div
         class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 g-lg-4 product-grid"
+        *ngIf="products.length"
       >
         <app-product-card
           *ngFor="let product of products"
@@ -98,7 +121,12 @@
         ></app-product-card>
       </div>
 
-      <nav aria-label="Product pagination" class="shop-pagination-nav">
+      <!-- Pagination (static for now) -->
+      <nav
+        aria-label="Product pagination"
+        class="shop-pagination-nav"
+        *ngIf="products.length"
+      >
         <ul class="pagination">
           <li class="page-item disabled">
             <a
@@ -113,10 +141,6 @@
           <li class="page-item active" aria-current="page">
             <a class="page-link" href="#">1</a>
           </li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">4</a></li>
-          <li class="page-item"><a class="page-link" href="#">5</a></li>
           <li class="page-item">
             <a class="page-link page-link--nav" href="#" aria-label="Next page">
               <span class="page-link--nav__label">Next</span>
@@ -126,19 +150,18 @@
         </ul>
       </nav>
 
-      <!--
-        Shopping Suggestions — moved out of the sidebar per latest spec.
-        Uses the same <app-product-card> as the main grid (no separate
-        card design). Static for now; swap these 4 slots for a
-        *ngFor over a ProductService result once that's wired up —
-        the markup shape (row > col > app-product-card) is already
-        ready for that.
-      -->
-      <section class="suggestions-section" aria-labelledby="suggestionsHeading">
+      <!-- Suggestions -->
+      <section
+        class="suggestions-section"
+        aria-labelledby="suggestionsHeading"
+        *ngIf="suggestedProducts.length"
+      >
         <h2 class="suggestions-section__title" id="suggestionsHeading">
           You May Also Like
         </h2>
-        <app-collection-slider></app-collection-slider>
+        <app-collection-slider
+          [products]="suggestedProducts"
+        ></app-collection-slider>
       </section>
     </div>
   </div>

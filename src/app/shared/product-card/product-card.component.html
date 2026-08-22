@@ -1,6 +1,6 @@
 <div class="col" *ngIf="product">
   <article class="product-card">
-    <div class="product-card__media">
+    <div class="product-card__media" [routerLink]="['/product-view', product.slug]">
       <span class="product-card__badge" *ngIf="product.oldPrice">
         -{{
           ((product.oldPrice - product.price) / product.oldPrice) * 100

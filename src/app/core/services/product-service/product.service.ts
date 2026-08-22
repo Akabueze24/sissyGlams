@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 
 import { Product } from '../../models/product-models/product.model';
 import { ProductFilters } from '../../models/product-models/product-filter.model';
@@ -6,27 +7,181 @@ import { Category } from '../../models/product-models/category.model';
 import { CategoryNavItem } from '../../models/product-models/category-nav-item.model';
 import { SUBCATEGORIES } from '../../models/product-models/subcategories.model';
 import { PRODUCTS } from '../../data/product';
+import { StoreCollection } from '../../models/product-models/store-collection.model';
+import { STORE_COLLECTIONS } from '../../models/product-models/store-collections';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   // ============================================================
-  // SOURCE OF TRUTH (mock for now)
+  // STATE (private subjects)
   // ============================================================
 
-  private readonly products: Product[] = PRODUCTS;
+  private productsSource = new BehaviorSubject<Product[]>(
+    PRODUCTS.filter((product) => product.active)
+  );
+
+  private filtersSource = new BehaviorSubject<ProductFilters>({});
 
   // ============================================================
-  // PUBLIC METHODS
+  // PUBLIC OBSERVABLES
   // ============================================================
 
-  getProducts(filters?: ProductFilters): Product[] {
-    let result = this.getActiveProducts();
+  products$ = this.productsSource.asObservable();
+  filters$ = this.filtersSource.asObservable();
 
-    if (!filters) {
-      return result;
+  filteredProducts$: Observable<Product[]> = combineLatest([
+    this.products$,
+    this.filters$,
+  ]).pipe(
+    map(([products, filters]) => this.applyFilters(products, filters))
+  );
+
+  // ============================================================
+  // FILTER STATE
+  // ============================================================
+
+  setFilters(filters: ProductFilters): void {
+    this.filtersSource.next(filters);
+  }
+
+  patchFilters(partial: ProductFilters): void {
+    this.filtersSource.next({
+      ...this.filtersSource.value,
+      ...partial,
+    });
+  }
+
+  getFilters(): ProductFilters {
+    return this.filtersSource.value;
+  }
+
+  // ============================================================
+  // LOOKUPS
+  // ============================================================
+
+  getProductById(id: string): Product | undefined {
+    return this.productsSource.value.find((product) => product.id === id);
+  }
+
+  getProductBySlug(slug: string): Product | undefined {
+    return this.productsSource.value.find((product) => product.slug === slug);
+  }
+
+  getProductsByCollection(collectionSlug: string): Product[] {
+    return this.productsSource.value.filter((product) =>
+      product.collections?.some(
+        (collection) => collection.slug === collectionSlug
+      )
+    );
+  }
+
+  getFeaturedProducts(limit: number = 8): Product[] {
+    return this.getProductsByCollection('featured').slice(0, limit);
+  }
+
+  getRelatedProducts(product: Product, limit: number = 8): Product[] {
+    const sameCategory = this.productsSource.value.filter(
+      (item) => item.id !== product.id && item.category === product.category
+    );
+
+    const sameSubcategory = sameCategory.filter(
+      (item) => item.subcategory === product.subcategory
+    );
+
+    let pool =
+      sameSubcategory.length >= limit ? sameSubcategory : sameCategory;
+
+    if (pool.length < limit) {
+      const others = this.productsSource.value.filter(
+        (item) =>
+          item.id !== product.id && !pool.some((p) => p.id === item.id)
+      );
+      pool = [...pool, ...others];
     }
+
+    return pool.slice(0, limit);
+  }
+
+  getProductsByCategory(category: Category): Product[] {
+    return this.productsSource.value.filter(
+      (product) => product.category === category
+    );
+  }
+
+  getProductsBySubcategory(subcategory: string): Product[] {
+    return this.productsSource.value.filter(
+      (product) => product.subcategory === subcategory
+    );
+  }
+
+  /**
+   * Live search suggestions for the header dropdown.
+   * Requires at least 2 characters.
+   */
+  searchSuggestions(term: string, limit: number = 6): Product[] {
+    const value = term.trim().toLowerCase();
+
+    if (value.length < 2) {
+      return [];
+    }
+
+    return this.applyFilters(this.productsSource.value, {
+      search: value,
+    }).slice(0, limit);
+  }
+
+  getPriceRange(): { min: number; max: number } {
+    const products = this.productsSource.value;
+
+    if (!products.length) {
+      return { min: 0, max: 100 };
+    }
+
+    const prices = products.map((product) => product.price);
+
+    return {
+      min: Math.floor(Math.min(...prices)),
+      max: Math.ceil(Math.max(...prices)),
+    };
+  }
+
+  getCategoryNav(): CategoryNavItem[] {
+    const categoryOrder: Category[] = [
+      'dresses',
+      'wigs',
+      'lingerie',
+      'shapers',
+      'shoes',
+      'tops',
+      'bottoms',
+      'sissy-toys',
+      'make-up',
+      'accessories',
+      'ebooks',
+    ];
+
+    return categoryOrder.map((category) => ({
+      category,
+      label: this.formatCategoryLabel(category),
+      subcategories: SUBCATEGORIES.filter((sub) => sub.category === category),
+    }));
+  }
+
+  getStoreCollections(): StoreCollection[] {
+    return STORE_COLLECTIONS;
+  }
+
+  // ============================================================
+  // PRIVATE HELPERS
+  // ============================================================
+
+  private applyFilters(
+    products: Product[],
+    filters: ProductFilters
+  ): Product[] {
+    let result = [...products];
 
     if (filters.search?.trim()) {
       const term = filters.search.trim().toLowerCase();
@@ -73,101 +228,15 @@ export class ProductService {
       );
     }
 
-    return result;
-  }
-
-  getProductById(id: string): Product | undefined {
-    return this.products.find((product) => product.id === id);
-  }
-
-  getProductBySlug(slug: string): Product | undefined {
-    return this.products.find((product) => product.slug === slug);
-  }
-
-  getProductsByCollection(collectionSlug: string): Product[] {
-    return this.getActiveProducts().filter((product) =>
-      product.collections?.some(
-        (collection) => collection.slug === collectionSlug
-      )
-    );
-  }
-
-  getFeaturedProducts(limit: number = 8): Product[] {
-    return this.getProductsByCollection('featured').slice(0, limit);
-  }
-
-  getRelatedProducts(product: Product, limit: number = 8): Product[] {
-    const sameCategory = this.getActiveProducts().filter(
-      (item) => item.id !== product.id && item.category === product.category
-    );
-
-    const sameSubcategory = sameCategory.filter(
-      (item) => item.subcategory === product.subcategory
-    );
-
-    let pool =
-      sameSubcategory.length >= limit ? sameSubcategory : sameCategory;
-
-    if (pool.length < limit) {
-      const others = this.getActiveProducts().filter(
-        (item) =>
-          item.id !== product.id && !pool.some((p) => p.id === item.id)
-      );
-
-      pool = [...pool, ...others];
+    if (filters.minPrice != null) {
+      result = result.filter((product) => product.price >= filters.minPrice!);
     }
 
-    return pool.slice(0, limit);
-  }
+    if (filters.maxPrice != null) {
+      result = result.filter((product) => product.price <= filters.maxPrice!);
+    }
 
-  getProductsByCategory(category: Category): Product[] {
-    return this.getActiveProducts().filter(
-      (product) => product.category === category
-    );
-  }
-
-  getProductsBySubcategory(subcategory: string): Product[] {
-    return this.getActiveProducts().filter(
-      (product) => product.subcategory === subcategory
-    );
-  }
-
-  searchProducts(term: string): Product[] {
-    return this.getProducts({ search: term });
-  }
-
-  /**
-   * Builds the category navigation used by Header and Shop sidebar.
-   */
-  getCategoryNav(): CategoryNavItem[] {
-    const categoryOrder: Category[] = [
-      'dresses',
-      'wigs',
-      'lingerie',
-      'shapers',
-      'shoes',
-      'tops',
-      'bottoms',
-      'sissy-toys',
-      'make-up',
-      'accessories',
-      'collections',
-      'ebooks',
-    ];
-
-    return categoryOrder.map((category) => ({
-      category,
-      label: this.formatCategoryLabel(category),
-      subcategories: SUBCATEGORIES.filter((sub) => sub.category === category),
-    }));
-  }
-
-  // ============================================================
-  // PRIVATE HELPERS
-  // ============================================================
-
-  private getActiveProducts(): Product[] {
-    return this.products.filter((product) => product.active);
+    return result;
   }
 
   private formatCategoryLabel(category: Category): string {

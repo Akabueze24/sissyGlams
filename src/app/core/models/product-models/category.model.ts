@@ -9,5 +9,4 @@ export type Category =
   | 'sissy-toys'
   | 'make-up'
   | 'accessories'
-  | 'collections'
   | 'ebooks';

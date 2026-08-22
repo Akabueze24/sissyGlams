@@ -375,7 +375,7 @@ export const PRODUCTS: Product[] = [
       'https://placehold.co/800x1000?text=Ruffled+Dress+4',
     ],
 
-    price: 89.99,
+    price: 897.99,
 
     productDetails: {
       description:

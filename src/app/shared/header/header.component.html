@@ -114,7 +114,9 @@
         >
           <i class="fa-regular fa-user"></i>
           <span>
-            {{ currentUser ? (currentUser.firstName || 'My Account') : 'Account' }}
+            {{
+              currentUser ? currentUser.firstName || "My Account" : "Account"
+            }}
           </span>
         </a>
 
@@ -138,18 +140,24 @@
       </a>
 
       <!-- Desktop: search -->
-      <form class="search-form d-none d-lg-flex" role="search">
+      <form
+        class="search-form d-none d-lg-flex"
+        role="search"
+        (ngSubmit)="onSearch($event)"
+      >
         <input
           class="search-form__input"
           type="search"
-          name="q"
+          name="searchTerm"
           placeholder="I'm a sissy looking for..."
           aria-label="Search products"
+          [(ngModel)]="searchTerm"
         />
         <button class="search-form__btn" type="submit" aria-label="Search">
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
       </form>
+
 
       <!-- Desktop: actions -->
       <div class="header-actions d-none d-lg-flex align-items-center">
@@ -173,7 +181,9 @@
         >
           <i class="fa-regular fa-user"></i>
           <span>
-            {{ currentUser ? (currentUser.firstName || 'My Account') : 'Account' }}
+            {{
+              currentUser ? currentUser.firstName || "My Account" : "Account"
+            }}
           </span>
         </a>
 
@@ -196,13 +206,15 @@
     <form
       class="search-form search-form--mobile d-flex d-lg-none"
       role="search"
+      (ngSubmit)="onSearch($event)"
     >
       <input
         class="search-form__input"
         type="search"
-        name="q"
+        name="searchTermMobile"
         placeholder="I'm a sissy looking for..."
         aria-label="Search products"
+        [(ngModel)]="searchTerm"
       />
       <button class="search-form__btn" type="submit" aria-label="Search">
         <i class="fa-solid fa-magnifying-glass"></i>
@@ -260,7 +272,7 @@
                     routerLink="/shop"
                     [queryParams]="{
                       category: item.category,
-                      subcategory: sub.slug
+                      subcategory: sub.slug,
                     }"
                   >
                     {{ sub.name }}
@@ -279,8 +291,30 @@
               </a>
             </ng-template>
           </li>
+          <!-- Fixed: Collections -->
+          <li class="nav-item dropdown" *ngIf="storeCollections.length">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Collections
+            </a>
 
-         
+            <ul class="dropdown-menu">
+              <li *ngFor="let collection of storeCollections">
+                <a
+                  class="dropdown-item"
+                  routerLink="/shop"
+                  [queryParams]="{ collection: collection.slug }"
+                >
+                  {{ collection.name }}
+                </a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </div>
     </div>

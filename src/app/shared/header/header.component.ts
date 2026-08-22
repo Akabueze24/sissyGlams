@@ -8,7 +8,9 @@ import { AuthService } from 'src/app/core/services/auth-service/auth.service';
 import { ProductService } from 'src/app/core/services/product-service/product.service';
 
 import { User } from 'src/app/core/models/auth-models/user.model';
+import { Product } from 'src/app/core/models/product-models/product.model';
 import { CategoryNavItem } from 'src/app/core/models/product-models/category-nav-item.model';
+import { StoreCollection } from 'src/app/core/models/product-models/store-collection.model';
 
 @Component({
   selector: 'app-header',
@@ -16,6 +18,14 @@ import { CategoryNavItem } from 'src/app/core/models/product-models/category-nav
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+  // ============================================================
+  // SEARCH
+  // ============================================================
+
+  searchTerm = '';
+  suggestions: Product[] = [];
+  showSuggestions = false;
+
   // ============================================================
   // CART
   // ============================================================
@@ -34,14 +44,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   // ============================================================
 
   currentUser: User | null = null;
-
   private userSubscription!: Subscription;
 
   // ============================================================
-  // CATEGORY NAV
+  // NAV
   // ============================================================
 
   categoryNav: CategoryNavItem[] = [];
+  storeCollections: StoreCollection[] = [];
 
   // ============================================================
   // CONSTRUCTOR
@@ -52,7 +62,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private wishlistService: WishlistService,
     private authService: AuthService,
     private productService: ProductService,
-    private router: Router
+    private router: Router,
   ) {}
 
   // ============================================================
@@ -60,7 +70,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   // ============================================================
 
   ngOnInit(): void {
-    // Cart
     this.cartService.cartCount$.subscribe((count) => {
       this.cartCount = count;
     });
@@ -69,18 +78,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.cartTotal = total;
     });
 
-    // Wishlist
     this.wishlistService.wishlistItems$.subscribe((items) => {
       this.wishlistCount = items.length;
     });
 
-    // Auth
     this.userSubscription = this.authService.currentUser$.subscribe((user) => {
       this.currentUser = user;
     });
 
-    // Category navigation
     this.categoryNav = this.productService.getCategoryNav();
+    this.storeCollections = this.productService.getStoreCollections();
   }
 
   ngOnDestroy(): void {
@@ -90,7 +97,54 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   // ============================================================
-  // AUTH ACTIONS
+  // SEARCH
+  // ============================================================
+  // ============================================================
+  // SEARCH
+  // ============================================================
+
+  onSearchInput(): void {
+    const term = this.searchTerm.trim();
+
+    if (!term) {
+      this.suggestions = [];
+      this.showSuggestions = false;
+      return;
+    }
+
+    this.suggestions = this.productService.searchSuggestions(term);
+
+    this.showSuggestions = this.suggestions.length > 0;
+  }
+
+  onSearch(event: Event): void {
+    event.preventDefault();
+
+    const term = this.searchTerm.trim();
+
+    this.showSuggestions = false;
+    this.suggestions = [];
+
+    this.router.navigate(['/shop'], {
+      queryParams: term ? { search: term } : {},
+    });
+  }
+
+  goToProduct(product: Product): void {
+    this.showSuggestions = false;
+    this.searchTerm = '';
+    this.suggestions = [];
+
+    this.router.navigate(['/product-view', product.slug]);
+  }
+
+  closeSuggestions(): void {
+    setTimeout(() => {
+      this.showSuggestions = false;
+    }, 150);
+  }
+  // ============================================================
+  // AUTH
   // ============================================================
 
   onAccountClick(): void {
