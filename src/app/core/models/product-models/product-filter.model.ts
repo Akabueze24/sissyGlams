@@ -1,4 +1,4 @@
-import { Category } from "./category.model";
+import { Category } from './category.model';
 
 export interface ProductFilters {
   search?: string;
@@ -9,5 +9,14 @@ export interface ProductFilters {
   maxPrice?: number;
   rating?: number;
   collection?: string;
-  sort?: 'price-asc' | 'price-desc' | 'rating' | 'popular';
+  sort?:
+    | 'default'
+    | 'newest'
+    | 'price-asc'
+    | 'price-desc'
+    | 'name-asc'
+    | 'name-desc'
+    | 'rating-desc';
+    page?: number;      // Added
+    pageSize?: number;  // Added
 }

@@ -1,0 +1,590 @@
+<div class="admin-orders">
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+  <div class="admin-orders__header">
+    <div class="admin-orders__heading">
+      <h1 class="admin-orders__title">Orders</h1>
+
+      <p class="admin-orders__subtitle">
+        Manage and track customer orders.
+      </p>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       ORDER SUMMARY
+  ====================================================== -->
+  <div class="admin-orders__summary">
+    <div class="row g-4">
+
+      <!-- Total Orders -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-orders__summary-card">
+          <div class="admin-orders__summary-icon">
+            <i class="fa-solid fa-bag-shopping"></i>
+          </div>
+
+          <div class="admin-orders__summary-content">
+            <span class="admin-orders__summary-label">
+              Total Orders
+            </span>
+
+            <h3 class="admin-orders__summary-value">156</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-orders__summary-card">
+          <div class="admin-orders__summary-icon">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+
+          <div class="admin-orders__summary-content">
+            <span class="admin-orders__summary-label">
+              Pending Orders
+            </span>
+
+            <h3 class="admin-orders__summary-value">12</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Processing -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-orders__summary-card">
+          <div class="admin-orders__summary-icon">
+            <i class="fa-solid fa-spinner"></i>
+          </div>
+
+          <div class="admin-orders__summary-content">
+            <span class="admin-orders__summary-label">
+              Processing
+            </span>
+
+            <h3 class="admin-orders__summary-value">18</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Completed -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-orders__summary-card">
+          <div class="admin-orders__summary-icon">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+
+          <div class="admin-orders__summary-content">
+            <span class="admin-orders__summary-label">
+              Completed
+            </span>
+
+            <h3 class="admin-orders__summary-value">126</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       ORDERS MANAGEMENT
+  ====================================================== -->
+  <section class="admin-orders__content">
+
+    <!-- Section Header -->
+    <div class="admin-orders__content-header">
+      <div>
+        <h2 class="admin-orders__content-title">All Orders</h2>
+
+        <p class="admin-orders__content-subtitle">
+          View and manage all customer orders.
+        </p>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         TOOLBAR
+    ==================================================== -->
+    <div class="admin-orders__toolbar">
+
+      <!-- Search -->
+      <div class="admin-orders__search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+          type="text"
+          class="admin-orders__search-input"
+          placeholder="Search orders..."
+        />
+      </div>
+
+      <!-- Filters -->
+      <div class="admin-orders__filters">
+
+        <select class="admin-orders__select">
+          <option selected>All Orders</option>
+          <option>Pending</option>
+          <option>Processing</option>
+          <option>Shipped</option>
+          <option>Delivered</option>
+          <option>Cancelled</option>
+        </select>
+
+        <select class="admin-orders__select">
+          <option selected>All Payments</option>
+          <option>Paid</option>
+          <option>Pending</option>
+          <option>Failed</option>
+        </select>
+
+      </div>
+    </div>
+
+    <!-- ===================================================
+         ORDERS TABLE
+    ==================================================== -->
+    <div class="admin-orders__table-wrapper">
+      <table class="admin-orders__table">
+
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th class="admin-orders__actions-heading">
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <!-- Order 1 -->
+          <tr>
+            <td>
+              <span class="admin-orders__order-id">#ORD-001</span>
+            </td>
+
+            <td>
+              <div class="admin-orders__customer">
+                <div class="admin-orders__avatar">JD</div>
+
+                <div class="admin-orders__customer-info">
+                  <span class="admin-orders__customer-name">
+                    Jane Doe
+                  </span>
+
+                  <span class="admin-orders__customer-email">
+                    jane.doe@example.com
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>Aug 24, 2026</td>
+            <td>₦35,000</td>
+
+            <td>
+              <span class="admin-orders__payment admin-orders__payment--paid">
+                Paid
+              </span>
+            </td>
+
+            <td>
+              <span class="admin-orders__status admin-orders__status--processing">
+                Processing
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-orders__actions">
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--view"
+                  aria-label="View order ORD-001"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--edit"
+                  aria-label="Edit order ORD-001"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Order 2 -->
+          <tr>
+            <td>
+              <span class="admin-orders__order-id">#ORD-002</span>
+            </td>
+
+            <td>
+              <div class="admin-orders__customer">
+                <div class="admin-orders__avatar">JS</div>
+
+                <div class="admin-orders__customer-info">
+                  <span class="admin-orders__customer-name">
+                    John Smith
+                  </span>
+
+                  <span class="admin-orders__customer-email">
+                    john.smith@example.com
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>Aug 23, 2026</td>
+            <td>₦48,500</td>
+
+            <td>
+              <span class="admin-orders__payment admin-orders__payment--paid">
+                Paid
+              </span>
+            </td>
+
+            <td>
+              <span class="admin-orders__status admin-orders__status--shipped">
+                Shipped
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-orders__actions">
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--view"
+                  aria-label="View order ORD-002"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--edit"
+                  aria-label="Edit order ORD-002"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Order 3 -->
+          <tr>
+            <td>
+              <span class="admin-orders__order-id">#ORD-003</span>
+            </td>
+
+            <td>
+              <div class="admin-orders__customer">
+                <div class="admin-orders__avatar">AO</div>
+
+                <div class="admin-orders__customer-info">
+                  <span class="admin-orders__customer-name">
+                    Ada Okafor
+                  </span>
+
+                  <span class="admin-orders__customer-email">
+                    ada.okafor@example.com
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>Aug 22, 2026</td>
+            <td>₦27,500</td>
+
+            <td>
+              <span class="admin-orders__payment admin-orders__payment--pending">
+                Pending
+              </span>
+            </td>
+
+            <td>
+              <span class="admin-orders__status admin-orders__status--pending">
+                Pending
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-orders__actions">
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--view"
+                  aria-label="View order ORD-003"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--edit"
+                  aria-label="Edit order ORD-003"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Order 4 -->
+          <tr>
+            <td>
+              <span class="admin-orders__order-id">#ORD-004</span>
+            </td>
+
+            <td>
+              <div class="admin-orders__customer">
+                <div class="admin-orders__avatar">BK</div>
+
+                <div class="admin-orders__customer-info">
+                  <span class="admin-orders__customer-name">
+                    Brian King
+                  </span>
+
+                  <span class="admin-orders__customer-email">
+                    brian.king@example.com
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>Aug 21, 2026</td>
+            <td>₦42,000</td>
+
+            <td>
+              <span class="admin-orders__payment admin-orders__payment--paid">
+                Paid
+              </span>
+            </td>
+
+            <td>
+              <span class="admin-orders__status admin-orders__status--delivered">
+                Delivered
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-orders__actions">
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--view"
+                  aria-label="View order ORD-004"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--edit"
+                  aria-label="Edit order ORD-004"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Order 5 -->
+          <tr>
+            <td>
+              <span class="admin-orders__order-id">#ORD-005</span>
+            </td>
+
+            <td>
+              <div class="admin-orders__customer">
+                <div class="admin-orders__avatar">SM</div>
+
+                <div class="admin-orders__customer-info">
+                  <span class="admin-orders__customer-name">
+                    Sarah Miller
+                  </span>
+
+                  <span class="admin-orders__customer-email">
+                    sarah.miller@example.com
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>Aug 20, 2026</td>
+            <td>₦68,500</td>
+
+            <td>
+              <span class="admin-orders__payment admin-orders__payment--failed">
+                Failed
+              </span>
+            </td>
+
+            <td>
+              <span class="admin-orders__status admin-orders__status--cancelled">
+                Cancelled
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-orders__actions">
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--view"
+                  aria-label="View order ORD-005"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--edit"
+                  aria-label="Edit order ORD-005"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Order 6 -->
+          <tr>
+            <td>
+              <span class="admin-orders__order-id">#ORD-006</span>
+            </td>
+
+            <td>
+              <div class="admin-orders__customer">
+                <div class="admin-orders__avatar">DM</div>
+
+                <div class="admin-orders__customer-info">
+                  <span class="admin-orders__customer-name">
+                    David Mensah
+                  </span>
+
+                  <span class="admin-orders__customer-email">
+                    david.mensah@example.com
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>Aug 19, 2026</td>
+            <td>₦22,000</td>
+
+            <td>
+              <span class="admin-orders__payment admin-orders__payment--paid">
+                Paid
+              </span>
+            </td>
+
+            <td>
+              <span class="admin-orders__status admin-orders__status--processing">
+                Processing
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-orders__actions">
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--view"
+                  aria-label="View order ORD-006"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--edit"
+                  aria-label="Edit order ORD-006"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Order 7 -->
+          <tr>
+            <td>
+              <span class="admin-orders__order-id">#ORD-007</span>
+            </td>
+
+            <td>
+              <div class="admin-orders__customer">
+                <div class="admin-orders__avatar">CT</div>
+
+                <div class="admin-orders__customer-info">
+                  <span class="admin-orders__customer-name">
+                    Chloe Taylor
+                  </span>
+
+                  <span class="admin-orders__customer-email">
+                    chloe.taylor@example.com
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>Aug 18, 2026</td>
+            <td>₦51,000</td>
+
+            <td>
+              <span class="admin-orders__payment admin-orders__payment--paid">
+                Paid
+              </span>
+            </td>
+
+            <td>
+              <span class="admin-orders__status admin-orders__status--delivered">
+                Delivered
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-orders__actions">
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--view"
+                  aria-label="View order ORD-007"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-orders__action-btn admin-orders__action-btn--edit"
+                  aria-label="Edit order ORD-007"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ===================================================
+         TABLE FOOTER
+    ==================================================== -->
+    <div class="admin-orders__footer">
+      <p class="admin-orders__results">
+        Showing 1–7 of 156 orders
+      </p>
+
+      <!-- Your existing reusable pagination component -->
+      <app-pagination></app-pagination>
+    </div>
+
+  </section>
+</div>

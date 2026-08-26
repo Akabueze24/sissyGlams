@@ -1,38 +1,68 @@
 @import '../../../styles/variables';
 
 // ============================================================
-// Footer shell
+// Footer
 // ============================================================
+
 .site-footer {
   background-color: $brand-pink-dark;
-  color: rgba($color-white, 0.85);
-  padding: 2.5rem 1rem 1.5rem;
+  color: rgba($color-white, 0.9);
+  padding: 2.5rem 1rem 1.25rem;
 
-  @media (min-width: 768px) {
-    padding: 3rem 2rem 1.75rem;
-  }
-
-  @media (min-width: 1200px) {
-    padding: 3.5rem 3rem 2rem;
-  }
+  // This gives the footer the soft decorative feel
+  // without affecting the content layout.
+  background-image:
+    radial-gradient(
+      circle at 10% 20%,
+      rgba($color-white, 0.08) 0 35px,
+      transparent 36px
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba($color-white, 0.06) 0 45px,
+      transparent 46px
+    );
 
   a {
     text-decoration: none;
   }
 
+  // ----------------------------------------------------------
+  // Inner container
+  // ----------------------------------------------------------
+
   &__inner {
+    width: 100%;
     max-width: 1400px;
+    margin: 0 auto;
   }
+
+  // ----------------------------------------------------------
+  // Main columns
+  // ----------------------------------------------------------
+
+  &__columns {
+    align-items: flex-start;
+  }
+
+  // ----------------------------------------------------------
+  // Headings
+  // ----------------------------------------------------------
 
   &__heading {
     font-family: $font-heading;
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 1rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: $color-white;
-    margin-bottom: 1rem;
+
+    margin: 0 0 1.25rem;
   }
+
+  // ----------------------------------------------------------
+  // Links
+  // ----------------------------------------------------------
 
   &__list {
     list-style: none;
@@ -40,149 +70,155 @@
     padding: 0;
 
     li {
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.75rem;
     }
 
     a {
       font-family: $font-body;
-      font-size: 0.85rem;
-      color: rgba($color-white, 0.8);
-      transition: color 0.15s ease;
+      font-size: 0.9rem;
+      color: rgba($color-white, 0.85);
+
+      transition:
+        color 0.2s ease,
+        padding-left 0.2s ease;
 
       &:hover,
       &:focus-visible {
         color: $color-white;
-        text-decoration: underline;
+        padding-left: 0.2rem;
       }
     }
   }
+
+  // ----------------------------------------------------------
+  // Bottom bar
+  // ----------------------------------------------------------
+
+  &__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 1.5rem;
+
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+
+    border-top: 1px solid rgba($color-white, 0.2);
+  }
+
+  &__copyright {
+    margin: 0;
+
+    font-family: $font-body;
+    font-size: 0.8rem;
+    color: rgba($color-white, 0.8);
+  }
 }
+
 
 // ============================================================
 // Newsletter
 // ============================================================
+
 .newsletter {
-  text-align: center;
-  margin-top: 2.5rem;
-  padding: 2rem 1rem;
-  border-top: 1px solid rgba($color-white, 0.18);
-  border-bottom: 1px solid rgba($color-white, 0.18);
-
-  @media (min-width: 768px) {
-    padding: 2.25rem 2rem;
-  }
-
-  &__heading {
-    font-family: $font-heading;
-    font-weight: 700;
-    font-size: 1.1rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: $color-white;
-    margin-bottom: 0.5rem;
-  }
+  padding: 0;
 
   &__text {
     font-family: $font-body;
     font-size: 0.85rem;
+    line-height: 1.5;
+
     color: rgba($color-white, 0.8);
-    margin-bottom: 1.25rem;
+
+    margin: -0.5rem 0 1rem;
   }
 
   &__form {
-    max-width: 480px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 320px;
   }
 
   &__label {
-    // Visually hidden but still available to assistive tech,
-    // since the input's placeholder communicates purpose visually.
     position: absolute;
+
     width: 1px;
     height: 1px;
+
     padding: 0;
     margin: -1px;
+
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
+
     white-space: nowrap;
     border: 0;
   }
 
-  &__field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-
-    @media (min-width: 576px) {
-      flex-direction: row;
-      gap: 0;
-    }
-  }
-
   &__input {
-    flex: 1 1 auto;
-    min-width: 0;
-    border: 1px solid rgba($color-white, 0.35);
-    background-color: rgba($color-white, 0.08);
-    color: $color-white;
+    width: 100%;
+
+    border: 1px solid rgba($color-white, 0.4);
+
+    background-color: $color-white;
+    color: #333;
+
     font-family: $font-body;
     font-size: 0.85rem;
-    padding: 0.65rem 1rem;
 
-    @media (min-width: 576px) {
-      border-right: none;
-    }
+    padding: 0.7rem 0.8rem;
 
-    &::placeholder {
-      color: rgba($color-white, 0.6);
-    }
+    margin-bottom: 0.7rem;
 
     &:focus {
       outline: none;
-      background-color: rgba($color-white, 0.14);
       border-color: $color-white;
+    }
+
+    &::placeholder {
+      color: #777;
     }
   }
 
   &__btn {
-    flex: 0 0 auto;
-    border: 1px solid $color-white;
-    background-color: $color-white;
-    color: $brand-pink-dark;
+    border: none;
+
+    background-color: rgba($color-white, 0.12);
+    color: $color-white;
+
     font-family: $font-body;
     font-weight: 700;
-    font-size: 0.8rem;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    padding: 0.65rem 1.5rem;
+    font-size: 0.85rem;
+
+    padding: 0.7rem 1.5rem;
+
     cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
+
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
 
     &:hover,
     &:focus-visible {
-      background-color: transparent;
-      color: $color-white;
+      background-color: $color-white;
+      color: $brand-pink-dark;
     }
   }
 }
 
+
 // ============================================================
-// Bottom bar — social icons + copyright
+// Social icons
 // ============================================================
-.site-footer__bottom {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding-top: 1.75rem;
-  text-align: center;
-}
 
 .social-list {
   display: flex;
   align-items: center;
-  gap: 1rem;
+
+  gap: 0.65rem;
+
   list-style: none;
+
   margin: 0;
   padding: 0;
 
@@ -190,26 +226,70 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+
+    width: 34px;
+    height: 34px;
+
     border: 1px solid rgba($color-white, 0.35);
     border-radius: 50%;
+
     color: $color-white;
-    font-size: 0.85rem;
-    transition: background-color 0.15s ease, border-color 0.15s ease;
+
+    font-size: 0.8rem;
+
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
 
     &:hover,
     &:focus-visible {
       background-color: $color-white;
       color: $brand-pink-dark;
-      border-color: $color-white;
     }
   }
 }
 
-.site-footer__copyright {
-  font-family: $font-body;
-  font-size: 0.75rem;
-  color: rgba($color-white, 0.7);
-  margin: 0;
+
+// ============================================================
+// Responsive
+// ============================================================
+
+@media (max-width: 767.98px) {
+
+  .site-footer {
+    padding: 2.5rem 1.25rem 1.25rem;
+
+    &__columns {
+      row-gap: 2rem;
+    }
+
+    &__bottom {
+      flex-direction: column;
+      justify-content: center;
+
+      text-align: center;
+    }
+  }
+
+  .newsletter {
+    &__form {
+      max-width: 100%;
+    }
+  }
+}
+
+
+@media (min-width: 768px) {
+
+  .site-footer {
+    padding: 3rem 2rem 1.5rem;
+  }
+}
+
+
+@media (min-width: 1200px) {
+
+  .site-footer {
+    padding: 3.5rem 3rem 1.75rem;
+  }
 }

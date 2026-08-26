@@ -1,0 +1,570 @@
+@import '../../../../../styles/variables';
+
+// ============================================================
+// ADMIN INVENTORY PAGE
+// ============================================================
+
+.admin-inventory {
+  padding: 1.5rem;
+  min-width: 0;
+
+  // ==========================================================
+  // PAGE HEADER
+  // ==========================================================
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  &__heading {
+    min-width: 0;
+  }
+
+  &__title {
+    margin: 0 0 0.35rem;
+
+    color: $color-text-dark;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  &__subtitle {
+    margin: 0;
+
+    color: $color-text-muted;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  // ==========================================================
+  // SUMMARY CARDS
+  // ==========================================================
+
+  &__summary {
+    margin-bottom: 1.5rem;
+  }
+
+  &__summary-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    height: 100%;
+    padding: 1.25rem;
+
+    background-color: $color-white;
+    border: 1px solid $color-border;
+    border-radius: 0.75rem;
+  }
+
+  &__summary-icon {
+    display: grid;
+    place-items: center;
+
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+
+    border-radius: 0.65rem;
+
+    background-color: rgba($brand-pink, 0.1);
+    color: $brand-pink;
+
+    i {
+      font-size: 1.05rem;
+    }
+  }
+
+  &__summary-content {
+    min-width: 0;
+  }
+
+  &__summary-label {
+    display: block;
+
+    margin-bottom: 0.25rem;
+
+    color: $color-text-muted;
+    font-size: 0.85rem;
+    line-height: 1.3;
+  }
+
+  &__summary-value {
+    margin: 0;
+
+    color: $color-text-dark;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  // ==========================================================
+  // MAIN CONTENT
+  // ==========================================================
+
+  &__content {
+    padding: 1.5rem;
+
+    background-color: $color-white;
+    border: 1px solid $color-border;
+    border-radius: 0.75rem;
+  }
+
+  &__content-header {
+    margin-bottom: 1.5rem;
+  }
+
+  &__content-title {
+    margin: 0 0 0.3rem;
+
+    color: $color-text-dark;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  &__content-subtitle {
+    margin: 0;
+
+    color: $color-text-muted;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  // ==========================================================
+  // TOOLBAR
+  // ==========================================================
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    margin-bottom: 1.5rem;
+  }
+
+  &__search {
+    position: relative;
+
+    flex: 1;
+    max-width: 420px;
+
+    i {
+      position: absolute;
+      top: 50%;
+      left: 1rem;
+
+      color: $color-text-muted;
+      font-size: 0.85rem;
+
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+  }
+
+  &__search-input {
+    width: 100%;
+    height: 44px;
+
+    padding: 0 1rem 0 2.7rem;
+
+    background-color: $color-white;
+    border: 1px solid $color-border;
+    border-radius: 0.5rem;
+
+    outline: none;
+
+    color: $color-text-dark;
+    font: inherit;
+    font-size: 0.9rem;
+
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &::placeholder {
+      color: $color-text-muted;
+    }
+
+    &:focus {
+      border-color: $brand-pink;
+      box-shadow: 0 0 0 3px rgba($brand-pink, 0.08);
+    }
+  }
+
+  &__filters {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__select {
+    height: 44px;
+    min-width: 170px;
+
+    padding: 0 2.25rem 0 0.85rem;
+
+    background-color: $color-white;
+    border: 1px solid $color-border;
+    border-radius: 0.5rem;
+
+    color: $color-text-dark;
+    font: inherit;
+    font-size: 0.9rem;
+
+    cursor: pointer;
+    outline: none;
+
+    &:focus {
+      border-color: $brand-pink;
+      box-shadow: 0 0 0 3px rgba($brand-pink, 0.08);
+    }
+  }
+
+  // ==========================================================
+  // TABLE WRAPPER
+  // ==========================================================
+
+  &__table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+
+    border: 1px solid $color-border;
+    border-radius: 0.65rem;
+
+    scrollbar-width: thin;
+  }
+
+  // ==========================================================
+  // INVENTORY TABLE
+  // ==========================================================
+
+  &__table {
+    width: 100%;
+    min-width: 1050px;
+
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 1rem;
+
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    th {
+      background-color: rgba($brand-pink, 0.04);
+      border-bottom: 1px solid $color-border;
+
+      color: $color-text-muted;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.3;
+
+      text-transform: uppercase;
+    }
+
+    td {
+      border-bottom: 1px solid $color-border;
+
+      color: $color-text-dark;
+      font-size: 0.9rem;
+    }
+
+    tbody {
+      tr {
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: rgba($brand-pink, 0.025);
+        }
+
+        &:last-child {
+          td {
+            border-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+
+  // ==========================================================
+  // PRODUCT
+  // ==========================================================
+
+  &__product {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+
+    min-width: 250px;
+  }
+
+  &__product-image {
+    width: 50px;
+    height: 58px;
+    flex: 0 0 50px;
+
+    overflow: hidden;
+
+    background-color: #f7f7f8;
+    border: 1px solid $color-border;
+    border-radius: 0.5rem;
+
+    img {
+      display: block;
+
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+    }
+  }
+
+  &__product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    min-width: 0;
+  }
+
+  &__product-name {
+    overflow: hidden;
+
+    color: $color-text-dark;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.3;
+
+    text-overflow: ellipsis;
+  }
+
+  &__product-variant {
+    color: $color-text-muted;
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+
+  // ==========================================================
+  // STOCK VALUE
+  // ==========================================================
+
+  &__stock-value {
+    display: inline-flex;
+    align-items: center;
+
+    min-width: 32px;
+
+    color: $color-text-dark;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  // ==========================================================
+  // STATUS
+  // ==========================================================
+
+  &__status {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 0.35rem 0.65rem;
+
+    border-radius: 999px;
+
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+
+    &--in-stock {
+      background-color: rgba(25, 135, 84, 0.1);
+      color: #198754;
+    }
+
+    &--low {
+      background-color: rgba(255, 193, 7, 0.14);
+      color: #997404;
+    }
+
+    &--out {
+      background-color: rgba(220, 53, 69, 0.1);
+      color: #dc3545;
+    }
+  }
+
+  // ==========================================================
+  // ACTIONS
+  // ==========================================================
+
+  &__actions-heading {
+    text-align: center !important;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  &__action-btn {
+    display: grid;
+    place-items: center;
+
+    width: 34px;
+    height: 34px;
+
+    padding: 0;
+
+    background-color: transparent;
+    border: 1px solid $color-border;
+    border-radius: 0.45rem;
+
+    color: $color-text-muted;
+
+    font: inherit;
+
+    cursor: pointer;
+
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+
+    i {
+      font-size: 0.8rem;
+    }
+
+    &:focus-visible {
+      outline: 3px solid rgba($brand-pink, 0.15);
+      outline-offset: 2px;
+    }
+
+    &:hover {
+      background-color: rgba($brand-pink, 0.08);
+      border-color: $brand-pink;
+      color: $brand-pink;
+    }
+
+    &--edit {
+      color: $brand-pink;
+
+      &:hover {
+        background-color: rgba($brand-pink, 0.08);
+        border-color: $brand-pink;
+      }
+    }
+  }
+
+  // ==========================================================
+  // FOOTER
+  // ==========================================================
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    padding-top: 1.25rem;
+  }
+
+  &__results {
+    margin: 0;
+
+    color: $color-text-muted;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  // ==========================================================
+  // LARGE TABLET
+  // ==========================================================
+
+  @media (max-width: 991.98px) {
+    &__toolbar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__search {
+      max-width: none;
+    }
+
+    &__filters {
+      width: 100%;
+    }
+
+    &__select {
+      width: 100%;
+    }
+  }
+
+  // ==========================================================
+  // TABLET / MOBILE
+  // ==========================================================
+
+  @media (max-width: 767.98px) {
+    padding: 1rem;
+
+    &__header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__content {
+      padding: 1rem;
+    }
+
+    &__footer {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    app-pagination {
+      width: 100%;
+    }
+  }
+
+  // ==========================================================
+  // SMALL MOBILE
+  // ==========================================================
+
+  @media (max-width: 575.98px) {
+    &__title {
+      font-size: 1.5rem;
+    }
+
+    &__subtitle {
+      font-size: 0.875rem;
+    }
+
+    &__summary-card {
+      padding: 1rem;
+    }
+
+    &__summary-icon {
+      width: 44px;
+      height: 44px;
+      flex-basis: 44px;
+    }
+
+    &__summary-value {
+      font-size: 1.35rem;
+    }
+
+    &__content {
+      padding: 0.85rem;
+    }
+  }
+}

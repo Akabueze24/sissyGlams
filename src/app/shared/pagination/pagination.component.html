@@ -1,0 +1,51 @@
+<nav
+  aria-label="Product pagination"
+  class="shop-pagination-nav"
+  *ngIf="totalPages > 1"
+>
+  <ul class="pagination">
+    <!-- Previous Button -->
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <a
+        class="page-link page-link--nav"
+        (click)="onPageSelect(currentPage - 1, $event)"
+        aria-label="Previous page"
+      >
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        <span class="page-link--nav__label">Previous</span>
+      </a>
+    </li>
+
+    <!-- Page Numbers & Ellipses -->
+    <li
+      *ngFor="let page of displayedPages"
+      class="page-item"
+      [class.active]="page === currentPage"
+      [class.disabled]="page === '...'"
+      [attr.aria-current]="page === currentPage ? 'page' : null"
+    >
+      <span *ngIf="page === '...'" class="page-link page-link--ellipsis"
+        >...</span
+      >
+      <a
+        *ngIf="page !== '...'"
+        class="page-link"
+        (click)="onPageSelect(page, $event)"
+      >
+        {{ page }}
+      </a>
+    </li>
+
+    <!-- Next Button -->
+    <li class="page-item" [class.disabled]="currentPage === totalPages">
+      <a
+        class="page-link page-link--nav"
+        (click)="onPageSelect(currentPage + 1, $event)"
+        aria-label="Next page"
+      >
+        <span class="page-link--nav__label">Next</span>
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
+</nav>

@@ -32,7 +32,8 @@
         <p class="hero-slide__eyebrow">Just Dropped</p>
         <h2 class="hero-slide__title">New Arrivals</h2>
         <p class="hero-slide__text">Fresh styles added every week</p>
-        <a class="hero-slide__cta" href="/new">Explore</a>
+        <a class="hero-slide__cta"  [routerLink]="['/shop']"
+  [queryParams]="{ collection: 'new-arrivals' }">Explore</a>
       </div>
     </swiper-slide>
 
@@ -46,7 +47,8 @@
         <p class="hero-slide__eyebrow">Fan Favorite</p>
         <h2 class="hero-slide__title">Sissy Toys</h2>
         <p class="hero-slide__text">Discover our most-loved collection</p>
-        <a class="hero-slide__cta" href="/sissy-toys">Shop Toys</a>
+        <a class="hero-slide__cta"  [routerLink]="['/shop']"
+  [queryParams]="{ category: 'sissy-toys' }">Shop Toys</a>
       </div>
     </swiper-slide>
 
@@ -60,7 +62,8 @@
         <p class="hero-slide__eyebrow">Complete The Look</p>
         <h2 class="hero-slide__title">Wig Collection</h2>
         <p class="hero-slide__text">Soft, styled, and ready to wear</p>
-        <a class="hero-slide__cta" href="/wigs">Shop Wigs</a>
+        <a class="hero-slide__cta"  [routerLink]="['/shop']"
+  [queryParams]="{ category: 'wigs' }">Shop Wigs</a>
       </div>
     </swiper-slide>
 
@@ -71,10 +74,10 @@
         alt="Free worldwide shipping promotional banner"
       />
       <div class="hero-slide__caption">
-        <p class="hero-slide__eyebrow">On Orders US$50+</p>
-        <h2 class="hero-slide__title">Free Worldwide Shipping</h2>
+        <p class="hero-slide__eyebrow">Worldwide Shipping</p>
+        <h2 class="hero-slide__title">Shipping rates are calculated based on your location</h2>
         <p class="hero-slide__text">Delivered straight to your door</p>
-        <a class="hero-slide__cta" href="/shop">Start Shopping</a>
+        <a class="hero-slide__cta" [routerLink]="['/shop']">Start Shopping</a>
       </div>
     </swiper-slide>
   </swiper-container>
@@ -82,9 +85,16 @@
 
 <section class="featured-categories" aria-label="Featured categories">
   <div class="container-fluid featured-categories__inner">
-    <ul class="row row-cols-2 row-cols-md-4 g-3 g-lg-4 list-unstyled featured-categories__list">
+    <ul
+      class="row row-cols-2 row-cols-md-4 g-3 g-lg-4 list-unstyled featured-categories__list"
+    >
+      <!-- Sissy Toys -->
       <li class="col">
-        <a class="featured-category" href="/sissy-toys">
+        <a
+          class="featured-category"
+          routerLink="/shop"
+          [queryParams]="{ category: 'sissy-toys' }"
+        >
           <img
             class="featured-category__img"
             src="https://res.cloudinary.com/dsao6ghfo/image/upload/v1786466289/il_300x300.7243077114_bga0_hgtywv.jpg"
@@ -94,8 +104,13 @@
         </a>
       </li>
 
+      <!-- Make Up -->
       <li class="col">
-        <a class="featured-category" href="/make-up">
+        <a
+          class="featured-category"
+          routerLink="/shop"
+          [queryParams]="{ category: 'make-up' }"
+        >
           <img
             class="featured-category__img"
             src="https://res.cloudinary.com/dsao6ghfo/image/upload/v1784296934/81ICnHH89FL_qlwkh9.jpg"
@@ -105,8 +120,13 @@
         </a>
       </li>
 
+      <!-- Lingerie -->
       <li class="col">
-        <a class="featured-category" href="/lingerie">
+        <a
+          class="featured-category"
+          routerLink="/shop"
+          [queryParams]="{ category: 'lingerie' }"
+        >
           <img
             class="featured-category__img"
             src="https://res.cloudinary.com/dsao6ghfo/image/upload/v1786466370/pinkset34_e67cot.jpg"
@@ -116,8 +136,13 @@
         </a>
       </li>
 
+      <!-- Wigs -->
       <li class="col">
-        <a class="featured-category" href="/wigs">
+        <a
+          class="featured-category"
+          routerLink="/shop"
+          [queryParams]="{ category: 'wigs' }"
+        >
           <img
             class="featured-category__img"
             src="https://res.cloudinary.com/dsao6ghfo/image/upload/v1786466165/natural-looking-wigs_3_hasnry.jpg"
@@ -131,63 +156,93 @@
 </section>
 
 <!-- product card -->
- 
+
 <section class="sissy-favorites" aria-label="Sissy Favorites">
   <div class="container-fluid sissy-favorites__inner">
- 
     <div class="section-heading">
       <div class="section-heading__row">
         <span class="section-heading__line" aria-hidden="true"></span>
         <h2 class="section-heading__title">Sissy Favorites</h2>
         <span class="section-heading__line" aria-hidden="true"></span>
       </div>
-      <a class="section-heading__more" href="/sissy-favorites">See more</a>
+      <a
+        class="section-heading__more"
+        routerLink="/shop"
+        [queryParams]="{ collection: 'featured' }"
+        >See more</a
+      >
     </div>
- 
-   <app-product-card></app-product-card>>
+
+    <div
+      class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 g-lg-4 product-grid"
+      *ngIf="sissyFavorites.length"
+    >
+      <app-product-card
+        *ngFor="let product of sissyFavorites"
+        [product]="product"
+      ></app-product-card>
+    </div>
   </div>
 </section>
 
-
 <section class="sissy-favorites" aria-label="new items">
   <div class="container-fluid sissy-favorites__inner">
- 
     <div class="section-heading">
       <div class="section-heading__row">
         <span class="section-heading__line" aria-hidden="true"></span>
         <h2 class="section-heading__title">New Items</h2>
         <span class="section-heading__line" aria-hidden="true"></span>
       </div>
-      <a class="section-heading__more" href="/sissy-favorites">See more</a>
+      <a
+        class="section-heading__more"
+        routerLink="/shop"
+        [queryParams]="{ collection: 'new-arrivals' }"
+        >See more</a
+      >
     </div>
- 
-   <app-product-card></app-product-card>
+
+    <div
+      class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 g-lg-4 product-grid"
+      *ngIf="newItems.length"
+    >
+      <app-product-card
+        *ngFor="let product of newItems"
+        [product]="product"
+      ></app-product-card>
+    </div>
   </div>
 </section>
 
-
 <section class="sissy-favorites" aria-label="on sales">
   <div class="container-fluid sissy-favorites__inner">
- 
     <div class="section-heading">
       <div class="section-heading__row">
         <span class="section-heading__line" aria-hidden="true"></span>
         <h2 class="section-heading__title">On Sales</h2>
         <span class="section-heading__line" aria-hidden="true"></span>
       </div>
-      <a class="section-heading__more" href="/sissy-favorites">See more</a>
+      <a
+        class="section-heading__more"
+        routerLink="/shop"
+        [queryParams]="{ collection: 'best-sellers' }"
+        >See more</a
+      >
     </div>
- 
-   <app-product-card></app-product-card>
+
+    <div
+      class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 g-lg-4 product-grid"
+      *ngIf="bestSellers.length"
+    >
+      <app-product-card
+        *ngFor="let product of bestSellers"
+        [product]="product"
+      ></app-product-card>
+    </div>
   </div>
 </section>
-
-
-
-
+<!-- 
 <section class="ebooks" aria-label="Ebooks">
   <div class="container-fluid ebooks__inner">
- 
     <div class="section-heading">
       <div class="section-heading__row">
         <span class="section-heading__line" aria-hidden="true"></span>
@@ -196,7 +251,6 @@
       </div>
       <a class="section-heading__more" href="/ebooks">See more</a>
     </div>
- <app-collection-slider></app-collection-slider>
- 
+    <app-collection-slider [products]="ebooks"></app-collection-slider>
   </div>
-</section>
+</section> -->

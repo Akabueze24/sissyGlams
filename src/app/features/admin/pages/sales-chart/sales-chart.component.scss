@@ -1,0 +1,45 @@
+@import '../../../../../styles/variables';
+
+.sales-chart {
+  &__container {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    border-radius: 0.5rem;
+    background-color: rgba($brand-pink-light, 0.35);
+    overflow: hidden;
+
+    @media (min-width: 768px) {
+      height: 320px;
+    }
+
+    @media (min-width: 1200px) {
+      height: 360px;
+    }
+  }
+
+  &__container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  &__placeholder {
+    text-align: center;
+  }
+
+  &__placeholder-icon {
+    display: block;
+    font-size: 1.9rem;
+    color: $brand-pink;
+    margin-bottom: 0.75rem;
+  }
+
+  &__placeholder-text {
+    margin: 0;
+    font-family: $font-body;
+    font-size: 0.85rem;
+    color: $color-text-muted;
+  }
+}
+

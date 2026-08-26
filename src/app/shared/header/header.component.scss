@@ -1,6 +1,20 @@
 @import "../../../styles/variables";
 
 // ============================================================
+// Sticky header wrapper (replaces .sticky-header-group)
+// Main header + category nav stick together for the whole page.
+// Announcement bar + topbar now live ABOVE <header>, so they
+// scroll away while .site-header stays pinned.
+// ============================================================
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1040;
+  background-color: $color-white;
+  box-shadow: 0 4px 16px rgba($color-black, 0.08);
+}
+
+// ============================================================
 // 1. Announcement bar
 // ============================================================
 .announcement-bar {
@@ -170,6 +184,17 @@
 // ============================================================
 // Search
 // ============================================================
+.search-form-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  max-width: 480px;
+
+  &--mobile {
+    max-width: none;
+    width: 100%;
+  }
+}
+
 .search-form {
   flex: 1 1 auto;
   max-width: 480px;
@@ -211,6 +236,75 @@
     max-width: none;
     width: 100%;
     margin-top: 0.75rem;
+  }
+}
+
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  background-color: $color-white;
+  border: 1px solid $color-border;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba($color-black, 0.12);
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem 0;
+  max-height: 360px;
+  overflow-y: auto;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.5rem 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: $color-bg-light;
+    }
+  }
+
+  &__img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+    background-color: $color-bg-light;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__name {
+    font-family: $font-body;
+    font-size: 0.85rem;
+    color: $color-text-dark;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__brand {
+    font-family: $font-body;
+    font-size: 0.75rem;
+    color: $color-text-muted;
+  }
+
+  &__price {
+    font-family: $font-body;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $brand-pink-dark;
+    flex-shrink: 0;
   }
 }
 
@@ -279,7 +373,6 @@
   line-height: 1;
 }
 
-
 .wishlist-icon-wrap {
   position: relative;
   display: inline-flex;
@@ -291,21 +384,16 @@
   position: absolute;
   top: -8px;
   right: -10px;
-
   min-width: 18px;
   height: 18px;
   padding: 0 4px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border-radius: 50%;
-
   font-size: 10px;
   font-weight: 600;
   line-height: 1;
-
   background: $brand-pink;
   color: $color-white;
 }
@@ -325,13 +413,6 @@
   }
 }
 
-// Mobile account + cart container
-.mobile-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
 .mobile-wishlist-btn {
   color: $color-text-dark;
   font-size: 1.1rem;
@@ -347,7 +428,6 @@
   }
 }
 
-// Mobile account
 .mobile-account-btn {
   color: $color-text-dark;
   font-size: 1.1rem;
@@ -362,7 +442,6 @@
   }
 }
 
-// Mobile cart
 .cart-icon-btn {
   position: relative;
   color: $color-text-dark;
@@ -379,7 +458,7 @@
 }
 
 // ============================================================
-// 4. Purple category navigation
+// 4. Pink category navigation
 // ============================================================
 .category-nav {
   background-color: $brand-pink;
@@ -410,6 +489,34 @@
     }
   }
 
+  // Sharp custom chevron (replaces Bootstrap's blurry default caret)
+  .dropdown-toggle {
+    &::after {
+      display: none;
+    }
+
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-left: 0.4rem;
+      vertical-align: middle;
+      border-right: 1.75px solid currentColor;
+      border-bottom: 1.75px solid currentColor;
+      transform: rotate(45deg) translate(-1px, -1px);
+      transform-origin: center;
+      transition: transform 0.2s ease;
+      backface-visibility: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    &[aria-expanded="true"]::before,
+    &.show::before {
+      transform: rotate(225deg) translate(-1px, -1px);
+    }
+  }
+
   .dropdown-menu {
     border: none;
     border-radius: 0.4rem;
@@ -431,9 +538,6 @@
     }
   }
 
-  // ==========================================================
-  // Mobile collapsed menu
-  // ==========================================================
   @media (max-width: 991.98px) {
     .navbar-collapse {
       background-color: $brand-pink;
@@ -483,14 +587,7 @@
   }
 }
 
-// ============================================================
-// Small mobile screens
-// ============================================================
 @media (max-width: 400px) {
-  .mobile-actions {
-    gap: 0.7rem;
-  }
-
   .mobile-account-btn,
   .cart-icon-btn {
     font-size: 1.05rem;

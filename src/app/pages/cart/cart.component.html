@@ -341,6 +341,7 @@
   <section
     class="cart-recommendations"
     aria-labelledby="cartRecommendationsHeading"
+    *ngIf="relatedProducts.length"
   >
     <h2
       class="cart-recommendations__title"
@@ -349,7 +350,7 @@
       You May Also Like
     </h2>
 
-    <app-collection-slider></app-collection-slider>
+    <app-collection-slider [products]="relatedProducts"></app-collection-slider>
   </section>
 
 </main>

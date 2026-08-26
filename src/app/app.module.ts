@@ -19,20 +19,30 @@ import { ProductViewComponent } from './pages/product-view/product-view.componen
 import { CartComponent } from './pages/cart/cart.component';
 import { AuthComponent } from './pages/auth/auth.component';
 import { WishlistComponent } from './pages/wishlist/wishlist.component';
-import { AdminLayoutComponent } from './admin/layout/admin-layout/admin-layout.component';
-import { AccountLayoutComponent } from './account/layout/account-layout/account-layout.component';
-import { DashboardComponent } from './account/pages/dashboard/dashboard.component';
-import { OrdersComponent } from './account/pages/orders/orders.component';
-import { DownloadComponent } from './account/pages/download/download.component';
-import { EditAddressComponent } from './account/pages/edit-address/edit-address.component';
-import { BillingComponent } from './account/pages/billing/billing.component';
-import { ShippingComponent } from './account/pages/shipping/shipping.component';
-import { PaymentMethodComponent } from './account/pages/payment-method/payment-method.component';
-import { EditAccountComponent } from './account/pages/edit-account/edit-account.component';
-import { CustomerSupportComponent } from './account/pages/customer-support/customer-support.component';
+import { AdminLayoutComponent } from './features/admin/admin-layout/admin-layout.component';
+import { AccountLayoutComponent } from './features/customer/account-layout/account-layout.component';
+import { DashboardComponent } from './features/customer/pages/dashboard/dashboard.component';
+import { OrdersComponent } from './features/customer/pages/orders/orders.component';
+import { DownloadComponent } from './features/customer/pages/download/download.component';
+import { EditAddressComponent } from './features/customer/pages/edit-address/edit-address.component';
+import { BillingComponent } from './features/customer/pages/billing/billing.component';
+import { ShippingComponent } from './features/customer/pages/shipping/shipping.component';
+import { PaymentMethodComponent } from './features/customer/pages/payment-method/payment-method.component';
+import { EditAccountComponent } from './features/customer/pages/edit-account/edit-account.component';
+import { CustomerSupportComponent } from './features/customer/pages/customer-support/customer-support.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component';
 import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
 import { ToastComponent } from './shared/toast/toast.component';
+import { PaginationComponent } from './shared/pagination/pagination.component';
+import { adminDashboardComponent } from './features/admin/pages/admin-dashboard/admin-dashboard.component';
+import { AdminProductsComponent } from './features/admin/pages/admin-products/admin-products.component';
+import { AdminOrdersComponent } from './features/admin/pages/admin-orders/admin-orders.component';
+import { AdminCustomersComponent } from './features/admin/pages/admin-customers/admin-customers.component';
+import { AdminCategoriesComponent } from './features/admin/pages/admin-categories/admin-categories.component';
+import { AdminInventoryComponent } from './features/admin/pages/admin-inventory/admin-inventory.component';
+import { SettingsComponent } from './features/admin/pages/settings/settings.component';
+import { SalesChartComponent } from './features/admin/pages/sales-chart/sales-chart.component';
+
 
 register();
 
@@ -67,6 +77,17 @@ register();
     CheckoutComponent,
     OrderConfirmationComponent,
     ToastComponent,
+    PaginationComponent,
+    adminDashboardComponent,
+    AdminProductsComponent,
+    AdminOrdersComponent,
+    AdminCustomersComponent,
+    AdminCategoriesComponent,
+    AdminInventoryComponent,
+    SettingsComponent,
+    SalesChartComponent
+  
+
   
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

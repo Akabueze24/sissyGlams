@@ -1,0 +1,197 @@
+<div class="admin-layout">
+
+  <!--
+    Sidebar. offcanvas-lg = native Bootstrap responsive offcanvas:
+    renders as a normal sticky in-flow sidebar at lg+, becomes a
+    slide-in panel (opened by the mobile header's hamburger button)
+    below lg. No custom TypeScript needed for the toggle.
+  -->
+  <aside
+    class="offcanvas-lg offcanvas-start admin-sidebar"
+    tabindex="-1"
+    id="adminSidebarOffcanvas"
+    aria-labelledby="adminSidebarLabel"
+  >
+    <div class="offcanvas-header admin-sidebar__offcanvas-header">
+      <span class="admin-sidebar__brand" id="adminSidebarLabel">
+        Sissy<span class="admin-sidebar__brand-accent">Dream</span>
+      </span>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="offcanvas"
+        data-bs-target="#adminSidebarOffcanvas"
+        aria-label="Close menu"
+      ></button>
+    </div>
+
+    <div class="offcanvas-body admin-sidebar__body">
+
+      <div class="admin-sidebar__brand-desktop">
+        Sissy<span class="admin-sidebar__brand-accent">Dream</span>
+        <span class="admin-sidebar__brand-tag">Admin</span>
+      </div>
+
+     <nav class="admin-nav" aria-label="Admin navigation">
+  <ul class="admin-nav__list">
+
+    <li>
+      <a
+        class="admin-nav__link"
+        routerLink="/admin"
+        routerLinkActive="admin-nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa-solid fa-gauge" aria-hidden="true"></i>
+        <span>Dashboard</span>
+      </a>
+    </li>
+
+    <li>
+      <a
+        class="admin-nav__link"
+        routerLink="/admin/products"
+        routerLinkActive="admin-nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa-solid fa-shirt" aria-hidden="true"></i>
+        <span>Products</span>
+      </a>
+    </li>
+
+    <li>
+      <a
+        class="admin-nav__link"
+        routerLink="/admin/orders"
+        routerLinkActive="admin-nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa-solid fa-receipt" aria-hidden="true"></i>
+        <span>Orders</span>
+      </a>
+    </li>
+
+    <li>
+      <a
+        class="admin-nav__link"
+        routerLink="/admin/customers"
+        routerLinkActive="admin-nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa-solid fa-users" aria-hidden="true"></i>
+        <span>Customers</span>
+      </a>
+    </li>
+
+    <li>
+      <a
+        class="admin-nav__link"
+        routerLink="/admin/categories"
+        routerLinkActive="admin-nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+        <span>Categories</span>
+      </a>
+    </li>
+
+    <li>
+      <a
+        class="admin-nav__link"
+        routerLink="/admin/inventory"
+        routerLinkActive="admin-nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa-solid fa-warehouse" aria-hidden="true"></i>
+        <span>Inventory</span>
+      </a>
+    </li>
+
+    <li>
+      <a
+        class="admin-nav__link"
+        routerLink="/admin/settings"
+        routerLinkActive="admin-nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa-solid fa-gear" aria-hidden="true"></i>
+        <span>Settings</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>
+
+      <div class="admin-sidebar__profile">
+        <span class="admin-sidebar__avatar">
+          <i class="fa-solid fa-user" aria-hidden="true"></i>
+        </span>
+        <div class="admin-sidebar__profile-text">
+          <p class="admin-sidebar__profile-name">Jin Park</p>
+          <p class="admin-sidebar__profile-email">admin&#64;sissydream.com</p>
+        </div>
+        <button class="admin-sidebar__logout" type="button" aria-label="Log out">
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+        </button>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- Main column -->
+  <div class="admin-main">
+
+    <!-- Mobile-only top bar: hamburger opens the sidebar offcanvas above -->
+    <div class="admin-mobile-header d-flex d-lg-none align-items-center justify-content-between">
+      <button
+        class="admin-mobile-header__toggle"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#adminSidebarOffcanvas"
+        aria-controls="adminSidebarOffcanvas"
+        aria-label="Open admin menu"
+      >
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+
+      <span class="admin-mobile-header__brand">
+        Sissy<span class="admin-mobile-header__brand-accent">Glams</span> Admin
+      </span>
+
+      <button class="admin-mobile-header__icon-btn" type="button" aria-label="Notifications">
+        <i class="fa-regular fa-bell" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- Page header: title / breadcrumb / notification / profile -->
+    <header class="admin-header">
+      <div class="admin-header__titles">
+        <h1 class="admin-header__title">Dashboard</h1>
+        <nav aria-label="breadcrumb" class="admin-header__breadcrumb-nav">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Overview</li>
+          </ol>
+        </nav>
+      </div>
+
+      <div class="admin-header__actions d-none d-lg-flex">
+        <button class="admin-header__icon-btn" type="button" aria-label="Notifications">
+          <i class="fa-regular fa-bell" aria-hidden="true"></i>
+        </button>
+        <span class="admin-header__divider" aria-hidden="true"></span>
+        <div class="admin-header__profile">
+          <span class="admin-header__avatar">
+            <i class="fa-solid fa-user" aria-hidden="true"></i>
+          </span>
+          <span class="admin-header__profile-name">Jin Park</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+
+</div>

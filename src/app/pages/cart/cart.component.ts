@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CartItem } from 'src/app/core/models/cart-models/cart.model';
+import { Product } from 'src/app/core/models/product-models/product.model';
 import { CartService } from 'src/app/core/services/cart-service/cart.service';
+import { ProductService } from 'src/app/core/services/product-service/product.service';
 
 @Component({
   selector: 'app-cart',
@@ -10,12 +12,15 @@ import { CartService } from 'src/app/core/services/cart-service/cart.service';
 export class CartComponent implements OnInit {
   cartItems: CartItem[] = [];
 
-  constructor(private cartService: CartService) {}
+   relatedProducts: Product[] = [];
+
+  constructor(private cartService: CartService, private productService: ProductService) {}
 
   ngOnInit(): void {
     this.cartService.cartItems$.subscribe((items) => {
       this.cartItems = items;
     });
+    this.relatedProducts  = this.productService.getFeaturedProducts()
   }
 
   getCartItemImage(item: CartItem): string {

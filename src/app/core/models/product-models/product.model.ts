@@ -86,4 +86,6 @@ export interface Product {
   // ========================================
 
   active: boolean;
+
+  createdAt?: string;
 }

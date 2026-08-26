@@ -1,0 +1,506 @@
+<div class="admin-products">
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+  <div class="admin-products__header">
+    <div class="admin-products__heading">
+      <h1 class="admin-products__title">Products</h1>
+      <p class="admin-products__subtitle">
+        Manage your store products and inventory.
+      </p>
+    </div>
+
+    <button type="button" class="admin-products__add-btn">
+      <i class="fa-solid fa-plus"></i>
+      <span>Add New Product</span>
+    </button>
+  </div>
+
+  <!-- =====================================================
+       PRODUCT SUMMARY
+  ====================================================== -->
+  <div class="admin-products__summary">
+    <div class="row g-4">
+      <!-- Total Products -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-products__summary-card">
+          <div class="admin-products__summary-icon">
+            <i class="fa-solid fa-box"></i>
+          </div>
+
+          <div class="admin-products__summary-content">
+            <span class="admin-products__summary-label">
+              Total Products
+            </span>
+            <h3 class="admin-products__summary-value">86</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Products -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-products__summary-card">
+          <div class="admin-products__summary-icon">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+
+          <div class="admin-products__summary-content">
+            <span class="admin-products__summary-label">
+              Active Products
+            </span>
+            <h3 class="admin-products__summary-value">72</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Out of Stock -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-products__summary-card">
+          <div class="admin-products__summary-icon">
+            <i class="fa-solid fa-box-open"></i>
+          </div>
+
+          <div class="admin-products__summary-content">
+            <span class="admin-products__summary-label">
+              Out of Stock
+            </span>
+            <h3 class="admin-products__summary-value">6</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Low Stock -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-products__summary-card">
+          <div class="admin-products__summary-icon">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+
+          <div class="admin-products__summary-content">
+            <span class="admin-products__summary-label">
+              Low Stock
+            </span>
+            <h3 class="admin-products__summary-value">8</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       PRODUCTS MANAGEMENT SECTION
+  ====================================================== -->
+  <section class="admin-products__content">
+    <!-- Section Header -->
+    <div class="admin-products__content-header">
+      <div>
+        <h2 class="admin-products__content-title">All Products</h2>
+        <p class="admin-products__content-subtitle">
+          View and manage all products in your store.
+        </p>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         TOOLBAR
+    ==================================================== -->
+    <div class="admin-products__toolbar">
+      <!-- Search -->
+      <div class="admin-products__search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+          type="text"
+          class="admin-products__search-input"
+          placeholder="Search products..."
+        />
+      </div>
+
+      <!-- Filters -->
+      <div class="admin-products__filters">
+        <!-- Category -->
+        <select class="admin-products__select">
+          <option selected>All Categories</option>
+          <option>Dresses</option>
+          <option>Wigs</option>
+          <option>Lingerie</option>
+          <option>Shapers</option>
+          <option>Shoes</option>
+          <option>Tops</option>
+          <option>Bottoms</option>
+          <option>Sissy Toys</option>
+          <option>Make-Up</option>
+          <option>Accessories</option>
+        </select>
+
+        <!-- Status -->
+        <select class="admin-products__select">
+          <option selected>All Status</option>
+          <option>Active</option>
+          <option>Draft</option>
+          <option>Out of Stock</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         PRODUCTS TABLE
+    ==================================================== -->
+    <div class="admin-products__table-wrapper">
+      <table class="admin-products__table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Brand</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th class="admin-products__actions-heading">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- Product 1 -->
+          <tr>
+            <td>
+              <div class="admin-products__product">
+                <div class="admin-products__image">
+                  <img
+                    src="https://placehold.co/80x80"
+                    alt="Blush Satin Wrap Dress"
+                  />
+                </div>
+
+                <div class="admin-products__product-info">
+                  <span class="admin-products__product-name">
+                    Blush Satin Wrap Dress
+                  </span>
+                  <span class="admin-products__product-id">
+                    #SG-001
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>Sissy Dream</td>
+            <td>Dresses</td>
+            <td>₦35,000</td>
+            <td>24</td>
+
+            <td>
+              <span class="admin-products__status admin-products__status--active">
+                Active
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-products__actions">
+                <button
+                  type="button"
+                  class="admin-products__action-btn admin-products__action-btn--edit"
+                  aria-label="Edit Blush Satin Wrap Dress"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-products__action-btn admin-products__action-btn--delete"
+                  aria-label="Delete Blush Satin Wrap Dress"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Product 2 -->
+          <tr>
+            <td>
+              <div class="admin-products__product">
+                <div class="admin-products__image">
+                  <img
+                    src="https://placehold.co/80x80"
+                    alt="Long Wavy Blonde Wig"
+                  />
+                </div>
+
+                <div class="admin-products__product-info">
+                  <span class="admin-products__product-name">
+                    Long Wavy Blonde Wig
+                  </span>
+                  <span class="admin-products__product-id">
+                    #SG-002
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>Sissy Dream</td>
+            <td>Wigs</td>
+            <td>₦48,500</td>
+            <td>15</td>
+
+            <td>
+              <span class="admin-products__status admin-products__status--active">
+                Active
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-products__actions">
+                <button
+                  type="button"
+                  class="admin-products__action-btn admin-products__action-btn--edit"
+                  aria-label="Edit Long Wavy Blonde Wig"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-products__action-btn admin-products__action-btn--delete"
+                  aria-label="Delete Long Wavy Blonde Wig"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Product 3 -->
+          <tr>
+            <td>
+              <div class="admin-products__product">
+                <div class="admin-products__image">
+                  <img
+                    src="https://placehold.co/80x80"
+                    alt="Lace Bodysuit"
+                  />
+                </div>
+
+                <div class="admin-products__product-info">
+                  <span class="admin-products__product-name">
+                    Floral Lace Bodysuit
+                  </span>
+                  <span class="admin-products__product-id">
+                    #SG-003
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>Sissy Dream</td>
+            <td>Lingerie</td>
+            <td>₦27,500</td>
+            <td>0</td>
+
+            <td>
+              <span
+                class="admin-products__status admin-products__status--out-of-stock"
+              >
+                Out of Stock
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-products__actions">
+                <button
+                  type="button"
+                  class="admin-products__action-btn admin-products__action-btn--edit"
+                  aria-label="Edit Floral Lace Bodysuit"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-products__action-btn admin-products__action-btn--delete"
+                  aria-label="Delete Floral Lace Bodysuit"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Product 4 -->
+          <tr>
+            <td>
+              <div class="admin-products__product">
+                <div class="admin-products__image">
+                  <img
+                    src="https://placehold.co/80x80"
+                    alt="Waist Trainer"
+                  />
+                </div>
+
+                <div class="admin-products__product-info">
+                  <span class="admin-products__product-name">
+                    Hourglass Waist Trainer
+                  </span>
+                  <span class="admin-products__product-id">
+                    #SG-004
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>Sissy Dream</td>
+            <td>Shapers</td>
+            <td>₦22,000</td>
+            <td>5</td>
+
+            <td>
+              <span class="admin-products__status admin-products__status--draft">
+                Draft
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-products__actions">
+                <button
+                  type="button"
+                  class="admin-products__action-btn admin-products__action-btn--edit"
+                  aria-label="Edit Hourglass Waist Trainer"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-products__action-btn admin-products__action-btn--delete"
+                  aria-label="Delete Hourglass Waist Trainer"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Product 5 -->
+          <tr>
+            <td>
+              <div class="admin-products__product">
+                <div class="admin-products__image">
+                  <img
+                    src="https://placehold.co/80x80"
+                    alt="Pink Platform Heels"
+                  />
+                </div>
+
+                <div class="admin-products__product-info">
+                  <span class="admin-products__product-name">
+                    Pink Platform Heels
+                  </span>
+                  <span class="admin-products__product-id">
+                    #SG-005
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>Sissy Dream</td>
+            <td>Shoes</td>
+            <td>₦42,000</td>
+            <td>12</td>
+
+            <td>
+              <span class="admin-products__status admin-products__status--active">
+                Active
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-products__actions">
+                <button
+                  type="button"
+                  class="admin-products__action-btn admin-products__action-btn--edit"
+                  aria-label="Edit Pink Platform Heels"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-products__action-btn admin-products__action-btn--delete"
+                  aria-label="Delete Pink Platform Heels"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Product 6 -->
+          <tr>
+            <td>
+              <div class="admin-products__product">
+                <div class="admin-products__image">
+                  <img
+                    src="https://placehold.co/80x80"
+                    alt="Satin Crop Top"
+                  />
+                </div>
+
+                <div class="admin-products__product-info">
+                  <span class="admin-products__product-name">
+                    Satin Tie Front Crop Top
+                  </span>
+                  <span class="admin-products__product-id">
+                    #SG-006
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>Sissy Dream</td>
+            <td>Tops</td>
+            <td>₦18,500</td>
+            <td>8</td>
+
+            <td>
+              <span class="admin-products__status admin-products__status--active">
+                Active
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-products__actions">
+                <button
+                  type="button"
+                  class="admin-products__action-btn admin-products__action-btn--edit"
+                  aria-label="Edit Satin Tie Front Crop Top"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-products__action-btn admin-products__action-btn--delete"
+                  aria-label="Delete Satin Tie Front Crop Top"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ===================================================
+         TABLE FOOTER
+    ==================================================== -->
+    <div class="admin-products__footer">
+      <p class="admin-products__results">
+        Showing 1–6 of 86 products
+      </p>
+
+      <div class="admin-products__pagination">
+     <app-pagination></app-pagination>
+      </div>
+    </div>
+  </section>
+</div>

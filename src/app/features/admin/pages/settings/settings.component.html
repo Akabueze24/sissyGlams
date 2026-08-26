@@ -1,0 +1,727 @@
+<div class="admin-settings">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+  <div class="admin-settings__header">
+
+    <div class="admin-settings__heading">
+
+      <h1 class="admin-settings__title">
+        Settings
+      </h1>
+
+      <p class="admin-settings__subtitle">
+        Manage your store preferences and administration settings.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SETTINGS LAYOUT
+  ====================================================== -->
+  <div class="admin-settings__layout">
+
+    <!-- ===================================================
+         SETTINGS NAVIGATION
+    ==================================================== -->
+    <aside class="admin-settings__navigation">
+
+      <button
+        type="button"
+        class="admin-settings__nav-item admin-settings__nav-item--active"
+      >
+        <i class="fa-solid fa-store"></i>
+
+        <span>
+          Store Information
+        </span>
+      </button>
+
+
+      <button
+        type="button"
+        class="admin-settings__nav-item"
+      >
+        <i class="fa-solid fa-sliders"></i>
+
+        <span>
+          Store Preferences
+        </span>
+      </button>
+
+
+      <button
+        type="button"
+        class="admin-settings__nav-item"
+      >
+        <i class="fa-solid fa-credit-card"></i>
+
+        <span>
+          Currency & Payments
+        </span>
+      </button>
+
+
+      <button
+        type="button"
+        class="admin-settings__nav-item"
+      >
+        <i class="fa-solid fa-truck"></i>
+
+        <span>
+          Shipping
+        </span>
+      </button>
+
+
+      <button
+        type="button"
+        class="admin-settings__nav-item"
+      >
+        <i class="fa-solid fa-bell"></i>
+
+        <span>
+          Notifications
+        </span>
+      </button>
+
+
+      <button
+        type="button"
+        class="admin-settings__nav-item"
+      >
+        <i class="fa-solid fa-shield-halved"></i>
+
+        <span>
+          Security
+        </span>
+      </button>
+
+    </aside>
+
+
+    <!-- ===================================================
+         SETTINGS CONTENT
+    ==================================================== -->
+    <main class="admin-settings__content">
+
+      <!-- =================================================
+           STORE INFORMATION
+      ================================================== -->
+      <section class="admin-settings__section">
+
+        <div class="admin-settings__section-header">
+
+          <div>
+
+            <h2 class="admin-settings__section-title">
+              Store Information
+            </h2>
+
+            <p class="admin-settings__section-description">
+              Basic information about your Sissy Glams store.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- Store Name -->
+        <div class="admin-settings__form-group">
+
+          <label
+            for="storeName"
+            class="admin-settings__label"
+          >
+            Store Name
+          </label>
+
+          <input
+            id="storeName"
+            type="text"
+            class="admin-settings__input"
+            value="Sissy Glams"
+          />
+
+        </div>
+
+
+        <!-- Store Email -->
+        <div class="admin-settings__form-group">
+
+          <label
+            for="storeEmail"
+            class="admin-settings__label"
+          >
+            Store Email
+          </label>
+
+          <input
+            id="storeEmail"
+            type="email"
+            class="admin-settings__input"
+            value="hello@sissyglams.com"
+          />
+
+        </div>
+
+
+        <!-- Phone -->
+        <div class="admin-settings__form-group">
+
+          <label
+            for="storePhone"
+            class="admin-settings__label"
+          >
+            Phone Number
+          </label>
+
+          <input
+            id="storePhone"
+            type="tel"
+            class="admin-settings__input"
+            placeholder="+234 800 000 0000"
+          />
+
+        </div>
+
+
+        <!-- Store Description -->
+        <div class="admin-settings__form-group">
+
+          <label
+            for="storeDescription"
+            class="admin-settings__label"
+          >
+            Store Description
+          </label>
+
+          <textarea
+            id="storeDescription"
+            class="admin-settings__textarea"
+            rows="4"
+            placeholder="Enter a short description about your store..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- Store Address -->
+        <div class="admin-settings__form-group">
+
+          <label
+            for="storeAddress"
+            class="admin-settings__label"
+          >
+            Store Address
+          </label>
+
+          <textarea
+            id="storeAddress"
+            class="admin-settings__textarea"
+            rows="3"
+            placeholder="Enter your store address..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- Save -->
+        <div class="admin-settings__actions">
+
+          <button
+            type="button"
+            class="admin-settings__save-btn"
+          >
+            Save Changes
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           STORE PREFERENCES
+      ================================================== -->
+      <section class="admin-settings__section">
+
+        <div class="admin-settings__section-header">
+
+          <h2 class="admin-settings__section-title">
+            Store Preferences
+          </h2>
+
+          <p class="admin-settings__section-description">
+            Control how your store behaves and displays information.
+          </p>
+
+        </div>
+
+
+        <!-- Enable Store -->
+        <div class="admin-settings__toggle-row">
+
+          <div class="admin-settings__toggle-content">
+
+            <span class="admin-settings__toggle-title">
+              Store Active
+            </span>
+
+            <span class="admin-settings__toggle-description">
+              Allow customers to browse and purchase products.
+            </span>
+
+          </div>
+
+          <label class="admin-settings__switch">
+
+            <input
+              type="checkbox"
+              checked
+            />
+
+            <span class="admin-settings__switch-slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <!-- Guest Checkout -->
+        <div class="admin-settings__toggle-row">
+
+          <div class="admin-settings__toggle-content">
+
+            <span class="admin-settings__toggle-title">
+              Guest Checkout
+            </span>
+
+            <span class="admin-settings__toggle-description">
+              Allow customers to checkout without creating an account.
+            </span>
+
+          </div>
+
+          <label class="admin-settings__switch">
+
+            <input
+              type="checkbox"
+              checked
+            />
+
+            <span class="admin-settings__switch-slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <!-- Product Reviews -->
+        <div class="admin-settings__toggle-row">
+
+          <div class="admin-settings__toggle-content">
+
+            <span class="admin-settings__toggle-title">
+              Product Reviews
+            </span>
+
+            <span class="admin-settings__toggle-description">
+              Allow customers to leave reviews on products.
+            </span>
+
+          </div>
+
+          <label class="admin-settings__switch">
+
+            <input
+              type="checkbox"
+              checked
+            />
+
+            <span class="admin-settings__switch-slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <!-- Inventory Tracking -->
+        <div class="admin-settings__toggle-row">
+
+          <div class="admin-settings__toggle-content">
+
+            <span class="admin-settings__toggle-title">
+              Inventory Tracking
+            </span>
+
+            <span class="admin-settings__toggle-description">
+              Automatically track product stock levels.
+            </span>
+
+          </div>
+
+          <label class="admin-settings__switch">
+
+            <input
+              type="checkbox"
+              checked
+            />
+
+            <span class="admin-settings__switch-slider"></span>
+
+          </label>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           CURRENCY & PAYMENTS
+      ================================================== -->
+      <section class="admin-settings__section">
+
+        <div class="admin-settings__section-header">
+
+          <h2 class="admin-settings__section-title">
+            Currency & Payments
+          </h2>
+
+          <p class="admin-settings__section-description">
+            Configure your store currency and payment preferences.
+          </p>
+
+        </div>
+
+
+        <div class="admin-settings__form-row">
+
+          <!-- Currency -->
+          <div class="admin-settings__form-group">
+
+            <label
+              for="currency"
+              class="admin-settings__label"
+            >
+              Default Currency
+            </label>
+
+            <select
+              id="currency"
+              class="admin-settings__select"
+            >
+              <option selected>
+                USD — US Dollar
+              </option>
+
+              <option>
+                NGN — Nigerian Naira
+              </option>
+
+              <option>
+                GBP — British Pound
+              </option>
+
+              <option>
+                EUR — Euro
+              </option>
+            </select>
+
+          </div>
+
+
+          <!-- Payment -->
+          <div class="admin-settings__form-group">
+
+            <label
+              for="payment"
+              class="admin-settings__label"
+            >
+              Payment Method
+            </label>
+
+            <select
+              id="payment"
+              class="admin-settings__select"
+            >
+
+              <option selected>
+                Online Payment
+              </option>
+
+              <option>
+                Bank Transfer
+              </option>
+
+              <option>
+                Cash on Delivery
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           SHIPPING
+      ================================================== -->
+      <section class="admin-settings__section">
+
+        <div class="admin-settings__section-header">
+
+          <h2 class="admin-settings__section-title">
+            Shipping
+          </h2>
+
+          <p class="admin-settings__section-description">
+            Configure your store shipping preferences.
+          </p>
+
+        </div>
+
+
+        <!-- Shipping Enabled -->
+        <div class="admin-settings__toggle-row">
+
+          <div class="admin-settings__toggle-content">
+
+            <span class="admin-settings__toggle-title">
+              Shipping Enabled
+            </span>
+
+            <span class="admin-settings__toggle-description">
+              Allow customers to select shipping during checkout.
+            </span>
+
+          </div>
+
+          <label class="admin-settings__switch">
+
+            <input
+              type="checkbox"
+              checked
+            />
+
+            <span class="admin-settings__switch-slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <!-- Shipping Notice -->
+        <div class="admin-settings__form-group">
+
+          <label
+            for="shippingNotice"
+            class="admin-settings__label"
+          >
+            Shipping Notice
+          </label>
+
+          <textarea
+            id="shippingNotice"
+            class="admin-settings__textarea"
+            rows="3"
+            placeholder="Enter shipping information..."
+          ></textarea>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           NOTIFICATIONS
+      ================================================== -->
+      <section class="admin-settings__section">
+
+        <div class="admin-settings__section-header">
+
+          <h2 class="admin-settings__section-title">
+            Notifications
+          </h2>
+
+          <p class="admin-settings__section-description">
+            Choose which store notifications you want to receive.
+          </p>
+
+        </div>
+
+
+        <div class="admin-settings__toggle-row">
+
+          <div class="admin-settings__toggle-content">
+
+            <span class="admin-settings__toggle-title">
+              New Order Notifications
+            </span>
+
+            <span class="admin-settings__toggle-description">
+              Receive a notification whenever a new order is placed.
+            </span>
+
+          </div>
+
+          <label class="admin-settings__switch">
+
+            <input
+              type="checkbox"
+              checked
+            />
+
+            <span class="admin-settings__switch-slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <div class="admin-settings__toggle-row">
+
+          <div class="admin-settings__toggle-content">
+
+            <span class="admin-settings__toggle-title">
+              Low Stock Notifications
+            </span>
+
+            <span class="admin-settings__toggle-description">
+              Get notified when products reach the low-stock threshold.
+            </span>
+
+          </div>
+
+          <label class="admin-settings__switch">
+
+            <input
+              type="checkbox"
+              checked
+            />
+
+            <span class="admin-settings__switch-slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <div class="admin-settings__toggle-row">
+
+          <div class="admin-settings__toggle-content">
+
+            <span class="admin-settings__toggle-title">
+              Customer Notifications
+            </span>
+
+            <span class="admin-settings__toggle-description">
+              Receive important customer-related notifications.
+            </span>
+
+          </div>
+
+          <label class="admin-settings__switch">
+
+            <input
+              type="checkbox"
+              checked
+            />
+
+            <span class="admin-settings__switch-slider"></span>
+
+          </label>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           SECURITY
+      ================================================== -->
+      <section class="admin-settings__section">
+
+        <div class="admin-settings__section-header">
+
+          <h2 class="admin-settings__section-title">
+            Security
+          </h2>
+
+          <p class="admin-settings__section-description">
+            Manage your administrator account security.
+          </p>
+
+        </div>
+
+
+        <div class="admin-settings__security-row">
+
+          <div class="admin-settings__security-icon">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+
+          <div class="admin-settings__security-content">
+
+            <h3 class="admin-settings__security-title">
+              Administrator Password
+            </h3>
+
+            <p class="admin-settings__security-description">
+              Change the password used to access the admin dashboard.
+            </p>
+
+          </div>
+
+          <button
+            type="button"
+            class="admin-settings__secondary-btn"
+          >
+            Change Password
+          </button>
+
+        </div>
+
+
+        <div class="admin-settings__security-row">
+
+          <div class="admin-settings__security-icon">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </div>
+
+          <div class="admin-settings__security-content">
+
+            <h3 class="admin-settings__security-title">
+              Sign Out
+            </h3>
+
+            <p class="admin-settings__security-description">
+              Sign out from your administrator account on this device.
+            </p>
+
+          </div>
+
+          <button
+            type="button"
+            class="admin-settings__secondary-btn admin-settings__secondary-btn--danger"
+          >
+            Sign Out
+          </button>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</div>

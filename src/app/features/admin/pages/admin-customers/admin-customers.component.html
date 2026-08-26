@@ -1,0 +1,597 @@
+<div class="admin-customers">
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+  <div class="admin-customers__header">
+    <div class="admin-customers__heading">
+      <h1 class="admin-customers__title">Customers</h1>
+      <p class="admin-customers__subtitle">
+        Manage and view your store customers.
+      </p>
+    </div>
+
+    <button type="button" class="admin-customers__add-btn">
+      <i class="fa-solid fa-user-plus"></i>
+      <span>Add Customer</span>
+    </button>
+  </div>
+
+  <!-- =====================================================
+       CUSTOMER SUMMARY
+  ====================================================== -->
+  <div class="admin-customers__summary">
+    <div class="row g-4">
+      <!-- Total Customers -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-customers__summary-card">
+          <div class="admin-customers__summary-icon">
+            <i class="fa-solid fa-users"></i>
+          </div>
+
+          <div class="admin-customers__summary-content">
+            <span class="admin-customers__summary-label">
+              Total Customers
+            </span>
+            <h3 class="admin-customers__summary-value">542</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Customers -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-customers__summary-card">
+          <div class="admin-customers__summary-icon">
+            <i class="fa-solid fa-user-check"></i>
+          </div>
+
+          <div class="admin-customers__summary-content">
+            <span class="admin-customers__summary-label">
+              Active Customers
+            </span>
+            <h3 class="admin-customers__summary-value">498</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Customers -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-customers__summary-card">
+          <div class="admin-customers__summary-icon">
+            <i class="fa-solid fa-user-plus"></i>
+          </div>
+
+          <div class="admin-customers__summary-content">
+            <span class="admin-customers__summary-label">
+              New Customers
+            </span>
+            <h3 class="admin-customers__summary-value">36</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blocked Customers -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-customers__summary-card">
+          <div class="admin-customers__summary-icon">
+            <i class="fa-solid fa-user-slash"></i>
+          </div>
+
+          <div class="admin-customers__summary-content">
+            <span class="admin-customers__summary-label">
+              Blocked Customers
+            </span>
+            <h3 class="admin-customers__summary-value">8</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       CUSTOMERS MANAGEMENT SECTION
+  ====================================================== -->
+  <section class="admin-customers__content">
+    <!-- Section Header -->
+    <div class="admin-customers__content-header">
+      <div>
+        <h2 class="admin-customers__content-title">All Customers</h2>
+        <p class="admin-customers__content-subtitle">
+          View and manage all registered customers.
+        </p>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         TOOLBAR
+    ==================================================== -->
+    <div class="admin-customers__toolbar">
+      <!-- Search -->
+      <div class="admin-customers__search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+          type="text"
+          class="admin-customers__search-input"
+          placeholder="Search customers..."
+        />
+      </div>
+
+      <!-- Filters -->
+      <div class="admin-customers__filters">
+        <select class="admin-customers__select">
+          <option selected>All Customers</option>
+          <option>Active</option>
+          <option>New</option>
+          <option>Blocked</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         CUSTOMERS TABLE
+    ==================================================== -->
+    <div class="admin-customers__table-wrapper">
+      <table class="admin-customers__table">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Email</th>
+            <th>Joined</th>
+            <th>Orders</th>
+            <th>Total Spent</th>
+            <th>Status</th>
+            <th class="admin-customers__actions-heading">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- Customer 1 -->
+          <tr>
+            <td>
+              <div class="admin-customers__customer">
+                <div class="admin-customers__avatar">
+                  JD
+                </div>
+
+                <div class="admin-customers__customer-info">
+                  <span class="admin-customers__customer-name">
+                    Jane Doe
+                  </span>
+
+                  <span class="admin-customers__customer-id">
+                    #CUS-001
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>jane.doe@example.com</td>
+            <td>Aug 10, 2026</td>
+            <td>12</td>
+            <td>₦250,000</td>
+
+            <td>
+              <span
+                class="admin-customers__status admin-customers__status--active"
+              >
+                Active
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-customers__actions">
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--view"
+                  aria-label="View Jane Doe"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--edit"
+                  aria-label="Edit Jane Doe"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--delete"
+                  aria-label="Delete Jane Doe"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Customer 2 -->
+          <tr>
+            <td>
+              <div class="admin-customers__customer">
+                <div class="admin-customers__avatar">
+                  JS
+                </div>
+
+                <div class="admin-customers__customer-info">
+                  <span class="admin-customers__customer-name">
+                    John Smith
+                  </span>
+
+                  <span class="admin-customers__customer-id">
+                    #CUS-002
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>john.smith@example.com</td>
+            <td>Aug 08, 2026</td>
+            <td>8</td>
+            <td>₦180,000</td>
+
+            <td>
+              <span
+                class="admin-customers__status admin-customers__status--active"
+              >
+                Active
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-customers__actions">
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--view"
+                  aria-label="View John Smith"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--edit"
+                  aria-label="Edit John Smith"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--delete"
+                  aria-label="Delete John Smith"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Customer 3 -->
+          <tr>
+            <td>
+              <div class="admin-customers__customer">
+                <div class="admin-customers__avatar">
+                  AO
+                </div>
+
+                <div class="admin-customers__customer-info">
+                  <span class="admin-customers__customer-name">
+                    Ada Okafor
+                  </span>
+
+                  <span class="admin-customers__customer-id">
+                    #CUS-003
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>ada.okafor@example.com</td>
+            <td>Aug 05, 2026</td>
+            <td>6</td>
+            <td>₦125,500</td>
+
+            <td>
+              <span
+                class="admin-customers__status admin-customers__status--new"
+              >
+                New
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-customers__actions">
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--view"
+                  aria-label="View Ada Okafor"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--edit"
+                  aria-label="Edit Ada Okafor"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--delete"
+                  aria-label="Delete Ada Okafor"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Customer 4 -->
+          <tr>
+            <td>
+              <div class="admin-customers__customer">
+                <div class="admin-customers__avatar">
+                  BK
+                </div>
+
+                <div class="admin-customers__customer-info">
+                  <span class="admin-customers__customer-name">
+                    Brian King
+                  </span>
+
+                  <span class="admin-customers__customer-id">
+                    #CUS-004
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>brian.king@example.com</td>
+            <td>Jul 29, 2026</td>
+            <td>15</td>
+            <td>₦315,000</td>
+
+            <td>
+              <span
+                class="admin-customers__status admin-customers__status--active"
+              >
+                Active
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-customers__actions">
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--view"
+                  aria-label="View Brian King"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--edit"
+                  aria-label="Edit Brian King"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--delete"
+                  aria-label="Delete Brian King"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Customer 5 -->
+          <tr>
+            <td>
+              <div class="admin-customers__customer">
+                <div class="admin-customers__avatar">
+                  SM
+                </div>
+
+                <div class="admin-customers__customer-info">
+                  <span class="admin-customers__customer-name">
+                    Sarah Miller
+                  </span>
+
+                  <span class="admin-customers__customer-id">
+                    #CUS-005
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>sarah.miller@example.com</td>
+            <td>Jul 21, 2026</td>
+            <td>3</td>
+            <td>₦68,500</td>
+
+            <td>
+              <span
+                class="admin-customers__status admin-customers__status--new"
+              >
+                New
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-customers__actions">
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--view"
+                  aria-label="View Sarah Miller"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--edit"
+                  aria-label="Edit Sarah Miller"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--delete"
+                  aria-label="Delete Sarah Miller"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Customer 6 -->
+          <tr>
+            <td>
+              <div class="admin-customers__customer">
+                <div class="admin-customers__avatar">
+                  DM
+                </div>
+
+                <div class="admin-customers__customer-info">
+                  <span class="admin-customers__customer-name">
+                    David Mensah
+                  </span>
+
+                  <span class="admin-customers__customer-id">
+                    #CUS-006
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>david.mensah@example.com</td>
+            <td>Jul 15, 2026</td>
+            <td>0</td>
+            <td>₦0</td>
+
+            <td>
+              <span
+                class="admin-customers__status admin-customers__status--blocked"
+              >
+                Blocked
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-customers__actions">
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--view"
+                  aria-label="View David Mensah"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--edit"
+                  aria-label="Edit David Mensah"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--delete"
+                  aria-label="Delete David Mensah"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Customer 7 -->
+          <tr>
+            <td>
+              <div class="admin-customers__customer">
+                <div class="admin-customers__avatar">
+                  CT
+                </div>
+
+                <div class="admin-customers__customer-info">
+                  <span class="admin-customers__customer-name">
+                    Chloe Taylor
+                  </span>
+
+                  <span class="admin-customers__customer-id">
+                    #CUS-007
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>chloe.taylor@example.com</td>
+            <td>Jul 08, 2026</td>
+            <td>9</td>
+            <td>₦195,000</td>
+
+            <td>
+              <span
+                class="admin-customers__status admin-customers__status--active"
+              >
+                Active
+              </span>
+            </td>
+
+            <td>
+              <div class="admin-customers__actions">
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--view"
+                  aria-label="View Chloe Taylor"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--edit"
+                  aria-label="Edit Chloe Taylor"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="admin-customers__action-btn admin-customers__action-btn--delete"
+                  aria-label="Delete Chloe Taylor"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ===================================================
+         TABLE FOOTER
+    ==================================================== -->
+    <div class="admin-customers__footer">
+      <p class="admin-customers__results">
+        Showing 1–7 of 542 customers
+      </p>
+
+      <!-- Existing reusable pagination component -->
+      <app-pagination></app-pagination>
+    </div>
+  </section>
+</div>

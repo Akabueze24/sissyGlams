@@ -1,82 +1,82 @@
+<!-- 1. Announcement bar (scrolls away) -->
+<div class="announcement-bar text-center">
+  <span>
+    🎀 Worldwide Shipping Shipping rates calculated based on your location Shop
+    Now 🎀
+  </span>
+</div>
+
+<!-- 2. Top info bar (desktop / tablet only — scrolls away) -->
+<div class="topbar d-none d-lg-flex align-items-center justify-content-between">
+  <div class="topbar__left d-flex align-items-center">
+    <ul class="social-list list-unstyled d-flex align-items-center mb-0">
+      <li>
+        <a href="#" aria-label="Facebook"
+          ><i class="fa-brands fa-facebook-f"></i
+        ></a>
+      </li>
+      <li>
+        <a href="#" aria-label="Instagram"
+          ><i class="fa-brands fa-instagram"></i
+        ></a>
+      </li>
+      <li>
+        <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+      </li>
+    </ul>
+
+    <span class="topbar__divider" aria-hidden="true"></span>
+
+    <ul class="info-links list-unstyled d-flex align-items-center mb-0">
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/shipping">Shipping</a></li>
+      <li><a href="/returns">Returns</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/faq">FAQ</a></li>
+    </ul>
+  </div>
+
+  <div class="topbar__right d-flex align-items-center">
+    <div class="dropdown currency-dropdown">
+      <button
+        class="btn dropdown-toggle"
+        type="button"
+        id="currencyDropdown"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        USD
+      </button>
+      <ul
+        class="dropdown-menu dropdown-menu-end"
+        aria-labelledby="currencyDropdown"
+      >
+        <li><button class="dropdown-item" type="button">USD</button></li>
+        <li><button class="dropdown-item" type="button">EUR</button></li>
+        <li><button class="dropdown-item" type="button">GBP</button></li>
+      </ul>
+    </div>
+
+    <a class="topbar__contact" href="mailto:support@sissydream.com">
+      <i class="fa-regular fa-envelope"></i>
+      <span>SUPPORT&#64;SISSYDREAM.COM</span>
+    </a>
+
+    <a class="topbar__contact" href="tel:+13616663162">
+      <i class="fa-solid fa-phone"></i>
+      <span>+1&nbsp;361&nbsp;666&nbsp;3162</span>
+    </a>
+  </div>
+</div>
+
+<!-- 3 & 4. Sticky header: main header + category nav (sticks for the whole page) -->
 <header class="site-header">
-  <!-- 1. Announcement bar -->
-  <div class="announcement-bar text-center">
-    <span>🎀 Free Worldwide Shipping US$50+ 🎀</span>
-  </div>
-
-  <!-- 2. Top info bar (desktop / tablet only) -->
-  <div
-    class="topbar d-none d-lg-flex align-items-center justify-content-between"
-  >
-    <div class="topbar__left d-flex align-items-center">
-      <ul class="social-list list-unstyled d-flex align-items-center mb-0">
-        <li>
-          <a href="#" aria-label="Facebook">
-            <i class="fa-brands fa-facebook-f"></i>
-          </a>
-        </li>
-        <li>
-          <a href="#" aria-label="Instagram">
-            <i class="fa-brands fa-instagram"></i>
-          </a>
-        </li>
-        <li>
-          <a href="#" aria-label="X">
-            <i class="fa-brands fa-x-twitter"></i>
-          </a>
-        </li>
-      </ul>
-
-      <span class="topbar__divider" aria-hidden="true"></span>
-
-      <ul class="info-links list-unstyled d-flex align-items-center mb-0">
-        <li><a href="/blog">Blog</a></li>
-        <li><a href="/shipping">Shipping</a></li>
-        <li><a href="/returns">Returns</a></li>
-        <li><a href="/contact">Contact</a></li>
-        <li><a href="/faq">FAQ</a></li>
-      </ul>
-    </div>
-
-    <div class="topbar__right d-flex align-items-center">
-      <div class="dropdown currency-dropdown">
-        <button
-          class="btn dropdown-toggle"
-          type="button"
-          id="currencyDropdown"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          USD
-        </button>
-        <ul
-          class="dropdown-menu dropdown-menu-end"
-          aria-labelledby="currencyDropdown"
-        >
-          <li><button class="dropdown-item" type="button">USD</button></li>
-          <li><button class="dropdown-item" type="button">EUR</button></li>
-          <li><button class="dropdown-item" type="button">GBP</button></li>
-        </ul>
-      </div>
-
-      <a class="topbar__contact" href="mailto:support@sissydream.com">
-        <i class="fa-regular fa-envelope"></i>
-        <span>SUPPORT&#64;SISSYDREAM.COM</span>
-      </a>
-
-      <a class="topbar__contact" href="tel:+13616663162">
-        <i class="fa-solid fa-phone"></i>
-        <span>+1&nbsp;361&nbsp;666&nbsp;3162</span>
-      </a>
-    </div>
-  </div>
-
   <!-- 3. Main header -->
   <div class="main-header">
     <div
       class="main-header__inner d-flex align-items-center justify-content-between"
     >
-      <!-- Mobile-only: hamburger + logo + cart -->
+      <!-- Mobile-only: hamburger + logo + actions -->
       <div
         class="mobile-row d-flex d-lg-none align-items-center justify-content-between w-100"
       >
@@ -92,9 +92,9 @@
           <i class="fa-solid fa-bars"></i>
         </button>
 
-        <a class="logo logo--mobile" href="/">
+        <a class="logo logo--mobile" href="/home">
           <span class="logo__word">
-            Sissy<span class="logo__word--accent">Dream</span>
+            Sissy<span class="logo__word--accent">Glams</span>
           </span>
         </a>
 
@@ -113,11 +113,9 @@
           (click)="onAccountClick()"
         >
           <i class="fa-regular fa-user"></i>
-          <span>
-            {{
-              currentUser ? currentUser.firstName || "My Account" : "Account"
-            }}
-          </span>
+          <span>{{
+            currentUser ? currentUser.firstName || "My Account" : "Account"
+          }}</span>
         </a>
 
         <a class="cart-icon-btn" routerLink="/cart" aria-label="Cart">
@@ -127,37 +125,61 @@
       </div>
 
       <!-- Desktop: logo -->
-      <a class="logo d-none d-lg-flex align-items-center" href="/">
-        <span class="logo__mark">
-          <i class="fa-solid fa-face-smile"></i>
-        </span>
+      <a class="logo d-none d-lg-flex align-items-center" href="/home">
+        <span class="logo__mark"><i class="fa-solid fa-face-smile"></i></span>
         <span class="logo__text">
           <span class="logo__word">
-            Sissy<span class="logo__word--accent">Dream</span>
+            Sissy<span class="logo__word--accent">Glams</span>
           </span>
           <span class="logo__tagline">Sissy Maker Store</span>
         </span>
       </a>
 
-      <!-- Desktop: search -->
-      <form
-        class="search-form d-none d-lg-flex"
-        role="search"
-        (ngSubmit)="onSearch($event)"
-      >
-        <input
-          class="search-form__input"
-          type="search"
-          name="searchTerm"
-          placeholder="I'm a sissy looking for..."
-          aria-label="Search products"
-          [(ngModel)]="searchTerm"
-        />
-        <button class="search-form__btn" type="submit" aria-label="Search">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-      </form>
+      <!-- Desktop: search + suggestions -->
+      <div class="search-form-wrap d-none d-lg-block">
+        <form
+          class="search-form d-flex"
+          role="search"
+          (ngSubmit)="onSearch($event)"
+        >
+          <input
+            class="search-form__input"
+            type="search"
+            name="searchTerm"
+            placeholder="I'm a sissy looking for..."
+            aria-label="Search products"
+            autocomplete="off"
+            [(ngModel)]="searchTerm"
+            (input)="onSearchInput()"
+            (focus)="onSearchInput()"
+            (blur)="closeSuggestions()"
+          />
+          <button class="search-form__btn" type="submit" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </form>
 
+        <ul class="search-suggestions" *ngIf="showSuggestions">
+          <li
+            class="search-suggestions__item"
+            *ngFor="let product of suggestions"
+            (mousedown)="goToProduct(product)"
+          >
+            <img
+              class="search-suggestions__img"
+              [src]="product.images[0]"
+              [alt]="product.name"
+            />
+            <div class="search-suggestions__info">
+              <span class="search-suggestions__name">{{ product.name }}</span>
+              <span class="search-suggestions__brand">{{ product.brand }}</span>
+            </div>
+            <span class="search-suggestions__price"
+              >${{ product.price | number: "1.2-2" }}</span
+            >
+          </li>
+        </ul>
+      </div>
 
       <!-- Desktop: actions -->
       <div class="header-actions d-none d-lg-flex align-items-center">
@@ -180,11 +202,9 @@
           (click)="onAccountClick()"
         >
           <i class="fa-regular fa-user"></i>
-          <span>
-            {{
-              currentUser ? currentUser.firstName || "My Account" : "Account"
-            }}
-          </span>
+          <span>{{
+            currentUser ? currentUser.firstName || "My Account" : "Account"
+          }}</span>
         </a>
 
         <span class="header-actions__divider" aria-hidden="true"></span>
@@ -202,24 +222,51 @@
       </div>
     </div>
 
-    <!-- Mobile-only: full-width search row -->
-    <form
-      class="search-form search-form--mobile d-flex d-lg-none"
-      role="search"
-      (ngSubmit)="onSearch($event)"
-    >
-      <input
-        class="search-form__input"
-        type="search"
-        name="searchTermMobile"
-        placeholder="I'm a sissy looking for..."
-        aria-label="Search products"
-        [(ngModel)]="searchTerm"
-      />
-      <button class="search-form__btn" type="submit" aria-label="Search">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </button>
-    </form>
+    <!-- Mobile-only: full-width search -->
+    <div class="search-form-wrap search-form-wrap--mobile d-lg-none">
+      <form
+        class="search-form search-form--mobile d-flex"
+        role="search"
+        (ngSubmit)="onSearch($event)"
+      >
+        <input
+          class="search-form__input"
+          type="search"
+          name="searchTermMobile"
+          placeholder="I'm a sissy looking for..."
+          aria-label="Search products"
+          autocomplete="off"
+          [(ngModel)]="searchTerm"
+          (input)="onSearchInput()"
+          (focus)="onSearchInput()"
+          (blur)="closeSuggestions()"
+        />
+        <button class="search-form__btn" type="submit" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+
+      <ul class="search-suggestions" *ngIf="showSuggestions">
+        <li
+          class="search-suggestions__item"
+          *ngFor="let product of suggestions"
+          (mousedown)="goToProduct(product)"
+        >
+          <img
+            class="search-suggestions__img"
+            [src]="product.images[0]"
+            [alt]="product.name"
+          />
+          <div class="search-suggestions__info">
+            <span class="search-suggestions__name">{{ product.name }}</span>
+            <span class="search-suggestions__brand">{{ product.brand }}</span>
+          </div>
+          <span class="search-suggestions__price"
+            >${{ product.price | number: "1.2-2" }}</span
+          >
+        </li>
+      </ul>
+    </div>
   </div>
 
   <!-- 4. Pink category navigation -->
@@ -265,7 +312,6 @@
                     All {{ item.label }}
                   </a>
                 </li>
-
                 <li *ngFor="let sub of item.subcategories">
                   <a
                     class="dropdown-item"
@@ -291,6 +337,7 @@
               </a>
             </ng-template>
           </li>
+
           <!-- Fixed: Collections -->
           <li class="nav-item dropdown" *ngIf="storeCollections.length">
             <a
@@ -302,7 +349,6 @@
             >
               Collections
             </a>
-
             <ul class="dropdown-menu">
               <li *ngFor="let collection of storeCollections">
                 <a
