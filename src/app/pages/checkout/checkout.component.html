@@ -655,7 +655,7 @@
           </p>
 
           <!-- PAYMENT BUTTON -->
-          <button class="checkout__submit" type="submit">
+          <button class="checkout__submit" type="submit" [disabled]="!cartItems.length || checkoutForm.invalid">
             Pay
             {{ total !== null ? "$" + (total | number: "1.2-2") : "" }}
           </button>

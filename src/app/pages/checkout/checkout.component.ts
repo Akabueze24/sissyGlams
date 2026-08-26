@@ -13,6 +13,7 @@ import { CartService } from 'src/app/core/services/cart-service/cart.service';
 import { CheckoutService } from 'src/app/core/services/checkout-service/checkout.service';
 import { Router } from '@angular/router';
 import { OrderService } from 'src/app/core/services/order-service/order.service';
+import { AuthService } from 'src/app/core/services/auth-service/auth.service';
 
 @Component({
   selector: 'app-checkout',
@@ -69,7 +70,8 @@ export class CheckoutComponent implements OnInit {
     private cartService: CartService,
     private checkoutService: CheckoutService,
     private orderService: OrderService,
-    private router: Router
+    private authService: AuthService,
+    private router: Router,
   ) {}
 
   // ============================================================
@@ -78,6 +80,8 @@ export class CheckoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.createCheckoutForm();
+
+    this.prefillFromUser();
 
     this.loadCart();
 
@@ -89,6 +93,17 @@ export class CheckoutComponent implements OnInit {
 
     this.loadShippingQuote(this.checkoutForm.get('country')?.value);
   }
+
+  private prefillFromUser(): void {
+  const user = this.authService.getCurrentUser();
+  if (!user) return;
+
+  this.checkoutForm.patchValue({
+    email: user.email || '',
+    firstName: user.firstName || '',
+    lastName: user.lastName || '',
+  });
+}
 
   // ============================================================
   // CREATE CHECKOUT FORM
@@ -173,6 +188,12 @@ export class CheckoutComponent implements OnInit {
   private loadCart(): void {
     this.cartService.cartItems$.subscribe((items) => {
       this.cartItems = items;
+
+      // Guard: no items → leave checkout
+      if (!items.length) {
+        this.router.navigate(['/cart']);
+        return;
+      }
 
       this.calculateSubtotal();
 
@@ -262,34 +283,32 @@ export class CheckoutComponent implements OnInit {
   // SUBMIT CHECKOUT
   // ============================================================
 
-submitCheckout(): void {
-  if (this.checkoutForm.invalid) {
-    this.checkoutForm.markAllAsTouched();
-    return;
+  submitCheckout(): void {
+    if (this.checkoutForm.invalid) {
+      this.checkoutForm.markAllAsTouched();
+      return;
+    }
+
+    if (this.shippingCost === null || this.total === null) {
+      return;
+    }
+
+    const checkoutData = this.getCheckoutData();
+
+    const order = this.checkoutService.createOrder(
+      checkoutData,
+      this.cartItems,
+      this.subtotal,
+      this.shippingCost,
+      this.total,
+    );
+
+    this.orderService.saveOrder(order);
+    this.cartService.clearCart();
+    console.log('Order created:', order);
+
+    this.router.navigate(['/order-confirmation']);
   }
-
-  if (this.shippingCost === null || this.total === null) {
-    return;
-  }
-
-  const checkoutData = this.getCheckoutData();
-
-  const order = this.checkoutService.createOrder(
-    checkoutData,
-    this.cartItems,
-    this.subtotal,
-    this.shippingCost,
-    this.total,
-  );
-
-  this.orderService.saveOrder(order);
-  this.cartService.clearCart()
-  console.log('Order created:', order);
-
-  this.router.navigate(['/order-confirmation'])
-
-  
-}
 
   private watchPaymentChanges(): void {
     this.checkoutForm.get('paymentMethod')?.valueChanges.subscribe(() => {
