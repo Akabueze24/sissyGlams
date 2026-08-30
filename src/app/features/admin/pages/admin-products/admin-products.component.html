@@ -5,66 +5,857 @@
   <div class="admin-products__header">
     <div class="admin-products__heading">
       <h1 class="admin-products__title">Products</h1>
+
       <p class="admin-products__subtitle">
         Manage your store products and inventory.
       </p>
     </div>
 
-    <button type="button" class="admin-products__add-btn">
-      <i class="fa-solid fa-plus"></i>
-      <span>Add New Product</span>
+    <button
+      type="button"
+      class="admin-products__add-btn"
+      (click)="openAddForm()"
+    >
+      <i class="fa-solid fa-plus" aria-hidden="true"></i>
+
+      <span> Add New Product </span>
     </button>
   </div>
 
   <!-- =====================================================
+       ADD PRODUCT FORM
+       ===================================================== -->
+  <section class="admin-products__add-form" *ngIf="showAddForm">
+    <!-- Add Form Header -->
+    <div class="admin-products__add-form-header">
+      <div>
+        <h2 class="admin-products__add-form-title">Add New Product</h2>
+
+        <p class="admin-products__add-form-subtitle">
+          Create a new product for your store.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="admin-products__close-btn"
+        (click)="closeAddForm()"
+        aria-label="Close add product form"
+      >
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- Add Product Form -->
+    <form class="admin-products__form" (ngSubmit)="submitAddForm()">
+      <!-- Product Name -->
+      <div class="admin-products__form-group">
+        <label for="productName"> Product Name </label>
+
+        <input
+          id="productName"
+          type="text"
+          class="admin-products__input"
+          placeholder="Enter product name"
+          name="name"
+          [(ngModel)]="addForm.name"
+        />
+      </div>
+
+      <!-- Brand -->
+      <div class="admin-products__form-group">
+        <label for="productBrand"> Brand </label>
+
+        <input
+          id="productBrand"
+          type="text"
+          class="admin-products__input"
+          placeholder="Enter brand name"
+          name="brand"
+          [(ngModel)]="addForm.brand"
+        />
+      </div>
+
+      <!-- Category -->
+      <div class="admin-products__form-group">
+        <label for="productCategory"> Category </label>
+
+        <select
+          id="productCategory"
+          class="admin-products__input"
+          name="category"
+          [(ngModel)]="addForm.category"
+        >
+          <option value="">Select category</option>
+
+          <option *ngFor="let category of categories" [value]="category">
+            {{ categoryLabel(category) }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Price -->
+      <div class="admin-products__form-group">
+        <label for="productPrice"> Price </label>
+
+        <input
+          id="productPrice"
+          type="number"
+          min="0"
+          step="0.01"
+          class="admin-products__input"
+          placeholder="0.00"
+          name="price"
+          [(ngModel)]="addForm.price"
+        />
+      </div>
+
+      <!-- Image -->
+      <div class="admin-products__form-group admin-products__form-group--full">
+        <label for="productImage"> Product Image URL </label>
+
+        <input
+          id="productImage"
+          type="text"
+          class="admin-products__input"
+          placeholder="https://example.com/product-image.jpg"
+          name="imageUrl"
+          [(ngModel)]="addForm.imageUrl"
+        />
+      </div>
+
+      <!-- Description -->
+      <div class="admin-products__form-group admin-products__form-group--full">
+        <label for="productDescription"> Product Description </label>
+
+        <textarea
+          id="productDescription"
+          class="admin-products__textarea"
+          rows="6"
+          placeholder="Write a description for this product..."
+          name="description"
+          [(ngModel)]="addForm.description"
+        ></textarea>
+      </div>
+
+      <!-- Active -->
+      <div class="admin-products__form-group admin-products__form-group--full">
+        <label class="admin-products__checkbox">
+          <input type="checkbox" name="active" [(ngModel)]="addForm.active" />
+
+          <span> Make this product active immediately </span>
+        </label>
+      </div>
+
+      <!-- Actions -->
+      <div class="admin-products__form-actions">
+        <button
+          type="button"
+          class="admin-products__cancel-btn"
+          (click)="closeAddForm()"
+        >
+          Cancel
+        </button>
+
+        <button type="submit" class="admin-products__save-btn">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i>
+
+          <span> Add Product </span>
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- =====================================================
+       EDIT PRODUCT MODAL
+       ===================================================== -->
+  <div
+    class="admin-products__modal"
+    *ngIf="showEditForm"
+    (click)="closeEditForm()"
+  >
+    <!-- Modal -->
+    <div
+      class="admin-products__modal-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="editProductTitle"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- =================================================
+           MODAL HEADER
+           ================================================= -->
+      <div class="admin-products__modal-header">
+        <div>
+          <h2 id="editProductTitle" class="admin-products__modal-title">
+            Edit Product
+          </h2>
+
+          <p class="admin-products__modal-subtitle">
+            Update product information, images, variants, and availability.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="admin-products__close-btn"
+          (click)="closeEditForm()"
+          aria-label="Close edit product modal"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <!-- =================================================
+           MODAL BODY
+           ================================================= -->
+      <div class="admin-products__modal-body">
+        <form class="admin-products__form" (ngSubmit)="submitEditForm()">
+          <!-- =================================================
+               BASIC INFORMATION
+               ================================================= -->
+
+          <div class="admin-products__form-group">
+            <label for="editName"> Product Name </label>
+
+            <input
+              id="editName"
+              type="text"
+              class="admin-products__input"
+              name="editName"
+              [(ngModel)]="editForm.name"
+            />
+          </div>
+
+          <div class="admin-products__form-group">
+            <label for="editBrand"> Brand </label>
+
+            <input
+              id="editBrand"
+              type="text"
+              class="admin-products__input"
+              name="editBrand"
+              [(ngModel)]="editForm.brand"
+            />
+          </div>
+
+          <div class="admin-products__form-group">
+            <label for="editCategory"> Category </label>
+
+            <select
+              id="editCategory"
+              class="admin-products__input"
+              name="editCategory"
+              [(ngModel)]="editForm.category"
+            >
+              <option value="">Select category</option>
+
+              <option *ngFor="let category of categories" [value]="category">
+                {{ categoryLabel(category) }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Subcategory -->
+          <div class="admin-products__form-group">
+            <label for="productSubcategory">Subcategory</label>
+            <select
+              id="productSubcategory"
+              class="admin-products__input"
+              name="subcategory"
+              [(ngModel)]="addForm.subcategory"
+              
+            >
+              <option value="">None</option>
+              <option
+                *ngFor="let sub of subcategoriesForAdd"
+                [value]="sub.slug"
+              >
+                {{ sub.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Collections -->
+          <div
+            class="admin-products__form-group admin-products__form-group--full"
+          >
+            <div class="admin-products__section-heading">
+              <h3>Collections</h3>
+              <p>Optional groups (New Arrivals, Featured, etc.).</p>
+            </div>
+            <label
+              class="admin-products__checkbox"
+              *ngFor="let col of storeCollections"
+            >
+              <input
+                type="checkbox"
+                [checked]="addForm.collectionSlugs.includes(col.slug)"
+                (change)="
+                  addForm.collectionSlugs = toggleCollectionSlug(
+                    addForm.collectionSlugs,
+                    col.slug,
+                    $any($event.target).checked
+                  )
+                "
+              />
+              <span>{{ col.name }}</span>
+            </label>
+          </div>
+
+          <div class="admin-products__form-group">
+            <label for="editPrice"> Price </label>
+
+            <input
+              id="editPrice"
+              type="number"
+              min="0"
+              step="0.01"
+              class="admin-products__input"
+              name="editPrice"
+              [(ngModel)]="editForm.price"
+            />
+          </div>
+
+          <div class="admin-products__form-group">
+            <label for="editOldPrice">
+              Compare-at price
+
+              <span class="admin-products__optional"> (optional) </span>
+            </label>
+
+            <input
+              id="editOldPrice"
+              type="number"
+              min="0"
+              step="0.01"
+              class="admin-products__input"
+              name="editOldPrice"
+              [(ngModel)]="editForm.oldPrice"
+            />
+          </div>
+
+          <!-- =================================================
+               DEFAULT GALLERY
+               ================================================= -->
+
+          <div
+            class="admin-products__form-group admin-products__form-group--full"
+          >
+            <div class="admin-products__section-heading">
+              <h3>Default Gallery</h3>
+
+              <p>
+                These images are used when no specific product color is
+                selected.
+              </p>
+            </div>
+
+            <label for="editImages"> Gallery image URLs </label>
+
+            <textarea
+              id="editImages"
+              class="admin-products__textarea"
+              rows="5"
+              name="editImages"
+              [(ngModel)]="editForm.imageUrlsText"
+              placeholder="https://example.com/front.jpg
+https://example.com/side.jpg
+https://example.com/back.jpg"
+            ></textarea>
+
+            <small class="admin-products__help-text">
+              Enter one image URL per line.
+            </small>
+          </div>
+
+          <!-- =================================================
+               DESCRIPTION
+               ================================================= -->
+          <div
+            class="admin-products__form-group admin-products__form-group--full"
+          >
+            <label for="editDescription"> Product Description </label>
+
+            <quill-editor
+              class="admin-products__quill"
+              theme="snow"
+              [modules]="quillModules"
+              [(ngModel)]="editForm.description"
+              name="editDescription"
+              placeholder="Write a description for this product..."
+            ></quill-editor>
+          </div>
+
+          <!-- =================================================
+               PRODUCT DETAILS (bullets)
+               ================================================= -->
+          <div
+            class="admin-products__form-group admin-products__form-group--full"
+          >
+            <div class="admin-products__section-heading">
+              <h3>Product details</h3>
+              <p>Bullet points shown on the product page (one per line).</p>
+            </div>
+
+            <label for="editDetails">Detail bullets</label>
+            <textarea
+              id="editDetails"
+              class="admin-products__textarea"
+              rows="5"
+              name="editDetails"
+              [(ngModel)]="editForm.detailsText"
+              placeholder="Soft stretch fabric
+Hand wash only
+Model wears size S"
+            ></textarea>
+            <small class="admin-products__help-text">
+              One detail per line.
+            </small>
+          </div>
+
+          <!-- =================================================
+               SHIPPING
+               ================================================= -->
+          <div
+            class="admin-products__form-group admin-products__form-group--full"
+          >
+            <label for="editShipping">Shipping info</label>
+            <textarea
+              id="editShipping"
+              class="admin-products__textarea"
+              rows="3"
+              name="editShipping"
+              [(ngModel)]="editForm.shipping"
+              placeholder="Ships within 2–5 business days."
+            ></textarea>
+          </div>
+
+          <!-- =================================================
+               RETURNS
+               ================================================= -->
+          <div
+            class="admin-products__form-group admin-products__form-group--full"
+          >
+            <label for="editReturns">Returns policy</label>
+            <textarea
+              id="editReturns"
+              class="admin-products__textarea"
+              rows="3"
+              name="editReturns"
+              [(ngModel)]="editForm.returns"
+              placeholder="Eligible for return according to store policy."
+            ></textarea>
+          </div>
+
+          <!-- =================================================
+               COLORS & GALLERIES
+               ================================================= -->
+
+          <div
+            class="admin-products__form-group admin-products__form-group--full"
+          >
+            <div class="admin-products__section-heading">
+              <h3>Colors &amp; Galleries</h3>
+
+              <p>
+                Add the available colors for this product. Each color can have
+                its own swatch and gallery images.
+              </p>
+            </div>
+
+            <!-- Color Rows -->
+            <div
+              *ngFor="let row of editForm.colorRows; let i = index"
+              class="admin-products__variant-card"
+            >
+              <div class="admin-products__variant-header">
+                <span class="admin-products__variant-number">
+                  Color {{ i + 1 }}
+                </span>
+
+                <button
+                  type="button"
+                  class="admin-products__remove-btn"
+                  (click)="removeColorRow(i)"
+                >
+                  <i class="fa-solid fa-trash" aria-hidden="true"></i>
+
+                  <span> Remove </span>
+                </button>
+              </div>
+
+              <div class="admin-products__variant-fields">
+                <!-- Color Name -->
+                <div class="admin-products__form-group">
+                  <label [for]="'colorName' + i"> Color Name </label>
+
+                  <input
+                    type="text"
+                    class="admin-products__input"
+                    placeholder="e.g. Black"
+                    [(ngModel)]="row.name"
+                    [name]="'colorName' + i"
+                    [id]="'colorName' + i"
+                  />
+                </div>
+
+                <!-- Hex -->
+                <div class="admin-products__form-group">
+                  <label [for]="'colorValue' + i"> Hex Value </label>
+
+                  <input
+                    type="text"
+                    class="admin-products__input"
+                    placeholder="#111111"
+                    [(ngModel)]="row.value"
+                    [name]="'colorValue' + i"
+                    [id]="'colorValue' + i"
+                  />
+                </div>
+
+                <!-- Swatch -->
+                <div class="admin-products__form-group">
+                  <label [for]="'colorImage' + i"> Swatch Image URL </label>
+
+                  <input
+                    type="text"
+                    class="admin-products__input"
+                    placeholder="https://example.com/swatch.jpg"
+                    [(ngModel)]="row.image"
+                    [name]="'colorImage' + i"
+                    [id]="'colorImage' + i"
+                  />
+                </div>
+
+                <!-- Gallery -->
+                <div
+                  class="admin-products__form-group admin-products__form-group--full"
+                >
+                  <label [for]="'colorGallery' + i">
+                    Color Gallery Images
+                  </label>
+
+                  <textarea
+                    class="admin-products__textarea"
+                    rows="4"
+                    placeholder="https://example.com/black-front.jpg
+https://example.com/black-side.jpg"
+                    [(ngModel)]="row.galleryText"
+                    [name]="'colorGallery' + i"
+                    [id]="'colorGallery' + i"
+                  ></textarea>
+
+                  <small class="admin-products__help-text">
+                    Enter one gallery image URL per line.
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add Color -->
+            <button
+              type="button"
+              class="admin-products__secondary-btn"
+              (click)="addColorRow()"
+            >
+              <i class="fa-solid fa-plus" aria-hidden="true"></i>
+
+              <span> Add Color </span>
+            </button>
+          </div>
+
+          <!-- =================================================
+               SIZES
+               ================================================= -->
+
+          <div
+            class="admin-products__form-group admin-products__form-group--full"
+          >
+            <div class="admin-products__section-heading">
+              <h3>Sizes</h3>
+
+              <p>Add the sizes available for this product.</p>
+            </div>
+
+            <div
+              *ngFor="let row of editForm.sizeRows; let i = index"
+              class="admin-products__option-row"
+            >
+              <div class="admin-products__option-fields">
+                <div class="admin-products__form-group">
+                  <label [for]="'sizeName' + i"> Name </label>
+
+                  <input
+                    type="text"
+                    class="admin-products__input"
+                    placeholder="e.g. Small"
+                    [(ngModel)]="row.name"
+                    [name]="'sizeName' + i"
+                    [id]="'sizeName' + i"
+                  />
+                </div>
+
+                <div class="admin-products__form-group">
+                  <label [for]="'sizeValue' + i"> Value </label>
+
+                  <input
+                    type="text"
+                    class="admin-products__input"
+                    placeholder="e.g. S"
+                    [(ngModel)]="row.value"
+                    [name]="'sizeValue' + i"
+                    [id]="'sizeValue' + i"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="button"
+                class="admin-products__remove-btn"
+                (click)="removeSizeRow(i)"
+              >
+                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+
+                <span> Remove </span>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              class="admin-products__secondary-btn"
+              (click)="addSizeRow()"
+            >
+              <i class="fa-solid fa-plus" aria-hidden="true"></i>
+
+              <span> Add Size </span>
+            </button>
+          </div>
+
+          <!-- =================================================
+               LENGTHS
+               ================================================= -->
+
+          <div
+            class="admin-products__form-group admin-products__form-group--full"
+          >
+            <div class="admin-products__section-heading">
+              <h3>Lengths</h3>
+
+              <p>
+                Add length options when the product supports different lengths.
+              </p>
+            </div>
+
+            <div
+              *ngFor="let row of editForm.lengthRows; let i = index"
+              class="admin-products__option-row"
+            >
+              <div class="admin-products__option-fields">
+                <div class="admin-products__form-group">
+                  <label [for]="'lengthName' + i"> Name </label>
+
+                  <input
+                    type="text"
+                    class="admin-products__input"
+                    placeholder="e.g. Mini"
+                    [(ngModel)]="row.name"
+                    [name]="'lengthName' + i"
+                    [id]="'lengthName' + i"
+                  />
+                </div>
+
+                <div class="admin-products__form-group">
+                  <label [for]="'lengthValue' + i"> Value </label>
+
+                  <input
+                    type="text"
+                    class="admin-products__input"
+                    placeholder="e.g. mini"
+                    [(ngModel)]="row.value"
+                    [name]="'lengthValue' + i"
+                    [id]="'lengthValue' + i"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="button"
+                class="admin-products__remove-btn"
+                (click)="removeLengthRow(i)"
+              >
+                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+
+                <span> Remove </span>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              class="admin-products__secondary-btn"
+              (click)="addLengthRow()"
+            >
+              <i class="fa-solid fa-plus" aria-hidden="true"></i>
+
+              <span> Add Length </span>
+            </button>
+          </div>
+
+          <!-- =================================================
+               ACTIVE STATUS
+               ================================================= -->
+
+          <div
+            class="admin-products__form-group admin-products__form-group--full"
+          >
+            <label class="admin-products__checkbox">
+              <input
+                type="checkbox"
+                name="editActive"
+                [(ngModel)]="editForm.active"
+              />
+
+              <span> Active — make this product visible on the shop </span>
+            </label>
+          </div>
+
+          <!-- =================================================
+               EDIT ACTIONS
+               ================================================= -->
+
+          <div class="admin-products__form-actions">
+            <button
+              type="button"
+              class="admin-products__cancel-btn"
+              (click)="closeEditForm()"
+            >
+              Cancel
+            </button>
+
+            <button type="submit" class="admin-products__save-btn">
+              <i class="fa-solid fa-check" aria-hidden="true"></i>
+
+              <span> Save Changes </span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+     DELETE PRODUCT MODAL
+====================================================== -->
+  <div
+    class="admin-products__delete-modal"
+    *ngIf="showDeleteModal"
+    (click)="closeDeleteModal()"
+  >
+    <div
+      class="admin-products__delete-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="deleteProductTitle"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Icon -->
+      <div class="admin-products__delete-icon">
+        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+      </div>
+
+      <!-- Content -->
+      <div class="admin-products__delete-content">
+        <h2 id="deleteProductTitle" class="admin-products__delete-title">
+          Delete Product?
+        </h2>
+
+        <p class="admin-products__delete-message">
+          Are you sure you want to delete
+          <strong>{{ productToDelete?.name }}</strong
+          >?
+        </p>
+
+        <p class="admin-products__delete-warning">
+          This action cannot be undone.
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <div class="admin-products__delete-actions">
+        <button
+          type="button"
+          class="admin-products__delete-cancel-btn"
+          (click)="closeDeleteModal()"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="admin-products__delete-confirm-btn"
+          (click)="confirmDelete()"
+        >
+          <i class="fa-solid fa-trash" aria-hidden="true"></i>
+
+          <span>Delete Product</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
        PRODUCT SUMMARY
-  ====================================================== -->
+       ===================================================== -->
+
   <div class="admin-products__summary">
     <div class="row g-4">
-      <!-- Total Products -->
+      <!-- Total -->
       <div class="col-12 col-sm-6 col-xl-3">
         <div class="admin-products__summary-card">
           <div class="admin-products__summary-icon">
-            <i class="fa-solid fa-box"></i>
+            <i class="fa-solid fa-box" aria-hidden="true"></i>
           </div>
 
           <div class="admin-products__summary-content">
-            <span class="admin-products__summary-label">
-              Total Products
-            </span>
-            <h3 class="admin-products__summary-value">86</h3>
+            <span class="admin-products__summary-label"> Total Products </span>
+
+            <h3 class="admin-products__summary-value">
+              {{ totalCount }}
+            </h3>
           </div>
         </div>
       </div>
 
-      <!-- Active Products -->
+      <!-- Active -->
       <div class="col-12 col-sm-6 col-xl-3">
         <div class="admin-products__summary-card">
           <div class="admin-products__summary-icon">
-            <i class="fa-solid fa-circle-check"></i>
+            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
           </div>
 
           <div class="admin-products__summary-content">
-            <span class="admin-products__summary-label">
-              Active Products
-            </span>
-            <h3 class="admin-products__summary-value">72</h3>
+            <span class="admin-products__summary-label"> Active Products </span>
+
+            <h3 class="admin-products__summary-value">
+              {{ activeCount }}
+            </h3>
           </div>
         </div>
       </div>
 
-      <!-- Out of Stock -->
+      <!-- Inactive -->
       <div class="col-12 col-sm-6 col-xl-3">
         <div class="admin-products__summary-card">
           <div class="admin-products__summary-icon">
-            <i class="fa-solid fa-box-open"></i>
+            <i class="fa-solid fa-box-open" aria-hidden="true"></i>
           </div>
 
           <div class="admin-products__summary-content">
-            <span class="admin-products__summary-label">
-              Out of Stock
-            </span>
-            <h3 class="admin-products__summary-value">6</h3>
+            <span class="admin-products__summary-label"> Inactive </span>
+
+            <h3 class="admin-products__summary-value">
+              {{ inactiveCount }}
+            </h3>
           </div>
         </div>
       </div>
@@ -73,14 +864,13 @@
       <div class="col-12 col-sm-6 col-xl-3">
         <div class="admin-products__summary-card">
           <div class="admin-products__summary-icon">
-            <i class="fa-solid fa-triangle-exclamation"></i>
+            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
           </div>
 
           <div class="admin-products__summary-content">
-            <span class="admin-products__summary-label">
-              Low Stock
-            </span>
-            <h3 class="admin-products__summary-value">8</h3>
+            <span class="admin-products__summary-label"> Low Stock </span>
+
+            <h3 class="admin-products__summary-value">0</h3>
           </div>
         </div>
       </div>
@@ -88,400 +878,159 @@
   </div>
 
   <!-- =====================================================
-       PRODUCTS MANAGEMENT SECTION
-  ====================================================== -->
+       PRODUCTS MANAGEMENT
+       ===================================================== -->
+
   <section class="admin-products__content">
-    <!-- Section Header -->
+    <!-- Content Header -->
     <div class="admin-products__content-header">
       <div>
         <h2 class="admin-products__content-title">All Products</h2>
+
         <p class="admin-products__content-subtitle">
           View and manage all products in your store.
         </p>
       </div>
     </div>
 
-    <!-- ===================================================
+    <!-- =================================================
          TOOLBAR
-    ==================================================== -->
+         ================================================= -->
+
     <div class="admin-products__toolbar">
       <!-- Search -->
       <div class="admin-products__search">
-        <i class="fa-solid fa-magnifying-glass"></i>
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
 
         <input
           type="text"
           class="admin-products__search-input"
           placeholder="Search products..."
+          [(ngModel)]="searchTerm"
         />
       </div>
 
       <!-- Filters -->
       <div class="admin-products__filters">
-        <!-- Category -->
-        <select class="admin-products__select">
-          <option selected>All Categories</option>
-          <option>Dresses</option>
-          <option>Wigs</option>
-          <option>Lingerie</option>
-          <option>Shapers</option>
-          <option>Shoes</option>
-          <option>Tops</option>
-          <option>Bottoms</option>
-          <option>Sissy Toys</option>
-          <option>Make-Up</option>
-          <option>Accessories</option>
+        <select class="admin-products__select" [(ngModel)]="categoryFilter">
+          <option value="">All Categories</option>
+
+          <option *ngFor="let cat of categories" [value]="cat">
+            {{ categoryLabel(cat) }}
+          </option>
         </select>
 
-        <!-- Status -->
-        <select class="admin-products__select">
-          <option selected>All Status</option>
-          <option>Active</option>
-          <option>Draft</option>
-          <option>Out of Stock</option>
+        <select class="admin-products__select" [(ngModel)]="statusFilter">
+          <option value="">All Status</option>
+
+          <option value="active">Active</option>
+
+          <option value="inactive">Inactive</option>
         </select>
       </div>
     </div>
 
-    <!-- ===================================================
-         PRODUCTS TABLE
-    ==================================================== -->
+    <!-- =================================================
+         PRODUCT TABLE
+         ================================================= -->
+
     <div class="admin-products__table-wrapper">
       <table class="admin-products__table">
         <thead>
           <tr>
             <th>Product</th>
+
             <th>Brand</th>
+
             <th>Category</th>
+
             <th>Price</th>
+
             <th>Stock</th>
+
             <th>Status</th>
+
             <th class="admin-products__actions-heading">Actions</th>
           </tr>
         </thead>
 
         <tbody>
-          <!-- Product 1 -->
-          <tr>
-            <td>
-              <div class="admin-products__product">
-                <div class="admin-products__image">
-                  <img
-                    src="https://placehold.co/80x80"
-                    alt="Blush Satin Wrap Dress"
-                  />
-                </div>
-
-                <div class="admin-products__product-info">
-                  <span class="admin-products__product-name">
-                    Blush Satin Wrap Dress
-                  </span>
-                  <span class="admin-products__product-id">
-                    #SG-001
-                  </span>
-                </div>
-              </div>
-            </td>
-
-            <td>Sissy Dream</td>
-            <td>Dresses</td>
-            <td>₦35,000</td>
-            <td>24</td>
-
-            <td>
-              <span class="admin-products__status admin-products__status--active">
-                Active
-              </span>
-            </td>
-
-            <td>
-              <div class="admin-products__actions">
-                <button
-                  type="button"
-                  class="admin-products__action-btn admin-products__action-btn--edit"
-                  aria-label="Edit Blush Satin Wrap Dress"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-products__action-btn admin-products__action-btn--delete"
-                  aria-label="Delete Blush Satin Wrap Dress"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            </td>
+          <!-- Empty State -->
+          <tr *ngIf="!filteredProducts.length">
+            <td colspan="7" class="text-center py-4">No products found.</td>
           </tr>
 
-          <!-- Product 2 -->
-          <tr>
+          <!-- Products -->
+          <tr *ngFor="let product of filteredProducts">
+            <!-- Product -->
             <td>
               <div class="admin-products__product">
                 <div class="admin-products__image">
-                  <img
-                    src="https://placehold.co/80x80"
-                    alt="Long Wavy Blonde Wig"
-                  />
+                  <img [src]="product.images[0]" [alt]="product.name" />
                 </div>
 
                 <div class="admin-products__product-info">
                   <span class="admin-products__product-name">
-                    Long Wavy Blonde Wig
+                    {{ product.name }}
                   </span>
+
                   <span class="admin-products__product-id">
-                    #SG-002
+                    #{{ product.id }}
                   </span>
                 </div>
               </div>
             </td>
 
-            <td>Sissy Dream</td>
-            <td>Wigs</td>
-            <td>₦48,500</td>
-            <td>15</td>
-
+            <!-- Brand -->
             <td>
-              <span class="admin-products__status admin-products__status--active">
-                Active
-              </span>
+              {{ product.brand }}
             </td>
 
+            <!-- Category -->
             <td>
-              <div class="admin-products__actions">
-                <button
-                  type="button"
-                  class="admin-products__action-btn admin-products__action-btn--edit"
-                  aria-label="Edit Long Wavy Blonde Wig"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-products__action-btn admin-products__action-btn--delete"
-                  aria-label="Delete Long Wavy Blonde Wig"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Product 3 -->
-          <tr>
-            <td>
-              <div class="admin-products__product">
-                <div class="admin-products__image">
-                  <img
-                    src="https://placehold.co/80x80"
-                    alt="Lace Bodysuit"
-                  />
-                </div>
-
-                <div class="admin-products__product-info">
-                  <span class="admin-products__product-name">
-                    Floral Lace Bodysuit
-                  </span>
-                  <span class="admin-products__product-id">
-                    #SG-003
-                  </span>
-                </div>
-              </div>
+              {{ categoryLabel(product.category) }}
             </td>
 
-            <td>Sissy Dream</td>
-            <td>Lingerie</td>
-            <td>₦27,500</td>
-            <td>0</td>
+            <!-- Price -->
+            <td>${{ product.price | number: "1.2-2" }}</td>
 
+            <!-- Stock -->
+            <td>—</td>
+
+            <!-- Status -->
             <td>
-              <span
-                class="admin-products__status admin-products__status--out-of-stock"
+              <button
+                type="button"
+                class="admin-products__status"
+                [class.admin-products__status--active]="product.active"
+                [class.admin-products__status--draft]="!product.active"
+                (click)="toggleActive(product)"
               >
-                Out of Stock
-              </span>
+                {{ product.active ? "Active" : "Inactive" }}
+              </button>
             </td>
 
+            <!-- Actions -->
             <td>
               <div class="admin-products__actions">
+                <!-- Edit -->
                 <button
                   type="button"
                   class="admin-products__action-btn admin-products__action-btn--edit"
-                  aria-label="Edit Floral Lace Bodysuit"
+                  (click)="openEditForm(product)"
+                  [attr.aria-label]="'Edit ' + product.name"
                 >
-                  <i class="fa-solid fa-pen"></i>
+                  <i class="fa-solid fa-pen" aria-hidden="true"></i>
                 </button>
 
+                <!-- Delete -->
                 <button
                   type="button"
                   class="admin-products__action-btn admin-products__action-btn--delete"
-                  aria-label="Delete Floral Lace Bodysuit"
+                  [attr.aria-label]="'Delete ' + product.name"
+                  (click)="openDeleteModal(product)"
                 >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Product 4 -->
-          <tr>
-            <td>
-              <div class="admin-products__product">
-                <div class="admin-products__image">
-                  <img
-                    src="https://placehold.co/80x80"
-                    alt="Waist Trainer"
-                  />
-                </div>
-
-                <div class="admin-products__product-info">
-                  <span class="admin-products__product-name">
-                    Hourglass Waist Trainer
-                  </span>
-                  <span class="admin-products__product-id">
-                    #SG-004
-                  </span>
-                </div>
-              </div>
-            </td>
-
-            <td>Sissy Dream</td>
-            <td>Shapers</td>
-            <td>₦22,000</td>
-            <td>5</td>
-
-            <td>
-              <span class="admin-products__status admin-products__status--draft">
-                Draft
-              </span>
-            </td>
-
-            <td>
-              <div class="admin-products__actions">
-                <button
-                  type="button"
-                  class="admin-products__action-btn admin-products__action-btn--edit"
-                  aria-label="Edit Hourglass Waist Trainer"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-products__action-btn admin-products__action-btn--delete"
-                  aria-label="Delete Hourglass Waist Trainer"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Product 5 -->
-          <tr>
-            <td>
-              <div class="admin-products__product">
-                <div class="admin-products__image">
-                  <img
-                    src="https://placehold.co/80x80"
-                    alt="Pink Platform Heels"
-                  />
-                </div>
-
-                <div class="admin-products__product-info">
-                  <span class="admin-products__product-name">
-                    Pink Platform Heels
-                  </span>
-                  <span class="admin-products__product-id">
-                    #SG-005
-                  </span>
-                </div>
-              </div>
-            </td>
-
-            <td>Sissy Dream</td>
-            <td>Shoes</td>
-            <td>₦42,000</td>
-            <td>12</td>
-
-            <td>
-              <span class="admin-products__status admin-products__status--active">
-                Active
-              </span>
-            </td>
-
-            <td>
-              <div class="admin-products__actions">
-                <button
-                  type="button"
-                  class="admin-products__action-btn admin-products__action-btn--edit"
-                  aria-label="Edit Pink Platform Heels"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-products__action-btn admin-products__action-btn--delete"
-                  aria-label="Delete Pink Platform Heels"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Product 6 -->
-          <tr>
-            <td>
-              <div class="admin-products__product">
-                <div class="admin-products__image">
-                  <img
-                    src="https://placehold.co/80x80"
-                    alt="Satin Crop Top"
-                  />
-                </div>
-
-                <div class="admin-products__product-info">
-                  <span class="admin-products__product-name">
-                    Satin Tie Front Crop Top
-                  </span>
-                  <span class="admin-products__product-id">
-                    #SG-006
-                  </span>
-                </div>
-              </div>
-            </td>
-
-            <td>Sissy Dream</td>
-            <td>Tops</td>
-            <td>₦18,500</td>
-            <td>8</td>
-
-            <td>
-              <span class="admin-products__status admin-products__status--active">
-                Active
-              </span>
-            </td>
-
-            <td>
-              <div class="admin-products__actions">
-                <button
-                  type="button"
-                  class="admin-products__action-btn admin-products__action-btn--edit"
-                  aria-label="Edit Satin Tie Front Crop Top"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-products__action-btn admin-products__action-btn--delete"
-                  aria-label="Delete Satin Tie Front Crop Top"
-                >
-                  <i class="fa-solid fa-trash"></i>
+                  <i class="fa-solid fa-trash" aria-hidden="true"></i>
                 </button>
               </div>
             </td>
@@ -490,17 +1039,18 @@
       </table>
     </div>
 
-    <!-- ===================================================
-         TABLE FOOTER
-    ==================================================== -->
-    <div class="admin-products__footer">
-      <p class="admin-products__results">
-        Showing 1–6 of 86 products
-      </p>
+    <!-- =================================================
+         RESULTS
+         ================================================= -->
 
-      <div class="admin-products__pagination">
-     <app-pagination></app-pagination>
-      </div>
+    <div class="admin-products__footer" *ngIf="products.length">
+      <p class="admin-products__results">
+        Showing
+        {{ filteredProducts.length }}
+        of
+        {{ products.length }}
+        products
+      </p>
     </div>
   </section>
 </div>

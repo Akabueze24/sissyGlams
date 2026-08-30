@@ -390,8 +390,8 @@
         role="tabpanel"
         aria-labelledby="tab-description-btn"
       >
-        <p>
-          {{ product?.productDetails?.description }}
+        <p [innerHTML]="product?.productDetails?.description">
+          
         </p>
       </div>
 

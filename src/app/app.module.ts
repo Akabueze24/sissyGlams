@@ -42,6 +42,8 @@ import { AdminCategoriesComponent } from './features/admin/pages/admin-categorie
 import { AdminInventoryComponent } from './features/admin/pages/admin-inventory/admin-inventory.component';
 import { SettingsComponent } from './features/admin/pages/settings/settings.component';
 import { SalesChartComponent } from './features/admin/pages/sales-chart/sales-chart.component';
+import { QuillModule } from 'ngx-quill';
+import { StoreLayoutComponent } from './layouts/store-layout/store-layout.component';
 
 
 register();
@@ -85,13 +87,19 @@ register();
     AdminCategoriesComponent,
     AdminInventoryComponent,
     SettingsComponent,
-    SalesChartComponent
-  
-
+    SalesChartComponent,
+    StoreLayoutComponent,
   
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [BrowserModule, AppRoutingModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    QuillModule.forRoot(),
+
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })

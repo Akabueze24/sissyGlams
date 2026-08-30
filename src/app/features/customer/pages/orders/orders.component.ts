@@ -11,6 +11,7 @@ import { OrderService } from 'src/app/core/services/order-service/order.service'
 })
 export class OrdersComponent implements OnInit, OnDestroy {
   orders: Order[] = [];
+  selectedOrder: Order | null = null;
   private ordersSubscription!: Subscription;
 
   constructor(private orderService: OrderService) {}
@@ -25,19 +26,27 @@ export class OrdersComponent implements OnInit, OnDestroy {
     this.ordersSubscription?.unsubscribe();
   }
 
+  toggleOrderDetails(order: Order): void {
+    if (this.selectedOrder?.id === order.id) {
+      this.selectedOrder = null;
+    } else {
+      this.selectedOrder = order;
+    }
+  }
+
   get totalCount(): number {
     return this.orders.length;
   }
 
   get processingCount(): number {
     return this.orders.filter(
-      (o) => o.orderStatus === 'pending' || o.orderStatus === 'processing'
+      (o) => o.orderStatus === 'pending' || o.orderStatus === 'processing',
     ).length;
   }
 
   get completedCount(): number {
     return this.orders.filter(
-      (o) => o.orderStatus === 'delivered' || o.orderStatus === 'shipped'
+      (o) => o.orderStatus === 'delivered' || o.orderStatus === 'shipped',
     ).length;
   }
 

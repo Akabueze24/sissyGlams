@@ -65,13 +65,13 @@
       here, and *ngIf="orders.length > 0" on .recent-orders__table-wrap below,
       so only one renders at a time.
     -->
-    <div class="recent-orders__empty d-none">
+    <div class="recent-orders__empty " *ngIf="!orders.length">
       <i class="fa-solid fa-box-open recent-orders__empty-icon" aria-hidden="true"></i>
       <p class="recent-orders__empty-title">No orders yet.</p>
       <p class="recent-orders__empty-text">Start shopping to see your orders here.</p>
     </div>
 
-    <div class="recent-orders__table-wrap table-responsive">
+    <div class="recent-orders__table-wrap table-responsive" *ngIf="orders.length">
       <table class="orders-table">
         <thead>
           <tr>
@@ -83,28 +83,327 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td class="orders-table__number">#SD-1001</td>
-            <td>Aug 12, 2026</td>
-            <td><span class="orders-table__status orders-table__status--processing">Processing</span></td>
-            <td class="orders-table__total">$45.00</td>
-            <td><a class="orders-table__view" routerLink="#">View Order</a></td>
-          </tr>
-          <tr>
-            <td class="orders-table__number">#SD-1000</td>
-            <td>Aug 08, 2026</td>
-            <td><span class="orders-table__status orders-table__status--completed">Completed</span></td>
-            <td class="orders-table__total">$82.00</td>
-            <td><a class="orders-table__view" routerLink="#">View Order</a></td>
-          </tr>
-          <tr>
-            <td class="orders-table__number">#SD-0999</td>
-            <td>Aug 02, 2026</td>
-            <td><span class="orders-table__status orders-table__status--completed">Completed</span></td>
-            <td class="orders-table__total">$35.00</td>
-            <td><a class="orders-table__view" routerLink="#">View Order</a></td>
-          </tr>
-        </tbody>
+
+  <ng-container *ngFor="let order of orders">
+
+    <!-- =========================
+         MAIN ORDER ROW
+    ========================== -->
+    <tr>
+
+      <td class="orders-table__number">
+        {{ order.id }}
+      </td>
+
+      <td>
+        {{ order.createdAt | date: 'mediumDate' }}
+      </td>
+
+      <td>
+        <span
+          class="orders-table__status"
+          [ngClass]="'orders-table__status--' + order.orderStatus"
+        >
+          {{ order.orderStatus }}
+        </span>
+      </td>
+
+      <td class="orders-table__total">
+        ${{ order.total | number: '1.2-2' }}
+      </td>
+
+      <td>
+        <button
+          type="button"
+          class="orders-table__view"
+          (click)="toggleOrderDetails(order)"
+        >
+          <i
+            class="fa-solid"
+            [ngClass]="selectedOrder?.id === order.id
+              ? 'fa-chevron-up'
+              : 'fa-eye'"
+            aria-hidden="true"
+          ></i>
+
+          <span>
+            {{
+              selectedOrder?.id === order.id
+                ? 'Hide Order'
+                : 'View Order'
+            }}
+          </span>
+        </button>
+      </td>
+
+    </tr>
+
+
+    <!-- =========================
+         EXPANDED ORDER DETAILS
+    ========================== -->
+    <tr
+      class="orders-table__details-row"
+      *ngIf="selectedOrder?.id === order.id"
+    >
+
+      <td colspan="5">
+
+        <div class="order-details">
+
+          <!-- Header -->
+          <div class="order-details__header">
+
+            <div>
+              <h3 class="order-details__title">
+                Order {{ order.id }}
+              </h3>
+
+              <p class="order-details__date">
+                Placed on
+                {{ order.createdAt | date: 'mediumDate' }}
+              </p>
+            </div>
+
+            <span
+              class="order-details__status"
+              [ngClass]="'order-details__status--' + order.orderStatus"
+            >
+              {{ order.orderStatus }}
+            </span>
+
+          </div>
+
+
+          <!-- =========================
+               ITEMS ORDERED
+          ========================== -->
+
+          <div class="order-details__section">
+
+            <h4 class="order-details__section-title">
+              Items Ordered
+            </h4>
+
+            <div class="order-details__items">
+
+              <div
+                class="order-item"
+                *ngFor="let item of order.items"
+              >
+
+                <div class="order-item__info">
+
+                  <h5 class="order-item__name">
+                    {{ item.productName }}
+                  </h5>
+
+
+                  <!-- Color -->
+                  <p
+                    class="order-item__option"
+                    *ngIf="item.color"
+                  >
+                    Color:
+                    {{ item.color.name }}
+                  </p>
+
+
+                  <!-- Size -->
+                  <p
+                    class="order-item__option"
+                    *ngIf="item.size"
+                  >
+                    Size:
+                    {{ item.size.value }}
+                  </p>
+
+
+                  <!-- Length -->
+                  <p
+                    class="order-item__option"
+                    *ngIf="item.length"
+                  >
+                    Length:
+                    {{ item.length.value }}
+                  </p>
+
+                </div>
+
+
+                <!-- Quantity -->
+                <div class="order-item__quantity">
+                  <span class="order-item__label">
+                    Qty
+                  </span>
+
+                  <strong>
+                    {{ item.quantity }}
+                  </strong>
+                </div>
+
+
+                <!-- Price -->
+                <div class="order-item__price">
+                  <span class="order-item__label">
+                    Price
+                  </span>
+
+                  <strong>
+                    ${{ item.price | number: '1.2-2' }}
+                  </strong>
+                </div>
+
+
+                <!-- Item Total -->
+                <div class="order-item__total">
+                  <span class="order-item__label">
+                    Total
+                  </span>
+
+                  <strong>
+                    ${{ (item.price * item.quantity) | number: '1.2-2' }}
+                  </strong>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- =========================
+               SHIPPING INFORMATION
+          ========================== -->
+
+          <div class="order-details__section">
+
+            <h4 class="order-details__section-title">
+              Shipping Details
+            </h4>
+
+            <div class="order-shipping">
+
+              <div class="order-shipping__address">
+
+                <strong>
+                  {{ order.customer.firstName }}
+                  {{ order.customer.lastName }}
+                </strong>
+
+                <span>{{ order.shippingAddress.address }}</span>
+
+                <span *ngIf="order.shippingAddress.apartment">
+                  {{ order.shippingAddress.apartment }}
+                </span>
+
+                <span>
+                  {{ order.shippingAddress.city }},
+                  {{ order.shippingAddress.state }}
+                </span>
+
+                <span>
+                  {{ order.shippingAddress.country }}
+                </span>
+
+                <span>
+                  {{ order.shippingAddress.postalCode }}
+                </span>
+
+              </div>
+
+
+              <div class="order-shipping__method">
+
+                <span class="order-shipping__label">
+                  Shipping Method
+                </span>
+
+                <strong>
+                  {{ order.shippingMethod }}
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- =========================
+               ORDER SUMMARY
+          ========================== -->
+
+          <div class="order-details__summary">
+
+            <h4 class="order-details__section-title">
+              Order Summary
+            </h4>
+
+
+            <div class="order-summary__row">
+
+              <span>Subtotal</span>
+
+              <span>
+                ${{ order.subtotal | number: '1.2-2' }}
+              </span>
+
+            </div>
+
+
+            <div class="order-summary__row">
+
+              <span>Shipping</span>
+
+              <span>
+                ${{ order.shippingCost | number: '1.2-2' }}
+              </span>
+
+            </div>
+
+
+            <div class="order-summary__row order-summary__row--total">
+
+              <strong>Total</strong>
+
+              <strong>
+                ${{ order.total | number: '1.2-2' }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <!-- =========================
+               PAYMENT
+          ========================== -->
+
+          <div class="order-details__payment">
+
+            <span>
+              Payment Method:
+              <strong>{{ order.paymentMethod }}</strong>
+            </span>
+
+            <span>
+              Payment Status:
+              <strong>{{ order.paymentStatus }}</strong>
+            </span>
+
+          </div>
+
+        </div>
+
+      </td>
+
+    </tr>
+
+  </ng-container>
+
+</tbody>
       </table>
     </div>
   </section>

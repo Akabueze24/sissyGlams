@@ -1,21 +1,19 @@
 <div class="admin-layout">
-
-  <!--
-    Sidebar. offcanvas-lg = native Bootstrap responsive offcanvas:
-    renders as a normal sticky in-flow sidebar at lg+, becomes a
-    slide-in panel (opened by the mobile header's hamburger button)
-    below lg. No custom TypeScript needed for the toggle.
-  -->
+  <!-- ============================================================
+       ADMIN SIDEBAR
+  ============================================================= -->
   <aside
     class="offcanvas-lg offcanvas-start admin-sidebar"
     tabindex="-1"
     id="adminSidebarOffcanvas"
     aria-labelledby="adminSidebarLabel"
   >
+    <!-- Mobile sidebar header -->
     <div class="offcanvas-header admin-sidebar__offcanvas-header">
       <span class="admin-sidebar__brand" id="adminSidebarLabel">
         Sissy<span class="admin-sidebar__brand-accent">Dream</span>
       </span>
+
       <button
         type="button"
         class="btn-close"
@@ -25,124 +23,158 @@
       ></button>
     </div>
 
+    <!-- Sidebar body -->
     <div class="offcanvas-body admin-sidebar__body">
-
+      <!-- Desktop brand -->
       <div class="admin-sidebar__brand-desktop">
-        Sissy<span class="admin-sidebar__brand-accent">Dream</span>
-        <span class="admin-sidebar__brand-tag">Admin</span>
+        <span>
+          Sissy<span class="admin-sidebar__brand-accent">Dream</span>
+        </span>
+
+        <span class="admin-sidebar__brand-tag"> Admin </span>
       </div>
 
-     <nav class="admin-nav" aria-label="Admin navigation">
-  <ul class="admin-nav__list">
+      <!-- ========================================================
+           ADMIN NAVIGATION
+      ========================================================= -->
+      <nav class="admin-nav" aria-label="Admin navigation">
+        <ul class="admin-nav__list">
+          <!-- Dashboard -->
+          <li>
+            <a
+              class="admin-nav__link"
+              routerLink="/admin"
+              routerLinkActive="admin-nav__link--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-solid fa-gauge" aria-hidden="true"></i>
 
-    <li>
-      <a
-        class="admin-nav__link"
-        routerLink="/admin"
-        routerLinkActive="admin-nav__link--active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <i class="fa-solid fa-gauge" aria-hidden="true"></i>
-        <span>Dashboard</span>
-      </a>
-    </li>
+              <span>Dashboard</span>
+            </a>
+          </li>
 
-    <li>
-      <a
-        class="admin-nav__link"
-        routerLink="/admin/products"
-        routerLinkActive="admin-nav__link--active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <i class="fa-solid fa-shirt" aria-hidden="true"></i>
-        <span>Products</span>
-      </a>
-    </li>
+          <!-- Products -->
+          <li>
+            <a
+              class="admin-nav__link"
+              routerLink="/admin/products"
+              routerLinkActive="admin-nav__link--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-solid fa-shirt" aria-hidden="true"></i>
 
-    <li>
-      <a
-        class="admin-nav__link"
-        routerLink="/admin/orders"
-        routerLinkActive="admin-nav__link--active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <i class="fa-solid fa-receipt" aria-hidden="true"></i>
-        <span>Orders</span>
-      </a>
-    </li>
+              <span>Products</span>
+            </a>
+          </li>
 
-    <li>
-      <a
-        class="admin-nav__link"
-        routerLink="/admin/customers"
-        routerLinkActive="admin-nav__link--active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <i class="fa-solid fa-users" aria-hidden="true"></i>
-        <span>Customers</span>
-      </a>
-    </li>
+          <!-- Orders -->
+          <li>
+            <a
+              class="admin-nav__link"
+              routerLink="/admin/orders"
+              routerLinkActive="admin-nav__link--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-solid fa-receipt" aria-hidden="true"></i>
 
-    <li>
-      <a
-        class="admin-nav__link"
-        routerLink="/admin/categories"
-        routerLinkActive="admin-nav__link--active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
-        <span>Categories</span>
-      </a>
-    </li>
+              <span>Orders</span>
+            </a>
+          </li>
 
-    <li>
-      <a
-        class="admin-nav__link"
-        routerLink="/admin/inventory"
-        routerLinkActive="admin-nav__link--active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <i class="fa-solid fa-warehouse" aria-hidden="true"></i>
-        <span>Inventory</span>
-      </a>
-    </li>
+          <!-- Customers -->
+          <li>
+            <a
+              class="admin-nav__link"
+              routerLink="/admin/customers"
+              routerLinkActive="admin-nav__link--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-solid fa-users" aria-hidden="true"></i>
 
-    <li>
-      <a
-        class="admin-nav__link"
-        routerLink="/admin/settings"
-        routerLinkActive="admin-nav__link--active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <i class="fa-solid fa-gear" aria-hidden="true"></i>
-        <span>Settings</span>
-      </a>
-    </li>
+              <span>Customers</span>
+            </a>
+          </li>
 
-  </ul>
-</nav>
+          <!-- Categories -->
+          <li>
+            <a
+              class="admin-nav__link"
+              routerLink="/admin/categories"
+              routerLinkActive="admin-nav__link--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
 
+              <span>Categories</span>
+            </a>
+          </li>
+
+          <!-- Inventory -->
+          <li>
+            <a
+              class="admin-nav__link"
+              routerLink="/admin/inventory"
+              routerLinkActive="admin-nav__link--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-solid fa-warehouse" aria-hidden="true"></i>
+
+              <span>Inventory</span>
+            </a>
+          </li>
+
+          <!-- Settings -->
+          <li>
+            <a
+              class="admin-nav__link"
+              routerLink="/admin/settings"
+              routerLinkActive="admin-nav__link--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-solid fa-gear" aria-hidden="true"></i>
+
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- ========================================================
+           SIDEBAR ADMIN PROFILE
+      ========================================================= -->
       <div class="admin-sidebar__profile">
         <span class="admin-sidebar__avatar">
           <i class="fa-solid fa-user" aria-hidden="true"></i>
         </span>
+
         <div class="admin-sidebar__profile-text">
           <p class="admin-sidebar__profile-name">Jin Park</p>
+
           <p class="admin-sidebar__profile-email">admin&#64;sissydream.com</p>
         </div>
-        <button class="admin-sidebar__logout" type="button" aria-label="Log out">
+
+        <button
+          class="admin-sidebar__logout"
+          type="button"
+          aria-label="Log out"
+        >
           <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
         </button>
       </div>
-
     </div>
   </aside>
 
-  <!-- Main column -->
+  <!-- ============================================================
+       ADMIN MAIN
+  ============================================================= -->
   <div class="admin-main">
-
-    <!-- Mobile-only top bar: hamburger opens the sidebar offcanvas above -->
-    <div class="admin-mobile-header d-flex d-lg-none align-items-center justify-content-between">
+    <!-- ==========================================================
+         MOBILE ADMIN HEADER
+    =========================================================== -->
+    <div
+      class="admin-mobile-header d-flex d-lg-none align-items-center justify-content-between"
+    >
+      <!-- Sidebar toggle -->
       <button
         class="admin-mobile-header__toggle"
         type="button"
@@ -154,44 +186,76 @@
         <i class="fa-solid fa-bars" aria-hidden="true"></i>
       </button>
 
+      <!-- Mobile brand -->
       <span class="admin-mobile-header__brand">
-        Sissy<span class="admin-mobile-header__brand-accent">Glams</span> Admin
+        Sissy<span class="admin-mobile-header__brand-accent">Dream</span>
+        Admin
       </span>
 
-      <button class="admin-mobile-header__icon-btn" type="button" aria-label="Notifications">
+      <!-- Notifications -->
+      <button
+        class="admin-mobile-header__icon-btn"
+        type="button"
+        aria-label="Notifications"
+      >
         <i class="fa-regular fa-bell" aria-hidden="true"></i>
       </button>
     </div>
 
-    <!-- Page header: title / breadcrumb / notification / profile -->
+    <!-- ==========================================================
+         DESKTOP ADMIN HEADER
+    =========================================================== -->
     <header class="admin-header">
+      <!-- Page title / breadcrumb -->
       <div class="admin-header__titles">
         <h1 class="admin-header__title">Dashboard</h1>
-        <nav aria-label="breadcrumb" class="admin-header__breadcrumb-nav">
+
+        <nav class="admin-header__breadcrumb-nav" aria-label="Breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item active" aria-current="page">Overview</li>
           </ol>
         </nav>
       </div>
 
+      <!-- ========================================================
+           HEADER ACTIONS
+      ========================================================= -->
       <div class="admin-header__actions d-none d-lg-flex">
-        <button class="admin-header__icon-btn" type="button" aria-label="Notifications">
+        <!-- Notifications -->
+        <button
+          class="admin-header__icon-btn"
+          type="button"
+          aria-label="Notifications"
+        >
           <i class="fa-regular fa-bell" aria-hidden="true"></i>
         </button>
+
+        <!-- Divider -->
         <span class="admin-header__divider" aria-hidden="true"></span>
+
+        <!-- Admin profile -->
         <div class="admin-header__profile">
           <span class="admin-header__avatar">
             <i class="fa-solid fa-user" aria-hidden="true"></i>
           </span>
-          <span class="admin-header__profile-name">Jin Park</span>
+
+          <span class="admin-header__profile-name"> Jin Park </span>
         </div>
+
+        <!-- Logout -->
+        <button class="admin-header__logout" type="button" aria-label="Log out">
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+
+          <span>Log out</span>
+        </button>
       </div>
     </header>
 
-    <div class="admin-content">
+    <!-- ==========================================================
+         ADMIN PAGE CONTENT
+    =========================================================== -->
+    <main class="admin-content">
       <router-outlet></router-outlet>
-    </div>
-
+    </main>
   </div>
-
 </div>

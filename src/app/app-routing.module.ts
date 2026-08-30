@@ -26,75 +26,96 @@ import { AdminOrdersComponent } from './features/admin/pages/admin-orders/admin-
 import { AdminProductsComponent } from './features/admin/pages/admin-products/admin-products.component';
 import { SettingsComponent } from './features/admin/pages/settings/settings.component';
 import { AdminCategoriesComponent } from './features/admin/pages/admin-categories/admin-categories.component';
+import { StoreLayoutComponent } from './layouts/store-layout/store-layout.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'home', component: HomeComponent },
-  { path: 'shop', component: ShopComponent },
-  { path: 'product-view/:slug', component: ProductViewComponent },
-  { path: 'cart', component: CartComponent },
-  // { path: 'wishlist', component: WishlistComponent },
-  { path: 'checkout', component: CheckoutComponent },
-  { path: 'order-confirmation', component: OrderConfirmationComponent },
-
-  { 
-    path: 'admin',
-     component: AdminLayoutComponent,
-    children: [
-      {path: '', component: adminDashboardComponent},
-      {path: 'customers', component: AdminCustomersComponent},
-      {path: 'inventory', component: AdminInventoryComponent},
-      {path: 'orders', component: AdminOrdersComponent},
-      {path: 'products', component: AdminProductsComponent},
-      {path: 'categories', component: AdminCategoriesComponent},
-      {path: 'settings', component: SettingsComponent}
-    ]
-    },
   {
-    path: 'account',
-    component: AccountLayoutComponent,
-    canActivate: [AuthGuard],
+    path: '',
+    component: StoreLayoutComponent,
     children: [
+      { path: '', component: HomeComponent },
+
+      { path: 'home', component: HomeComponent },
+
+      { path: 'shop', component: ShopComponent },
+
       {
-        path: '',
-        component: DashboardComponent,
+        path: 'product-view/:slug',
+        component: ProductViewComponent,
       },
+
+      { path: 'cart', component: CartComponent },
+
+      { path: 'checkout', component: CheckoutComponent },
+
       {
-        path: 'wishlist',
-        component: WishlistComponent,
+        path: 'order-confirmation',
+        component: OrderConfirmationComponent,
       },
+
+      // CUSTOMER ACCOUNT
       {
-        path: 'orders',
-        component: OrdersComponent,
+        path: 'account',
+        component: AccountLayoutComponent,
+        canActivate: [AuthGuard],
+        children: [
+          {
+            path: '',
+            component: DashboardComponent,
+          },
+          {
+            path: 'wishlist',
+            component: WishlistComponent,
+          },
+          {
+            path: 'orders',
+            component: OrdersComponent,
+          },
+          {
+            path: 'downloads',
+            component: DownloadComponent,
+          },
+          {
+            path: 'address',
+            component: EditAddressComponent,
+          },
+          {
+            path: 'address/billing',
+            component: BillingComponent,
+          },
+          {
+            path: 'address/shipping',
+            component: ShippingComponent,
+          },
+          {
+            path: 'payment',
+            component: PaymentMethodComponent,
+          },
+          {
+            path: 'edit-account',
+            component: EditAccountComponent,
+          },
+          {
+            path: 'customer-support',
+            component: CustomerSupportComponent,
+          },
+        ],
       },
-      {
-        path: 'downloads',
-        component: DownloadComponent,
-      },
-      {
-        path: 'address',
-        component: EditAddressComponent,
-      },
-      {
-        path: 'address/billing',
-        component: BillingComponent,
-      },
-      {
-        path: 'address/shipping',
-        component: ShippingComponent,
-      },
-      {
-        path: 'payment',
-        component: PaymentMethodComponent,
-      },
-      {
-        path: 'edit-account',
-        component: EditAccountComponent,
-      },
-      {
-        path: 'customer-support',
-        component: CustomerSupportComponent,
-      },
+    ],
+  },
+
+  // ADMIN — completely separate
+  {
+    path: 'admin',
+    component: AdminLayoutComponent,
+    children: [
+      { path: '', component: adminDashboardComponent },
+      { path: 'customers', component: AdminCustomersComponent },
+      { path: 'inventory', component: AdminInventoryComponent },
+      { path: 'orders', component: AdminOrdersComponent },
+      { path: 'products', component: AdminProductsComponent },
+      { path: 'categories', component: AdminCategoriesComponent },
+      { path: 'settings', component: SettingsComponent },
     ],
   },
 ];

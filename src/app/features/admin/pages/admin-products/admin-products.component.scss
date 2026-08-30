@@ -1,4 +1,4 @@
-@import '../../../../../styles/variables';
+@import "../../../../../styles/variables";
 
 .admin-products {
   padding: 1.5rem;
@@ -22,14 +22,18 @@
 
   &__title {
     margin: 0 0 0.35rem;
+
     font-size: 1.75rem;
     font-weight: 700;
+    line-height: 1.2;
     color: $color-text-dark;
   }
 
   &__subtitle {
     margin: 0;
+
     font-size: 0.95rem;
+    line-height: 1.5;
     color: $color-text-muted;
   }
 
@@ -38,10 +42,13 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+
     flex-shrink: 0;
 
+    min-height: 44px;
     padding: 0.75rem 1.1rem;
-    border: 0;
+
+    border: 1px solid $brand-pink;
     border-radius: 0.5rem;
 
     background-color: $brand-pink;
@@ -52,13 +59,21 @@
     font-weight: 600;
 
     cursor: pointer;
+
     transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
       transform 0.2s ease,
-      opacity 0.2s ease;
+      box-shadow 0.2s ease;
 
     &:hover {
-      opacity: 0.9;
+      opacity: 0.92;
       transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba($brand-pink, 0.18);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
 
     i {
@@ -67,7 +82,927 @@
   }
 
   // =========================================================
-  // SUMMARY CARDS
+  // ADD PRODUCT FORM
+  // =========================================================
+
+  &__add-form {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+
+    background-color: $color-white;
+    border: 1px solid $color-border;
+    border-radius: 0.75rem;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  }
+
+  // =========================================================
+  // FORM HEADER
+  // =========================================================
+
+  &__add-form-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__add-form-title {
+    margin: 0 0 0.3rem;
+
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: $color-text-dark;
+  }
+
+  &__add-form-subtitle {
+    margin: 0;
+
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: $color-text-muted;
+  }
+
+  // =========================================================
+  // CLOSE BUTTON
+  // =========================================================
+
+  &__close-btn {
+    display: grid;
+    place-items: center;
+
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+
+    padding: 0;
+
+    border: 1px solid $color-border;
+    border-radius: 0.45rem;
+
+    background-color: transparent;
+    color: $color-text-muted;
+
+    font-size: 0.9rem;
+
+    cursor: pointer;
+
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+
+    &:hover {
+      background-color: rgba($brand-pink, 0.08);
+      border-color: $brand-pink;
+      color: $brand-pink;
+    }
+
+    &:focus-visible {
+      outline: 3px solid rgba($brand-pink, 0.15);
+      outline-offset: 2px;
+    }
+  }
+
+  // =========================================================
+  // FORM
+  // =========================================================
+
+  &__form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  &__form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    min-width: 0;
+
+    label {
+      color: $color-text-dark;
+
+      font-size: 0.85rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    &--full {
+      grid-column: 1 / -1;
+    }
+  }
+
+  // =========================================================
+  // OPTIONAL
+  // =========================================================
+
+  &__optional {
+    color: $color-text-muted;
+    font-size: 0.78rem;
+    font-weight: 400;
+  }
+
+  // =========================================================
+  // INPUTS / TEXTAREAS
+  // =========================================================
+
+  &__input,
+  &__textarea {
+    width: 100%;
+    min-width: 0;
+
+    border: 1px solid $color-border;
+    border-radius: 0.5rem;
+
+    background-color: $color-white;
+    color: $color-text-dark;
+
+    font: inherit;
+    font-size: 0.9rem;
+
+    outline: none;
+
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+
+    &::placeholder {
+      color: $color-text-muted;
+      opacity: 0.8;
+    }
+
+    &:hover {
+      border-color: darken($color-border, 8%);
+    }
+
+    &:focus {
+      border-color: $brand-pink;
+      box-shadow: 0 0 0 3px rgba($brand-pink, 0.1);
+    }
+  }
+
+  &__input {
+    height: 44px;
+    padding: 0 0.9rem;
+  }
+
+  &__textarea {
+    min-height: 140px;
+    padding: 0.75rem 0.9rem;
+
+    line-height: 1.5;
+    resize: vertical;
+  }
+
+  // ============================================================
+  // QUILL EDITOR
+  // ============================================================
+
+  &__quill {
+    display: block;
+    width: 100%;
+    margin: 0 0 2rem;
+
+    .ql-toolbar {
+      border: 1px solid #dcdcdc;
+      border-bottom: 0;
+      border-radius: 8px 8px 0 0;
+      background: #fff;
+      padding: 0.65rem 0.75rem;
+    }
+
+    .ql-container {
+      border: 1px solid #dcdcdc;
+      border-radius: 0 0 8px 8px;
+      font-family: $font-body;
+      font-size: 0.95rem;
+      color: $color-text-dark;
+      background: #fff;
+    }
+
+    .ql-editor {
+      min-height: 180px;
+      padding: 1rem;
+      line-height: 1.6;
+
+      &:focus {
+        outline: none;
+      }
+
+      &.ql-blank::before {
+        color: #999;
+        font-style: normal;
+        left: 1rem;
+        right: 1rem;
+      }
+    }
+
+    &:focus-within {
+      .ql-toolbar,
+      .ql-container {
+        border-color: $brand-pink;
+      }
+
+      .ql-toolbar {
+        box-shadow: 0 0 0 1px rgba($brand-pink, 0.1);
+      }
+    }
+  }
+
+  // =========================================================
+  // SECTION HEADINGS
+  // =========================================================
+
+  &__section-heading {
+    margin-bottom: 1rem;
+
+    h3 {
+      margin: 0 0 0.3rem;
+
+      color: $color-text-dark;
+
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    p {
+      max-width: 700px;
+
+      margin: 0;
+
+      color: $color-text-muted;
+
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+  }
+
+  // =========================================================
+  // HELP TEXT
+  // =========================================================
+
+  &__help-text {
+    display: block;
+
+    margin-top: 0.1rem;
+
+    color: $color-text-muted;
+
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  // =========================================================
+  // CHECKBOX
+  // =========================================================
+
+  &__checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+
+    width: fit-content;
+
+    color: $color-text-dark;
+
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+
+    cursor: pointer;
+
+    input {
+      width: 16px;
+      height: 16px;
+
+      flex: 0 0 16px;
+
+      margin: 0;
+
+      accent-color: $brand-pink;
+
+      cursor: pointer;
+    }
+
+    span {
+      line-height: 1.4;
+    }
+  }
+
+  // =========================================================
+  // FORM ACTIONS
+  // =========================================================
+
+  &__form-actions {
+    grid-column: 1 / -1;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+
+    padding-top: 1.25rem;
+
+    border-top: 1px solid $color-border;
+  }
+
+  &__cancel-btn,
+  &__save-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    min-height: 44px;
+    padding: 0 1.1rem;
+
+    border-radius: 0.5rem;
+
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  &__cancel-btn {
+    background-color: $color-white;
+    border: 1px solid $color-border;
+    color: $color-text-dark;
+
+    &:hover {
+      background-color: rgba($brand-pink, 0.05);
+      border-color: $brand-pink;
+      color: $brand-pink;
+    }
+  }
+
+  &__save-btn {
+    background-color: $brand-pink;
+    border: 1px solid $brand-pink;
+    color: $color-white;
+
+    &:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba($brand-pink, 0.18);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    i {
+      font-size: 0.8rem;
+    }
+  }
+
+  // =========================================================
+  // SECONDARY BUTTON
+  // =========================================================
+
+  &__secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    min-height: 40px;
+    padding: 0.55rem 0.9rem;
+
+    margin-top: 0.25rem;
+
+    border: 1px solid $brand-pink;
+    border-radius: 0.45rem;
+
+    background-color: rgba($brand-pink, 0.05);
+    color: $brand-pink;
+
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease;
+
+    &:hover {
+      background-color: $brand-pink;
+      color: $color-white;
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    i {
+      font-size: 0.75rem;
+    }
+  }
+
+  // =========================================================
+  // COLOR VARIANT CARD
+  // =========================================================
+
+  &__variant-card {
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+
+    background-color: rgba($brand-pink, 0.025);
+
+    border: 1px solid $color-border;
+    border-radius: 0.65rem;
+
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:hover {
+      border-color: rgba($brand-pink, 0.3);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+    }
+  }
+
+  // =========================================================
+  // VARIANT HEADER
+  // =========================================================
+
+  &__variant-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    padding-bottom: 0.85rem;
+    margin-bottom: 1rem;
+
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__variant-number {
+    color: $color-text-dark;
+
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  // =========================================================
+  // VARIANT FIELDS
+  // =========================================================
+
+  &__variant-fields {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+
+    .admin-products__form-group--full {
+      grid-column: 1 / -1;
+    }
+  }
+
+  // =========================================================
+  // OPTION ROWS
+  // =========================================================
+
+  &__option-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+
+    background-color: rgba($brand-pink, 0.025);
+
+    border: 1px solid $color-border;
+    border-radius: 0.6rem;
+  }
+
+  &__option-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+
+    flex: 1;
+    min-width: 0;
+  }
+
+  // =========================================================
+  // REMOVE BUTTON
+  // =========================================================
+
+  &__remove-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+
+    min-height: 38px;
+    padding: 0.5rem 0.75rem;
+
+    flex: 0 0 auto;
+
+    border: 1px solid rgba(220, 53, 69, 0.25);
+    border-radius: 0.45rem;
+
+    background-color: rgba(220, 53, 69, 0.05);
+    color: #dc3545;
+
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(220, 53, 69, 0.1);
+      border-color: #dc3545;
+    }
+
+    &:focus-visible {
+      outline: 3px solid rgba(220, 53, 69, 0.12);
+      outline-offset: 2px;
+    }
+
+    i {
+      font-size: 0.75rem;
+    }
+  }
+
+  // =========================================================
+  // EDIT PRODUCT MODAL
+  // =========================================================
+
+  &__modal {
+    position: fixed;
+    inset: 0;
+
+    z-index: 1050;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 1.5rem;
+
+    background-color: rgba(0, 0, 0, 0.55);
+
+    overflow: hidden;
+
+    overscroll-behavior: contain;
+  }
+
+  &__modal-dialog {
+    display: flex;
+    flex-direction: column;
+
+    width: min(100%, 1050px);
+    max-width: 1050px;
+
+    height: min(92vh, 900px);
+    max-height: 92vh;
+
+    margin: 0;
+
+    background-color: $color-white;
+
+    border-radius: 0.85rem;
+
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.18),
+      0 5px 20px rgba(0, 0, 0, 0.08);
+
+    overflow: hidden;
+  }
+
+  // =========================================================
+  // MODAL HEADER
+  // =========================================================
+
+  &__modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+
+    flex: 0 0 auto;
+
+    padding: 1.5rem;
+
+    background-color: $color-white;
+
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__modal-title {
+    margin: 0 0 0.35rem;
+
+    color: $color-text-dark;
+
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  &__modal-subtitle {
+    margin: 0;
+
+    max-width: 700px;
+
+    color: $color-text-muted;
+
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  // =========================================================
+  // MODAL BODY
+  // =========================================================
+
+  &__modal-body {
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    padding: 1.5rem;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+
+    scrollbar-color: rgba($brand-pink, 0.35) transparent;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba($brand-pink, 0.35);
+      border-radius: 999px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: rgba($brand-pink, 0.55);
+    }
+
+    .admin-products__form {
+      min-width: 0;
+    }
+  }
+
+  // =========================================================
+  // DELETE PRODUCT MODAL
+  // =========================================================
+
+  &__delete-modal {
+    position: fixed;
+    inset: 0;
+
+    z-index: 1100;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 1.5rem;
+
+    background-color: rgba(0, 0, 0, 0.55);
+
+    backdrop-filter: blur(3px);
+
+    overflow: hidden;
+
+    overscroll-behavior: contain;
+  }
+
+  &__delete-dialog {
+    width: min(100%, 460px);
+
+    padding: 2rem;
+
+    background-color: $color-white;
+
+    border: 1px solid $color-border;
+    border-radius: 0.85rem;
+
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.2),
+      0 5px 20px rgba(0, 0, 0, 0.08);
+
+    text-align: center;
+
+    animation: deleteModalIn 0.2s ease-out;
+  }
+
+  // ---------------------------------------------------------
+  // Delete Icon
+  // ---------------------------------------------------------
+
+  &__delete-icon {
+    display: grid;
+    place-items: center;
+
+    width: 64px;
+    height: 64px;
+
+    margin: 0 auto 1.25rem;
+
+    border-radius: 50%;
+
+    background-color: rgba(220, 53, 69, 0.08);
+
+    color: #dc3545;
+
+    font-size: 1.35rem;
+  }
+
+  // ---------------------------------------------------------
+  // Delete Content
+  // ---------------------------------------------------------
+
+  &__delete-content {
+    min-width: 0;
+  }
+
+  &__delete-title {
+    margin: 0 0 0.6rem;
+
+    color: $color-text-dark;
+
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  &__delete-message {
+    margin: 0;
+
+    color: $color-text-muted;
+
+    font-size: 0.9rem;
+    line-height: 1.6;
+
+    strong {
+      color: $color-text-dark;
+      font-weight: 600;
+    }
+  }
+
+  &__delete-warning {
+    margin: 0.65rem 0 0;
+
+    color: #dc3545;
+
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  // ---------------------------------------------------------
+  // Delete Actions
+  // ---------------------------------------------------------
+
+  &__delete-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.75rem;
+
+    margin-top: 1.75rem;
+  }
+
+  &__delete-cancel-btn,
+  &__delete-confirm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    min-height: 44px;
+    padding: 0 1.1rem;
+
+    border-radius: 0.5rem;
+
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:focus-visible {
+      outline: 3px solid rgba($brand-pink, 0.15);
+      outline-offset: 2px;
+    }
+  }
+
+  &__delete-cancel-btn {
+    background-color: $color-white;
+
+    border: 1px solid $color-border;
+
+    color: $color-text-dark;
+
+    &:hover {
+      background-color: rgba($brand-pink, 0.05);
+
+      border-color: $brand-pink;
+
+      color: $brand-pink;
+
+      transform: translateY(-1px);
+    }
+  }
+
+  &__delete-confirm-btn {
+    background-color: #dc3545;
+
+    border: 1px solid #dc3545;
+
+    color: $color-white;
+
+    &:hover {
+      background-color: #bb2d3b;
+
+      border-color: #bb2d3b;
+
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+
+      transform: translateY(-1px);
+    }
+
+    i {
+      font-size: 0.78rem;
+    }
+  }
+
+  // =========================================================
+  // DELETE MODAL ANIMATION
+  // =========================================================
+
+  @keyframes deleteModalIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  // =========================================================
+  // SUMMARY
   // =========================================================
 
   &__summary {
@@ -83,8 +1018,18 @@
     padding: 1.25rem;
 
     background-color: $color-white;
+
     border: 1px solid $color-border;
     border-radius: 0.75rem;
+
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.04);
+    }
   }
 
   &__summary-icon {
@@ -111,19 +1056,23 @@
 
   &__summary-label {
     display: block;
+
     margin-bottom: 0.25rem;
 
-    font-size: 0.85rem;
     color: $color-text-muted;
+
+    font-size: 0.85rem;
+    line-height: 1.3;
   }
 
   &__summary-value {
     margin: 0;
 
+    color: $color-text-dark;
+
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 1.2;
-    color: $color-text-dark;
   }
 
   // =========================================================
@@ -134,6 +1083,7 @@
     padding: 1.5rem;
 
     background-color: $color-white;
+
     border: 1px solid $color-border;
     border-radius: 0.75rem;
   }
@@ -145,16 +1095,20 @@
   &__content-title {
     margin: 0 0 0.3rem;
 
+    color: $color-text-dark;
+
     font-size: 1.2rem;
     font-weight: 700;
-    color: $color-text-dark;
+    line-height: 1.3;
   }
 
   &__content-subtitle {
     margin: 0;
 
-    font-size: 0.9rem;
     color: $color-text-muted;
+
+    font-size: 0.9rem;
+    line-height: 1.5;
   }
 
   // =========================================================
@@ -172,18 +1126,22 @@
 
   &__search {
     position: relative;
+
     flex: 1;
     max-width: 420px;
 
     i {
       position: absolute;
+
       top: 50%;
       left: 1rem;
 
       color: $color-text-muted;
+
       font-size: 0.85rem;
 
       transform: translateY(-50%);
+
       pointer-events: none;
     }
   }
@@ -195,15 +1153,20 @@
     padding: 0 1rem 0 2.7rem;
 
     background-color: $color-white;
+
     border: 1px solid $color-border;
     border-radius: 0.5rem;
 
     outline: none;
+
     color: $color-text-dark;
+
     font: inherit;
     font-size: 0.9rem;
 
-    transition: border-color 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
 
     &::placeholder {
       color: $color-text-muted;
@@ -211,6 +1174,7 @@
 
     &:focus {
       border-color: $brand-pink;
+      box-shadow: 0 0 0 3px rgba($brand-pink, 0.08);
     }
   }
 
@@ -227,31 +1191,45 @@
     padding: 0 2.25rem 0 0.85rem;
 
     background-color: $color-white;
+
     border: 1px solid $color-border;
     border-radius: 0.5rem;
 
     color: $color-text-dark;
+
     font: inherit;
     font-size: 0.9rem;
 
     cursor: pointer;
     outline: none;
 
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:hover {
+      border-color: darken($color-border, 8%);
+    }
+
     &:focus {
       border-color: $brand-pink;
+      box-shadow: 0 0 0 3px rgba($brand-pink, 0.08);
     }
   }
 
   // =========================================================
-  // PRODUCTS TABLE
+  // TABLE
   // =========================================================
 
   &__table-wrapper {
     width: 100%;
+
     overflow-x: auto;
 
     border: 1px solid $color-border;
     border-radius: 0.65rem;
+
+    scrollbar-width: thin;
   }
 
   &__table {
@@ -263,17 +1241,22 @@
     th,
     td {
       padding: 1rem;
+
       text-align: left;
+
       white-space: nowrap;
     }
 
     th {
       background-color: rgba($brand-pink, 0.04);
+
       border-bottom: 1px solid $color-border;
 
       color: $color-text-muted;
+
       font-size: 0.75rem;
       font-weight: 700;
+
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
@@ -282,6 +1265,7 @@
       border-bottom: 1px solid $color-border;
 
       color: $color-text-dark;
+
       font-size: 0.9rem;
     }
 
@@ -299,7 +1283,7 @@
   }
 
   // =========================================================
-  // PRODUCT CELL
+  // PRODUCT
   // =========================================================
 
   &__product {
@@ -318,6 +1302,7 @@
     overflow: hidden;
 
     border-radius: 0.5rem;
+
     background-color: rgba($brand-pink, 0.06);
 
     img {
@@ -342,6 +1327,7 @@
     overflow: hidden;
 
     color: $color-text-dark;
+
     font-weight: 600;
 
     text-overflow: ellipsis;
@@ -349,23 +1335,37 @@
 
   &__product-id {
     color: $color-text-muted;
+
     font-size: 0.78rem;
   }
 
   // =========================================================
-  // STATUS BADGES
+  // STATUS
   // =========================================================
 
   &__status {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
 
     padding: 0.35rem 0.65rem;
 
+    border: 0;
     border-radius: 999px;
 
+    font: inherit;
     font-size: 0.75rem;
     font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
 
     &--active {
       background-color: rgba(25, 135, 84, 0.1);
@@ -408,16 +1408,33 @@
     padding: 0;
 
     background-color: transparent;
+
     border: 1px solid $color-border;
     border-radius: 0.45rem;
 
     font: inherit;
+
     cursor: pointer;
 
     transition:
       background-color 0.2s ease,
       border-color 0.2s ease,
-      color 0.2s ease;
+      color 0.2s ease,
+      transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+
+      &:hover {
+        transform: none;
+        background-color: transparent;
+      }
+    }
 
     &--edit {
       color: $brand-pink;
@@ -443,7 +1460,7 @@
   }
 
   // =========================================================
-  // FOOTER / PAGINATION AREA
+  // FOOTER
   // =========================================================
 
   &__footer {
@@ -459,11 +1476,12 @@
     margin: 0;
 
     color: $color-text-muted;
+
     font-size: 0.85rem;
   }
 
   // =========================================================
-  // RESPONSIVE
+  // TABLET
   // =========================================================
 
   @media (max-width: 991.98px) {
@@ -482,11 +1500,65 @@
 
     &__select {
       flex: 1;
+      min-width: 0;
+    }
+
+    &__variant-fields {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    // -------------------------------------------------------
+    // Edit Modal
+    // -------------------------------------------------------
+
+    &__modal {
+      padding: 1rem;
+    }
+
+    &__modal-dialog {
+      width: 100%;
+      height: 94vh;
+      max-height: 94vh;
+    }
+
+    // -------------------------------------------------------
+    // Delete Modal
+    // -------------------------------------------------------
+
+    &__delete-modal {
+      padding: 1rem;
+    }
+
+    &__delete-dialog {
+      max-width: 440px;
+      padding: 1.75rem;
+    }
+
+    // -------------------------------------------------------
+    // Quill
+    // -------------------------------------------------------
+
+    &__quill {
+      .ql-toolbar {
+        padding: 0.5rem;
+      }
+
+      .ql-editor {
+        min-height: 200px;
+      }
     }
   }
 
+  // =========================================================
+  // MOBILE
+  // =========================================================
+
   @media (max-width: 767.98px) {
     padding: 1rem;
+
+    // -------------------------------------------------------
+    // Header
+    // -------------------------------------------------------
 
     &__header {
       flex-direction: column;
@@ -497,9 +1569,100 @@
       width: 100%;
     }
 
+    // -------------------------------------------------------
+    // Add form
+    // -------------------------------------------------------
+
+    &__add-form {
+      padding: 1rem;
+    }
+
+    &__add-form-header {
+      margin-bottom: 1.25rem;
+    }
+
+    &__form {
+      grid-template-columns: 1fr;
+    }
+
+    &__form-group {
+      &--full {
+        grid-column: auto;
+      }
+    }
+
+    &__form-actions {
+      grid-column: auto;
+    }
+
+    // -------------------------------------------------------
+    // Quill
+    // -------------------------------------------------------
+
+    &__quill {
+      .ql-toolbar {
+        padding: 0.45rem;
+
+        .ql-formats {
+          margin-right: 0.25rem;
+        }
+      }
+
+      .ql-editor {
+        min-height: 190px;
+        padding: 0.75rem;
+
+        font-size: 0.88rem;
+      }
+    }
+
+    // -------------------------------------------------------
+    // Variant
+    // -------------------------------------------------------
+
+    &__variant-fields {
+      grid-template-columns: 1fr;
+
+      .admin-products__form-group--full {
+        grid-column: auto;
+      }
+    }
+
+    &__variant-card {
+      padding: 1rem;
+    }
+
+    // -------------------------------------------------------
+    // Options
+    // -------------------------------------------------------
+
+    &__option-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__option-fields {
+      grid-template-columns: 1fr;
+      width: 100%;
+    }
+
+    &__option-row {
+      .admin-products__remove-btn {
+        width: 100%;
+      }
+    }
+
+    // -------------------------------------------------------
+    // Main content
+    // -------------------------------------------------------
+
     &__content {
       padding: 1rem;
     }
+
+    // -------------------------------------------------------
+    // Filters
+    // -------------------------------------------------------
 
     &__filters {
       flex-direction: column;
@@ -510,6 +1673,10 @@
       width: 100%;
     }
 
+    // -------------------------------------------------------
+    // Footer
+    // -------------------------------------------------------
+
     &__footer {
       flex-direction: column;
       align-items: flex-start;
@@ -518,19 +1685,267 @@
     app-pagination {
       width: 100%;
     }
+
+    // -------------------------------------------------------
+    // Edit Modal
+    // -------------------------------------------------------
+
+    &__modal {
+      align-items: flex-start;
+
+      padding: 0.75rem;
+    }
+
+    &__modal-dialog {
+      width: 100%;
+      height: calc(100vh - 1.5rem);
+      max-height: calc(100vh - 1.5rem);
+
+      border-radius: 0.7rem;
+    }
+
+    &__modal-header {
+      padding: 1rem;
+    }
+
+    &__modal-title {
+      font-size: 1.1rem;
+    }
+
+    &__modal-subtitle {
+      font-size: 0.8rem;
+    }
+
+    &__modal-body {
+      padding: 1rem;
+    }
+
+    // -------------------------------------------------------
+    // Delete Modal
+    // -------------------------------------------------------
+
+    &__delete-modal {
+      align-items: center;
+      padding: 0.75rem;
+    }
+
+    &__delete-dialog {
+      width: 100%;
+      max-width: 420px;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+    }
+
+    &__delete-icon {
+      width: 58px;
+      height: 58px;
+
+      margin-bottom: 1rem;
+
+      font-size: 1.2rem;
+    }
+
+    &__delete-title {
+      font-size: 1.15rem;
+    }
+
+    &__delete-message {
+      font-size: 0.88rem;
+    }
+
+    &__delete-actions {
+      width: 100%;
+
+      flex-direction: column-reverse;
+      align-items: stretch;
+
+      margin-top: 1.5rem;
+    }
+
+    &__delete-cancel-btn,
+    &__delete-confirm-btn {
+      width: 100%;
+    }
   }
+
+  // =========================================================
+  // SMALL MOBILE
+  // =========================================================
 
   @media (max-width: 575.98px) {
     &__title {
       font-size: 1.5rem;
     }
 
+    &__subtitle {
+      font-size: 0.88rem;
+    }
+
+    // -------------------------------------------------------
+    // Summary
+    // -------------------------------------------------------
+
     &__summary-card {
       padding: 1rem;
     }
 
+    &__summary-icon {
+      width: 44px;
+      height: 44px;
+      flex-basis: 44px;
+    }
+
     &__summary-value {
       font-size: 1.35rem;
+    }
+
+    // -------------------------------------------------------
+    // Add form
+    // -------------------------------------------------------
+
+    &__add-form-header {
+      gap: 0.75rem;
+    }
+
+    &__add-form-title {
+      font-size: 1.05rem;
+    }
+
+    &__add-form-subtitle {
+      font-size: 0.82rem;
+    }
+
+    &__close-btn {
+      width: 34px;
+      height: 34px;
+      flex-basis: 34px;
+    }
+
+    // -------------------------------------------------------
+    // Form actions
+    // -------------------------------------------------------
+
+    &__form-actions {
+      flex-direction: column-reverse;
+      align-items: stretch;
+    }
+
+    &__cancel-btn,
+    &__save-btn {
+      width: 100%;
+    }
+
+    // -------------------------------------------------------
+    // Variant header
+    // -------------------------------------------------------
+
+    &__variant-header {
+      align-items: flex-start;
+      flex-direction: column;
+
+      .admin-products__remove-btn {
+        width: 100%;
+      }
+    }
+
+    // -------------------------------------------------------
+    // Section headings
+    // -------------------------------------------------------
+
+    &__section-heading {
+      h3 {
+        font-size: 0.95rem;
+      }
+
+      p {
+        font-size: 0.78rem;
+      }
+    }
+
+    // -------------------------------------------------------
+    // Secondary buttons
+    // -------------------------------------------------------
+
+    &__secondary-btn {
+      width: 100%;
+    }
+
+    // -------------------------------------------------------
+    // Quill
+    // -------------------------------------------------------
+
+    &__quill {
+      .ql-toolbar {
+        padding: 0.4rem;
+
+        .ql-formats {
+          margin-right: 0.1rem;
+        }
+      }
+
+      .ql-editor {
+        min-height: 170px;
+      }
+    }
+
+    // -------------------------------------------------------
+    // Edit Modal
+    // -------------------------------------------------------
+
+    &__modal {
+      padding: 0;
+    }
+
+    &__modal-dialog {
+      height: 100vh;
+      max-height: 100vh;
+
+      border-radius: 0;
+    }
+
+    &__modal-header {
+      padding: 0.9rem 1rem;
+    }
+
+    &__modal-body {
+      padding: 1rem;
+    }
+
+    // -------------------------------------------------------
+    // Delete Modal
+    // -------------------------------------------------------
+
+    &__delete-modal {
+      padding: 0.75rem;
+    }
+
+    &__delete-dialog {
+      padding: 1.35rem 1.15rem;
+
+      border-radius: 0.7rem;
+    }
+
+    &__delete-icon {
+      width: 54px;
+      height: 54px;
+
+      font-size: 1.1rem;
+    }
+
+    &__delete-title {
+      font-size: 1.1rem;
+    }
+
+    &__delete-message {
+      font-size: 0.84rem;
+    }
+
+    &__delete-warning {
+      font-size: 0.78rem;
+    }
+
+    &__delete-actions {
+      gap: 0.6rem;
     }
   }
 }

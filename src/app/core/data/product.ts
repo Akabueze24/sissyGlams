@@ -3542,7 +3542,7 @@ export const PRODUCTS: Product[] = [
 
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
-    active: true,
+    active: false,
   },
 
   // ------------------------------------------------------------
@@ -3576,6 +3576,6 @@ export const PRODUCTS: Product[] = [
 
     collections: [{ name: 'Feminize Your Space', slug: 'feminize-your-space' }],
 
-    active: true,
+    active: false,
   },
 ];

@@ -1,43 +1,62 @@
-@import '../../../../styles/variables';
+@import "../../../../styles/variables";
 
 // ============================================================
-// Shell — sidebar + main column live side by side at lg+
+// ADMIN LAYOUT
 // ============================================================
+
 .admin-layout {
   display: flex;
   min-height: 100vh;
-  background-color: #f7f7f8; // light neutral admin background — not brand pink
+
+  background-color: #f7f7f8;
 }
 
 // ============================================================
-// Sidebar
+// SIDEBAR
 // ============================================================
+
 .admin-sidebar {
   --bs-offcanvas-width: 270px;
 
   display: flex;
   flex-direction: column;
+
   background-color: $color-white;
   border-right: 1px solid $color-border;
 
   @media (min-width: 992px) {
     flex: 0 0 260px;
     width: 260px;
+
     position: sticky;
     top: 0;
+
     height: 100vh;
   }
 
+  // ----------------------------------------------------------
+  // Mobile offcanvas header
+  // ----------------------------------------------------------
+
   &__offcanvas-header {
+    padding: 1rem 1.1rem;
+
+    border-bottom: 1px solid $color-border;
+
     @media (min-width: 992px) {
       display: none;
     }
   }
 
+  // ----------------------------------------------------------
+  // Brand
+  // ----------------------------------------------------------
+
   &__brand {
     font-family: $font-heading;
     font-weight: 700;
     font-size: 1.05rem;
+
     color: $brand-pink-mid;
   }
 
@@ -45,12 +64,23 @@
     color: $brand-pink-dark;
   }
 
+  // ----------------------------------------------------------
+  // Sidebar body
+  // ----------------------------------------------------------
+
   &__body {
     display: flex;
     flex-direction: column;
+
     height: 100%;
+    min-height: 100%;
+
     padding: 0;
   }
+
+  // ----------------------------------------------------------
+  // Desktop brand
+  // ----------------------------------------------------------
 
   &__brand-desktop {
     display: none;
@@ -58,12 +88,17 @@
     @media (min-width: 992px) {
       display: flex;
       align-items: baseline;
+
       gap: 0.4rem;
+
       padding: 1.4rem 1.25rem;
+
       border-bottom: 1px solid $color-border;
+
       font-family: $font-heading;
       font-weight: 700;
       font-size: 1.15rem;
+
       color: $brand-pink-mid;
     }
   }
@@ -72,44 +107,63 @@
     font-family: $font-body;
     font-size: 0.68rem;
     font-weight: 600;
+
     letter-spacing: 0.05em;
     text-transform: uppercase;
+
     color: $color-text-muted;
   }
+
+  // ----------------------------------------------------------
+  // Sidebar profile
+  // ----------------------------------------------------------
 
   &__profile {
     display: flex;
     align-items: center;
+
     gap: 0.65rem;
+
     margin-top: auto;
+
     padding: 1rem 1.1rem;
+
     border-top: 1px solid $color-border;
   }
 
   &__avatar {
     flex: 0 0 auto;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     width: 36px;
     height: 36px;
+
     border-radius: 50%;
+
     background-color: $brand-pink-light;
     color: $brand-pink-dark;
+
     font-size: 0.85rem;
   }
 
   &__profile-text {
     flex: 1 1 auto;
+
     min-width: 0;
   }
 
   &__profile-name {
     margin: 0;
+
     font-family: $font-body;
     font-weight: 600;
     font-size: 0.82rem;
+
     color: $color-text-dark;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -117,73 +171,114 @@
 
   &__profile-email {
     margin: 0;
+
     font-family: $font-body;
     font-size: 0.72rem;
+
     color: $color-text-muted;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
+  // ----------------------------------------------------------
+  // Sidebar logout
+  // ----------------------------------------------------------
+
   &__logout {
     flex: 0 0 auto;
+
     width: 32px;
     height: 32px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     border: none;
-    background: transparent;
-    color: $color-text-muted;
-    font-size: 0.85rem;
     border-radius: 0.4rem;
-    transition: background-color 0.15s ease, color 0.15s ease;
+
+    background-color: transparent;
+    color: $color-text-muted;
+
+    font-size: 0.85rem;
+
+    cursor: pointer;
+
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
 
     &:hover {
       background-color: $brand-pink-light;
       color: $brand-pink-dark;
     }
+
+    &:focus-visible {
+      outline: 2px solid $brand-pink;
+      outline-offset: 2px;
+    }
   }
 }
 
 // ============================================================
-// Admin nav
+// ADMIN NAVIGATION
 // ============================================================
+
 .admin-nav {
   padding: 0.75rem;
 
   &__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
     display: flex;
     flex-direction: column;
+
     gap: 0.2rem;
+
+    list-style: none;
+
+    margin: 0;
+    padding: 0;
   }
 
   &__link {
     display: flex;
     align-items: center;
+
     gap: 0.75rem;
+
     padding: 0.65rem 0.75rem;
+
     border-radius: 0.5rem;
+
     font-family: $font-body;
     font-size: 0.85rem;
     font-weight: 500;
+
     color: $color-text-dark;
     text-decoration: none;
-    transition: background-color 0.15s ease, color 0.15s ease;
+
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
 
     i {
+      flex: 0 0 auto;
+
       width: 18px;
+
       text-align: center;
+
       color: $color-text-muted;
+
       font-size: 0.9rem;
+
       transition: color 0.15s ease;
     }
 
     &:hover {
       background-color: rgba($brand-pink-light, 0.6);
+
       color: $brand-pink-dark;
 
       i {
@@ -193,59 +288,111 @@
 
     &--active {
       background-color: $brand-pink-light;
+
       color: $brand-pink-dark;
+
       font-weight: 700;
 
       i {
         color: $brand-pink-dark;
       }
     }
+
+    &:focus-visible {
+      outline: 2px solid $brand-pink;
+      outline-offset: 2px;
+    }
   }
 }
 
 // ============================================================
-// Main column
+// MAIN COLUMN
 // ============================================================
+
 .admin-main {
   flex: 1 1 0%;
+
   min-width: 0;
+
   display: flex;
   flex-direction: column;
 }
 
-// --- Mobile-only top bar ---
+// ============================================================
+// MOBILE ADMIN HEADER
+// ============================================================
+
 .admin-mobile-header {
   padding: 0.85rem 1rem;
+
   background-color: $color-white;
   border-bottom: 1px solid $color-border;
+
   position: sticky;
   top: 0;
+
   z-index: 10;
+
+  // ----------------------------------------------------------
+  // Buttons
+  // ----------------------------------------------------------
 
   &__toggle,
   &__icon-btn {
+    flex: 0 0 auto;
+
     width: 36px;
     height: 36px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     border: none;
-    background: transparent;
-    color: $color-text-dark;
-    font-size: 1rem;
     border-radius: 0.4rem;
+
+    background-color: transparent;
+    color: $color-text-dark;
+
+    font-size: 1rem;
+
+    cursor: pointer;
+
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
 
     &:hover {
       background-color: $brand-pink-light;
       color: $brand-pink-dark;
     }
+
+    &:focus-visible {
+      outline: 2px solid $brand-pink;
+      outline-offset: 2px;
+    }
   }
 
+  // ----------------------------------------------------------
+  // Mobile brand
+  // ----------------------------------------------------------
+
   &__brand {
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    text-align: center;
+
     font-family: $font-heading;
     font-weight: 700;
     font-size: 0.95rem;
+
     color: $color-text-dark;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__brand-accent {
@@ -253,14 +400,27 @@
   }
 }
 
-// --- Page header (title / breadcrumb / actions) ---
+// ============================================================
+// ADMIN PAGE HEADER
+// ============================================================
+
 .admin-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
+
+  /*
+   * The title section should be allowed to use the
+   * available space, while the actions remain intact.
+   */
+  flex-wrap: nowrap;
+
+  gap: 1.5rem;
+
+  min-width: 0;
+
   padding: 1.25rem 1.5rem;
+
   background-color: $color-white;
   border-bottom: 1px solid $color-border;
 
@@ -269,21 +429,38 @@
   }
 }
 
+// ============================================================
+// PAGE TITLE
+// ============================================================
+
+.admin-header__titles {
+  flex: 1 1 auto;
+
+  min-width: 0;
+}
+
 .admin-header__title {
+  margin: 0 0 0.25rem;
+
   font-family: $font-heading;
   font-weight: 700;
   font-size: 1.25rem;
+
   color: $color-text-dark;
-  margin: 0 0 0.25rem;
 
   @media (min-width: 992px) {
     font-size: 1.4rem;
   }
 }
 
+// ============================================================
+// BREADCRUMB
+// ============================================================
+
 .admin-header__breadcrumb-nav {
   .breadcrumb {
     margin: 0;
+
     font-family: $font-body;
     font-size: 0.75rem;
   }
@@ -297,67 +474,231 @@
   }
 }
 
+// ============================================================
+// HEADER ACTIONS
+// ============================================================
+
 .admin-header__actions {
+  display: flex;
   align-items: center;
+  justify-content: flex-end;
+
   gap: 1rem;
+
+  /*
+   * Do not allow the action group to shrink.
+   * This keeps the notification, profile and logout
+   * controls on one line.
+   */
+  flex: 0 0 auto;
+
+  min-width: max-content;
 }
 
+// ============================================================
+// NOTIFICATION BUTTON
+// ============================================================
+
 .admin-header__icon-btn {
+  flex: 0 0 auto;
+
   width: 38px;
   height: 38px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   border: 1px solid $color-border;
+  border-radius: 50%;
+
   background-color: $color-white;
   color: $color-text-dark;
+
   font-size: 0.9rem;
-  border-radius: 50%;
-  transition: border-color 0.15s ease, color 0.15s ease;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background-color 0.15s ease;
 
   &:hover {
     border-color: $brand-pink;
+
+    background-color: $brand-pink-light;
     color: $brand-pink-dark;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $brand-pink;
+    outline-offset: 2px;
   }
 }
 
+// ============================================================
+// DIVIDER
+// ============================================================
+
 .admin-header__divider {
+  flex: 0 0 auto;
+
   width: 1px;
   height: 24px;
+
   background-color: $color-border;
 }
+
+// ============================================================
+// HEADER PROFILE
+// ============================================================
 
 .admin-header__profile {
   display: flex;
   align-items: center;
+
   gap: 0.6rem;
+
+  /*
+   * Keep the avatar and name together.
+   */
+  flex: 0 0 auto;
+
+  min-width: max-content;
 }
 
+// ============================================================
+// HEADER AVATAR
+// ============================================================
+
 .admin-header__avatar {
+  flex: 0 0 auto;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 34px;
   height: 34px;
+
   border-radius: 50%;
+
   background-color: $brand-pink-light;
   color: $brand-pink-dark;
+
   font-size: 0.8rem;
 }
+
+// ============================================================
+// HEADER PROFILE NAME
+// ============================================================
 
 .admin-header__profile-name {
   font-family: $font-body;
   font-weight: 600;
   font-size: 0.82rem;
+
   color: $color-text-dark;
+
+  white-space: nowrap;
 }
 
-// --- Content area ---
+// ============================================================
+// HEADER LOGOUT
+// ============================================================
+
+.admin-header__logout {
+  /*
+   * IMPORTANT:
+   * This button contains both an icon and "Log out".
+   * Therefore it must NOT have a fixed width of 34px.
+   */
+  flex: 0 0 auto;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.4rem;
+
+  min-width: max-content;
+
+  height: 34px;
+
+  padding: 0 0.45rem;
+
+  margin-left: 0.15rem;
+
+  border: 1px solid transparent;
+  border-radius: 0.45rem;
+
+  background-color: transparent;
+  color: $color-text-muted;
+
+  font-family: $font-body;
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  /*
+   * Prevent "Log out" from becoming:
+   *
+   * Log
+   * out
+   */
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background-color: $brand-pink-light;
+
+    border-color: $brand-pink-light;
+
+    color: $brand-pink-dark;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $brand-pink;
+    outline-offset: 2px;
+  }
+}
+
+// ============================================================
+// ADMIN CONTENT
+// ============================================================
+
 .admin-content {
   flex: 1 1 auto;
+
+  min-width: 0;
+
   padding: 1.25rem 1rem 2.5rem;
 
   @media (min-width: 992px) {
     padding: 1.75rem 2rem 3rem;
+  }
+}
+
+// ============================================================
+// SMALL SCREENS
+// ============================================================
+
+@media (max-width: 575.98px) {
+  .admin-header {
+    padding: 1rem;
+  }
+
+  .admin-header__title {
+    font-size: 1.15rem;
+  }
+
+  .admin-content {
+    padding: 1rem 0.85rem 2rem;
   }
 }
