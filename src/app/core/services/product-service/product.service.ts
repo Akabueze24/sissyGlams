@@ -78,7 +78,7 @@ export class ProductService {
    */
   setProductActive(productId: string, active: boolean): void {
     const products = this.productsSource.value.map((product) =>
-      product.id === productId ? { ...product, active } : product,
+      product.id === productId ? { ...product, active } : product
     );
 
     this.setProducts(products);
@@ -104,13 +104,17 @@ export class ProductService {
     brand: string;
     category: Category;
     subcategory?: string;
-    collections?: { name: string; slug: string }[];
+    collections?: StoreCollection[];
     price: number;
     imageUrl: string;
     description: string;
     active?: boolean;
   }): Product {
     const name = input.name.trim();
+    const subcategory = this.normalizeSubcategory(
+      input.category,
+      input.subcategory
+    );
 
     const product: Product = {
       id: `SD-${Date.now()}`,
@@ -118,7 +122,7 @@ export class ProductService {
       slug: this.slugify(name),
       brand: input.brand.trim(),
       category: input.category,
-      subcategory: input.subcategory?.trim() || undefined,
+      subcategory,
       collections: input.collections?.length ? input.collections : undefined,
       images: [input.imageUrl.trim()],
       price: input.price,
@@ -150,14 +154,26 @@ export class ProductService {
     }
 
     const name = changes.name?.trim() ?? current.name;
+    const category = changes.category ?? current.category;
+
+    // Prefer explicit subcategory from changes; otherwise keep current.
+    // Then force it to match the final category (or clear it).
+    const rawSubcategory =
+      changes.subcategory !== undefined
+        ? changes.subcategory
+        : current.subcategory;
+
+    const subcategory = this.normalizeSubcategory(category, rawSubcategory);
 
     const updated: Product = {
       ...current,
       ...changes,
-      id: current.id, // never change id
+      id: current.id,
       name,
       slug: changes.name ? this.slugify(name) : current.slug,
       brand: changes.brand?.trim() ?? current.brand,
+      category,
+      subcategory,
       images:
         changes.images && changes.images.length
           ? changes.images
@@ -171,7 +187,7 @@ export class ProductService {
     };
 
     const products = this.productsSource.value.map((p) =>
-      p.id === productId ? updated : p,
+      p.id === productId ? updated : p
     );
 
     this.setProducts(products);
@@ -193,7 +209,7 @@ export class ProductService {
     }
 
     const updatedProducts = products.filter(
-      (product) => product.id !== productId,
+      (product) => product.id !== productId
     );
 
     this.setProducts(updatedProducts);
@@ -218,8 +234,8 @@ export class ProductService {
       (product) =>
         product.active &&
         product.collections?.some(
-          (collection) => collection.slug === collectionSlug,
-        ),
+          (collection) => collection.slug === collectionSlug
+        )
     );
   }
 
@@ -233,7 +249,7 @@ export class ProductService {
         (product) =>
           product.active &&
           product.oldPrice != null &&
-          product.oldPrice > product.price,
+          product.oldPrice > product.price
       )
       .slice(0, limit);
   }
@@ -243,21 +259,22 @@ export class ProductService {
       (item) =>
         item.active &&
         item.id !== product.id &&
-        item.category === product.category,
+        item.category === product.category
     );
 
     const sameSubcategory = sameCategory.filter(
-      (item) => item.subcategory === product.subcategory,
+      (item) => item.subcategory === product.subcategory
     );
 
-    let pool = sameSubcategory.length >= limit ? sameSubcategory : sameCategory;
+    let pool =
+      sameSubcategory.length >= limit ? sameSubcategory : sameCategory;
 
     if (pool.length < limit) {
       const others = this.productsSource.value.filter(
         (item) =>
           item.active &&
           item.id !== product.id &&
-          !pool.some((p) => p.id === item.id),
+          !pool.some((p) => p.id === item.id)
       );
       pool = [...pool, ...others];
     }
@@ -267,13 +284,13 @@ export class ProductService {
 
   getProductsByCategory(category: Category): Product[] {
     return this.productsSource.value.filter(
-      (product) => product.active && product.category === category,
+      (product) => product.active && product.category === category
     );
   }
 
   getProductsBySubcategory(subcategory: string): Product[] {
     return this.productsSource.value.filter(
-      (product) => product.active && product.subcategory === subcategory,
+      (product) => product.active && product.subcategory === subcategory
     );
   }
 
@@ -372,6 +389,27 @@ export class ProductService {
   // PRIVATE HELPERS
   // ============================================================
 
+  /**
+   * Ensures subcategory belongs to the given category.
+   * Prevents e.g. category: 'wigs' + subcategory: 'casual-dresses'.
+   */
+  private normalizeSubcategory(
+    category: Category,
+    subcategory?: string | null
+  ): string | undefined {
+    const slug = subcategory?.trim();
+
+    if (!slug) {
+      return undefined;
+    }
+
+    const isValid = SUBCATEGORIES.some(
+      (sub) => sub.slug === slug && sub.category === category
+    );
+
+    return isValid ? slug : undefined;
+  }
+
   private slugify(value: string): string {
     return value
       .toLowerCase()
@@ -382,7 +420,7 @@ export class ProductService {
 
   private applyFilters(
     products: Product[],
-    filters: ProductFilters,
+    filters: ProductFilters
   ): Product[] {
     let result = products.filter((product) => product.active);
 
@@ -390,26 +428,26 @@ export class ProductService {
       const term = filters.search.trim().toLowerCase();
 
       result = result.filter((product) =>
-        this.matchesSearchTerm(product, term),
+        this.matchesSearchTerm(product, term)
       );
     }
 
     if (filters.category) {
       result = result.filter(
-        (product) => product.category === filters.category,
+        (product) => product.category === filters.category
       );
     }
 
     if (filters.subcategory) {
       result = result.filter(
-        (product) => product.subcategory === filters.subcategory,
+        (product) => product.subcategory === filters.subcategory
       );
     }
 
     if (filters.brand) {
       result = result.filter(
         (product) =>
-          product.brand.toLowerCase() === filters.brand!.toLowerCase(),
+          product.brand.toLowerCase() === filters.brand!.toLowerCase()
       );
     }
 
@@ -420,8 +458,8 @@ export class ProductService {
     if (filters.collection) {
       result = result.filter((product) =>
         product.collections?.some(
-          (collection) => collection.slug === filters.collection,
-        ),
+          (collection) => collection.slug === filters.collection
+        )
       );
     }
 
@@ -496,7 +534,7 @@ export class ProductService {
     const inCollections = !!product.collections?.some(
       (collection) =>
         collection.name.toLowerCase().includes(term) ||
-        collection.slug.toLowerCase().includes(term),
+        collection.slug.toLowerCase().includes(term)
     );
 
     return (

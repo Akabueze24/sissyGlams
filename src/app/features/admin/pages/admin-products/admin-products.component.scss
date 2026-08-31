@@ -8,6 +8,76 @@
   // PAGE HEADER
   // =========================================================
 
+  .admin-products {
+    &__catalog {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      min-width: 0;
+    }
+
+    &__catalog-category {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $color-text-dark;
+    }
+
+    &__catalog-sub {
+      font-size: 0.8rem;
+      color: $color-text-muted;
+    }
+
+    &__catalog-collections {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.15rem;
+    }
+
+    &__chip {
+      display: inline-flex;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      background-color: rgba($brand-pink, 0.1);
+      color: $brand-pink-dark;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+  }
+
+  &__preview-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  &__preview {
+    width: 72px;
+    height: 72px;
+    overflow: hidden;
+    border: 1px solid $color-border;
+    border-radius: 0.45rem;
+    background: #f8f8f8;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  &__field-error {
+    margin: 0.25rem 0 0;
+    font-size: 0.8rem;
+    color: #dc3545;
+  }
+
+  &__input--error {
+    border-color: #dc3545;
+  }
+
   &__header {
     display: flex;
     align-items: flex-start;

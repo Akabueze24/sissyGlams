@@ -29,6 +29,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
   searchTerm = '';
   categoryFilter: Category | '' = '';
+  subcategoryFilter = '';
+  collectionFilter = '';
   statusFilter: '' | 'active' | 'inactive' = '';
 
   categories: Category[] = [];
@@ -51,6 +53,15 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     description: '',
     active: true,
   };
+
+  addErrors: {
+    name?: string;
+    brand?: string;
+    category?: string;
+    price?: string;
+    imageUrl?: string;
+    description?: string;
+  } = {};
 
   // ============================================================
   // EDIT PRODUCT
@@ -77,6 +88,14 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     sizeRows: [] as OptionRow[],
     lengthRows: [] as OptionRow[],
   };
+
+  editErrors: {
+    name?: string;
+    brand?: string;
+    category?: string;
+    price?: string;
+    images?: string;
+  } = {};
 
   quillModules = {
     toolbar: [
@@ -108,7 +127,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     this.productsSubscription = this.productService.adminProducts$.subscribe(
       (products) => {
         this.products = products;
-      }
+      },
     );
   }
 
@@ -118,7 +137,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   }
 
   // ============================================================
-  // SUBCATEGORY HELPERS
+  // SUBCATEGORY HELPERS (forms + toolbar filter)
   // ============================================================
 
   get subcategoriesForAdd(): Subcategory[] {
@@ -147,12 +166,29 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     );
   }
 
+  get subcategoriesForFilter(): Subcategory[] {
+    if (!this.categoryFilter) {
+      return [];
+    }
+
+    return (
+      this.productService
+        .getCategoryNav()
+        .find((item) => item.category === this.categoryFilter)?.subcategories ??
+      []
+    );
+  }
+
   onAddCategoryChange(): void {
     this.addForm.subcategory = '';
   }
 
   onEditCategoryChange(): void {
     this.editForm.subcategory = '';
+  }
+
+  onCategoryFilterChange(): void {
+    this.subcategoryFilter = '';
   }
 
   // ============================================================
@@ -162,7 +198,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   toggleCollectionSlug(
     list: string[],
     slug: string,
-    checked: boolean
+    checked: boolean,
   ): string[] {
     if (checked) {
       return list.includes(slug) ? list : [...list, slug];
@@ -173,7 +209,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
   private collectionsFromSlugs(slugs: string[]) {
     return this.storeCollections.filter((collection) =>
-      slugs.includes(collection.slug)
+      slugs.includes(collection.slug),
     );
   }
 
@@ -190,15 +226,27 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
         const name = product.name.toLowerCase();
         const id = product.id.toLowerCase();
         const brand = product.brand.toLowerCase();
-        return (
-          name.includes(term) || id.includes(term) || brand.includes(term)
-        );
+        return name.includes(term) || id.includes(term) || brand.includes(term);
       });
     }
 
     if (this.categoryFilter) {
       result = result.filter(
-        (product) => product.category === this.categoryFilter
+        (product) => product.category === this.categoryFilter,
+      );
+    }
+
+    if (this.subcategoryFilter) {
+      result = result.filter(
+        (product) => product.subcategory === this.subcategoryFilter,
+      );
+    }
+
+    if (this.collectionFilter) {
+      result = result.filter((product) =>
+        product.collections?.some(
+          (collection) => collection.slug === this.collectionFilter,
+        ),
       );
     }
 
@@ -222,6 +270,73 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   }
 
   // ============================================================
+  // VALIDATION
+  // ============================================================
+
+  private validateAddForm(): boolean {
+    const errors: typeof this.addErrors = {};
+
+    if (!this.addForm.name.trim()) {
+      errors.name = 'Product name is required.';
+    }
+
+    if (!this.addForm.brand.trim()) {
+      errors.brand = 'Brand is required.';
+    }
+
+    if (!this.addForm.category) {
+      errors.category = 'Category is required.';
+    }
+
+    if (this.addForm.price == null || this.addForm.price <= 0) {
+      errors.price = 'Price must be greater than 0.';
+    }
+
+    if (!this.addForm.imageUrl.trim()) {
+      errors.imageUrl = 'Product image URL is required.';
+    }
+
+    if (!this.addForm.description.trim()) {
+      errors.description = 'Description is required.';
+    }
+
+    this.addErrors = errors;
+    return Object.keys(errors).length === 0;
+  }
+
+  private validateEditForm(): boolean {
+    const errors: typeof this.editErrors = {};
+
+    if (!this.editForm.name.trim()) {
+      errors.name = 'Product name is required.';
+    }
+
+    if (!this.editForm.brand.trim()) {
+      errors.brand = 'Brand is required.';
+    }
+
+    if (!this.editForm.category) {
+      errors.category = 'Category is required.';
+    }
+
+    if (this.editForm.price == null || this.editForm.price <= 0) {
+      errors.price = 'Price must be greater than 0.';
+    }
+
+    const images = this.editForm.imageUrlsText
+      .split('\n')
+      .map((url) => url.trim())
+      .filter((url) => !!url);
+
+    if (!images.length) {
+      errors.images = 'Add at least one gallery image URL.';
+    }
+
+    this.editErrors = errors;
+    return Object.keys(errors).length === 0;
+  }
+
+  // ============================================================
   // ADD PRODUCT
   // ============================================================
 
@@ -229,6 +344,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     this.showEditForm = false;
     this.editingProductId = null;
     document.body.style.overflow = '';
+    this.addErrors = {};
     this.showAddForm = true;
   }
 
@@ -238,25 +354,16 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   }
 
   submitAddForm(): void {
-    if (
-      !this.addForm.name.trim() ||
-      !this.addForm.brand.trim() ||
-      !this.addForm.category ||
-      !this.addForm.imageUrl.trim() ||
-      !this.addForm.description.trim() ||
-      this.addForm.price <= 0
-    ) {
+    if (!this.validateAddForm()) {
       return;
     }
 
-    const collections = this.collectionsFromSlugs(
-      this.addForm.collectionSlugs
-    );
+    const collections = this.collectionsFromSlugs(this.addForm.collectionSlugs);
 
     this.productService.addProduct({
       name: this.addForm.name,
       brand: this.addForm.brand,
-      category: this.addForm.category,
+      category: this.addForm.category as Category,
       subcategory: this.addForm.subcategory || undefined,
       collections: collections.length ? collections : undefined,
       price: Number(this.addForm.price),
@@ -280,6 +387,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       description: '',
       active: true,
     };
+    this.addErrors = {};
   }
 
   // ============================================================
@@ -289,10 +397,11 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   openEditForm(product: Product): void {
     this.showAddForm = false;
     this.editingProductId = product.id;
+    this.editErrors = {};
 
     const colorRows: ColorRow[] = (product.colors ?? []).map((color) => {
       const gallery = product.colorGalleries?.find(
-        (g) => g.color.value === color.value
+        (g) => g.color.value === color.value,
       );
 
       return {
@@ -335,6 +444,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   closeEditForm(): void {
     this.showEditForm = false;
     this.editingProductId = null;
+    this.editErrors = {};
     document.body.style.overflow = '';
   }
 
@@ -343,12 +453,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (
-      !this.editForm.name.trim() ||
-      !this.editForm.brand.trim() ||
-      !this.editForm.category ||
-      this.editForm.price <= 0
-    ) {
+    if (!this.validateEditForm()) {
       return;
     }
 
@@ -356,10 +461,6 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       .split('\n')
       .map((url) => url.trim())
       .filter((url) => !!url);
-
-    if (!images.length) {
-      return;
-    }
 
     const details = this.editForm.detailsText
       .split('\n')
@@ -407,13 +508,13 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       }));
 
     const collections = this.collectionsFromSlugs(
-      this.editForm.collectionSlugs
+      this.editForm.collectionSlugs,
     );
 
     this.productService.updateProduct(this.editingProductId, {
       name: this.editForm.name,
       brand: this.editForm.brand,
-      category: this.editForm.category,
+      category: this.editForm.category as Category,
       subcategory: this.editForm.subcategory || undefined,
       collections,
       price: Number(this.editForm.price),
@@ -517,5 +618,47 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       .split('-')
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
       .join(' ');
+  }
+
+  subcategoryLabel(slug: string | undefined): string {
+    if (!slug) {
+      return '';
+    }
+
+    const sub = this.productService
+      .getCategoryNav()
+      .flatMap((item) => item.subcategories)
+      .find((s) => s.slug === slug);
+
+    return sub?.name ?? this.categoryLabel(slug);
+  }
+
+  /** Split gallery textarea into clean URLs */
+  get editGalleryPreviewUrls(): string[] {
+    return this.editForm.imageUrlsText
+      .split('\n')
+      .map((url) => url.trim())
+      .filter((url) => !!url);
+  }
+
+  previewUrlsFromText(text: string): string[] {
+    return text
+      .split('\n')
+      .map((url) => url.trim())
+      .filter((url) => !!url);
+  }
+
+  isImageUrl(url: string): boolean {
+    const value = url.trim();
+    if (!value) return false;
+    return (
+      /^https?:\/\//i.test(value) ||
+      /\.(jpe?g|png|gif|webp|svg)(\?.*)?$/i.test(value)
+    );
+  }
+
+  onPreviewError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = 'https://placehold.co/80x80?text=Invalid';
   }
 }

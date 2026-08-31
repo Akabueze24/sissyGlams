@@ -5,7 +5,6 @@
   <div class="admin-products__header">
     <div class="admin-products__heading">
       <h1 class="admin-products__title">Products</h1>
-
       <p class="admin-products__subtitle">
         Manage your store products and inventory.
       </p>
@@ -17,25 +16,21 @@
       (click)="openAddForm()"
     >
       <i class="fa-solid fa-plus" aria-hidden="true"></i>
-
-      <span> Add New Product </span>
+      <span>Add New Product</span>
     </button>
   </div>
 
   <!-- =====================================================
        ADD PRODUCT FORM
-       ===================================================== -->
+  ====================================================== -->
   <section class="admin-products__add-form" *ngIf="showAddForm">
-    <!-- Add Form Header -->
     <div class="admin-products__add-form-header">
       <div>
         <h2 class="admin-products__add-form-title">Add New Product</h2>
-
         <p class="admin-products__add-form-subtitle">
           Create a new product for your store.
         </p>
       </div>
-
       <button
         type="button"
         class="admin-products__close-btn"
@@ -46,108 +41,167 @@
       </button>
     </div>
 
-    <!-- Add Product Form -->
     <form class="admin-products__form" (ngSubmit)="submitAddForm()">
-      <!-- Product Name -->
       <div class="admin-products__form-group">
-        <label for="productName"> Product Name </label>
-
+        <label for="productName">Product Name *</label>
         <input
           id="productName"
           type="text"
           class="admin-products__input"
+          [class.admin-products__input--error]="addErrors.name"
           placeholder="Enter product name"
           name="name"
           [(ngModel)]="addForm.name"
         />
+        <p class="admin-products__field-error" *ngIf="addErrors.name">
+          {{ addErrors.name }}
+        </p>
       </div>
 
-      <!-- Brand -->
       <div class="admin-products__form-group">
-        <label for="productBrand"> Brand </label>
-
+        <label for="productBrand">Brand *</label>
         <input
           id="productBrand"
           type="text"
           class="admin-products__input"
+          [class.admin-products__input--error]="addErrors.brand"
           placeholder="Enter brand name"
           name="brand"
           [(ngModel)]="addForm.brand"
         />
+        <p class="admin-products__field-error" *ngIf="addErrors.brand">
+          {{ addErrors.brand }}
+        </p>
       </div>
 
-      <!-- Category -->
       <div class="admin-products__form-group">
-        <label for="productCategory"> Category </label>
-
+        <label for="productCategory">Category *</label>
         <select
           id="productCategory"
           class="admin-products__input"
+          [class.admin-products__input--error]="addErrors.category"
           name="category"
           [(ngModel)]="addForm.category"
+          (ngModelChange)="onAddCategoryChange()"
         >
           <option value="">Select category</option>
-
           <option *ngFor="let category of categories" [value]="category">
             {{ categoryLabel(category) }}
           </option>
         </select>
+        <p class="admin-products__field-error" *ngIf="addErrors.category">
+          {{ addErrors.category }}
+        </p>
       </div>
 
-      <!-- Price -->
       <div class="admin-products__form-group">
-        <label for="productPrice"> Price </label>
+        <label for="addSubcategory">Subcategory</label>
+        <select
+          id="addSubcategory"
+          class="admin-products__input"
+          name="addSubcategory"
+          [(ngModel)]="addForm.subcategory"
+          [disabled]="!addForm.category"
+        >
+          <option value="">None</option>
+          <option *ngFor="let sub of subcategoriesForAdd" [value]="sub.slug">
+            {{ sub.name }}
+          </option>
+        </select>
+      </div>
 
+      <div class="admin-products__form-group">
+        <label for="productPrice">Price *</label>
         <input
           id="productPrice"
           type="number"
           min="0"
           step="0.01"
           class="admin-products__input"
+          [class.admin-products__input--error]="addErrors.price"
           placeholder="0.00"
           name="price"
           [(ngModel)]="addForm.price"
         />
+        <p class="admin-products__field-error" *ngIf="addErrors.price">
+          {{ addErrors.price }}
+        </p>
       </div>
 
-      <!-- Image -->
       <div class="admin-products__form-group admin-products__form-group--full">
-        <label for="productImage"> Product Image URL </label>
-
+        <label for="productImage">Product Image URL *</label>
         <input
           id="productImage"
           type="text"
           class="admin-products__input"
+          [class.admin-products__input--error]="addErrors.imageUrl"
           placeholder="https://example.com/product-image.jpg"
           name="imageUrl"
           [(ngModel)]="addForm.imageUrl"
         />
+        <p class="admin-products__field-error" *ngIf="addErrors.imageUrl">
+          {{ addErrors.imageUrl }}
+        </p>
+
+        <div
+          class="admin-products__preview"
+          *ngIf="addForm.imageUrl.trim() && isImageUrl(addForm.imageUrl)"
+        >
+          <img
+            [src]="addForm.imageUrl.trim()"
+            alt="Product preview"
+            (error)="onPreviewError($event)"
+          />
+        </div>
       </div>
 
-      <!-- Description -->
       <div class="admin-products__form-group admin-products__form-group--full">
-        <label for="productDescription"> Product Description </label>
+        <div class="admin-products__section-heading">
+          <h3>Collections</h3>
+          <p>Optional groups (Sissy Fitness, Goth Style, etc.).</p>
+        </div>
+        <label
+          class="admin-products__checkbox"
+          *ngFor="let col of storeCollections"
+        >
+          <input
+            type="checkbox"
+            [checked]="addForm.collectionSlugs.includes(col.slug)"
+            (change)="
+              addForm.collectionSlugs = toggleCollectionSlug(
+                addForm.collectionSlugs,
+                col.slug,
+                $any($event.target).checked
+              )
+            "
+          />
+          <span>{{ col.name }}</span>
+        </label>
+      </div>
 
+      <div class="admin-products__form-group admin-products__form-group--full">
+        <label for="productDescription">Product Description *</label>
         <textarea
           id="productDescription"
           class="admin-products__textarea"
+          [class.admin-products__input--error]="addErrors.description"
           rows="6"
           placeholder="Write a description for this product..."
           name="description"
           [(ngModel)]="addForm.description"
         ></textarea>
+        <p class="admin-products__field-error" *ngIf="addErrors.description">
+          {{ addErrors.description }}
+        </p>
       </div>
 
-      <!-- Active -->
       <div class="admin-products__form-group admin-products__form-group--full">
         <label class="admin-products__checkbox">
           <input type="checkbox" name="active" [(ngModel)]="addForm.active" />
-
-          <span> Make this product active immediately </span>
+          <span>Make this product active immediately</span>
         </label>
       </div>
 
-      <!-- Actions -->
       <div class="admin-products__form-actions">
         <button
           type="button"
@@ -156,11 +210,9 @@
         >
           Cancel
         </button>
-
         <button type="submit" class="admin-products__save-btn">
           <i class="fa-solid fa-plus" aria-hidden="true"></i>
-
-          <span> Add Product </span>
+          <span>Add Product</span>
         </button>
       </div>
     </form>
@@ -168,13 +220,12 @@
 
   <!-- =====================================================
        EDIT PRODUCT MODAL
-       ===================================================== -->
+  ====================================================== -->
   <div
     class="admin-products__modal"
     *ngIf="showEditForm"
     (click)="closeEditForm()"
   >
-    <!-- Modal -->
     <div
       class="admin-products__modal-dialog"
       role="dialog"
@@ -182,20 +233,15 @@
       aria-labelledby="editProductTitle"
       (click)="$event.stopPropagation()"
     >
-      <!-- =================================================
-           MODAL HEADER
-           ================================================= -->
       <div class="admin-products__modal-header">
         <div>
           <h2 id="editProductTitle" class="admin-products__modal-title">
             Edit Product
           </h2>
-
           <p class="admin-products__modal-subtitle">
             Update product information, images, variants, and availability.
           </p>
         </div>
-
         <button
           type="button"
           class="admin-products__close-btn"
@@ -206,69 +252,70 @@
         </button>
       </div>
 
-      <!-- =================================================
-           MODAL BODY
-           ================================================= -->
       <div class="admin-products__modal-body">
         <form class="admin-products__form" (ngSubmit)="submitEditForm()">
-          <!-- =================================================
-               BASIC INFORMATION
-               ================================================= -->
-
           <div class="admin-products__form-group">
-            <label for="editName"> Product Name </label>
-
+            <label for="editName">Product Name *</label>
             <input
               id="editName"
               type="text"
               class="admin-products__input"
+              [class.admin-products__input--error]="editErrors.name"
               name="editName"
               [(ngModel)]="editForm.name"
             />
+            <p class="admin-products__field-error" *ngIf="editErrors.name">
+              {{ editErrors.name }}
+            </p>
           </div>
 
           <div class="admin-products__form-group">
-            <label for="editBrand"> Brand </label>
-
+            <label for="editBrand">Brand *</label>
             <input
               id="editBrand"
               type="text"
               class="admin-products__input"
+              [class.admin-products__input--error]="editErrors.brand"
               name="editBrand"
               [(ngModel)]="editForm.brand"
             />
+            <p class="admin-products__field-error" *ngIf="editErrors.brand">
+              {{ editErrors.brand }}
+            </p>
           </div>
 
           <div class="admin-products__form-group">
-            <label for="editCategory"> Category </label>
-
+            <label for="editCategory">Category *</label>
             <select
               id="editCategory"
               class="admin-products__input"
+              [class.admin-products__input--error]="editErrors.category"
               name="editCategory"
               [(ngModel)]="editForm.category"
+              (ngModelChange)="onEditCategoryChange()"
             >
               <option value="">Select category</option>
-
               <option *ngFor="let category of categories" [value]="category">
                 {{ categoryLabel(category) }}
               </option>
             </select>
+            <p class="admin-products__field-error" *ngIf="editErrors.category">
+              {{ editErrors.category }}
+            </p>
           </div>
 
-          <!-- Subcategory -->
           <div class="admin-products__form-group">
-            <label for="productSubcategory">Subcategory</label>
+            <label for="editSubcategory">Subcategory</label>
             <select
-              id="productSubcategory"
+              id="editSubcategory"
               class="admin-products__input"
-              name="subcategory"
-              [(ngModel)]="addForm.subcategory"
-              
+              name="editSubcategory"
+              [(ngModel)]="editForm.subcategory"
+              [disabled]="!editForm.category"
             >
               <option value="">None</option>
               <option
-                *ngFor="let sub of subcategoriesForAdd"
+                *ngFor="let sub of subcategoriesForEdit"
                 [value]="sub.slug"
               >
                 {{ sub.name }}
@@ -276,13 +323,12 @@
             </select>
           </div>
 
-          <!-- Collections -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
             <div class="admin-products__section-heading">
               <h3>Collections</h3>
-              <p>Optional groups (New Arrivals, Featured, etc.).</p>
+              <p>Optional groups (Sissy Fitness, Goth Style, etc.).</p>
             </div>
             <label
               class="admin-products__checkbox"
@@ -290,10 +336,10 @@
             >
               <input
                 type="checkbox"
-                [checked]="addForm.collectionSlugs.includes(col.slug)"
+                [checked]="editForm.collectionSlugs.includes(col.slug)"
                 (change)="
-                  addForm.collectionSlugs = toggleCollectionSlug(
-                    addForm.collectionSlugs,
+                  editForm.collectionSlugs = toggleCollectionSlug(
+                    editForm.collectionSlugs,
                     col.slug,
                     $any($event.target).checked
                   )
@@ -304,26 +350,27 @@
           </div>
 
           <div class="admin-products__form-group">
-            <label for="editPrice"> Price </label>
-
+            <label for="editPrice">Price *</label>
             <input
               id="editPrice"
               type="number"
               min="0"
               step="0.01"
               class="admin-products__input"
+              [class.admin-products__input--error]="editErrors.price"
               name="editPrice"
               [(ngModel)]="editForm.price"
             />
+            <p class="admin-products__field-error" *ngIf="editErrors.price">
+              {{ editErrors.price }}
+            </p>
           </div>
 
           <div class="admin-products__form-group">
             <label for="editOldPrice">
               Compare-at price
-
-              <span class="admin-products__optional"> (optional) </span>
+              <span class="admin-products__optional">(optional)</span>
             </label>
-
             <input
               id="editOldPrice"
               type="number"
@@ -335,27 +382,23 @@
             />
           </div>
 
-          <!-- =================================================
-               DEFAULT GALLERY
-               ================================================= -->
-
+          <!-- Default gallery -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
             <div class="admin-products__section-heading">
               <h3>Default Gallery</h3>
-
               <p>
                 These images are used when no specific product color is
                 selected.
               </p>
             </div>
 
-            <label for="editImages"> Gallery image URLs </label>
-
+            <label for="editImages">Gallery image URLs *</label>
             <textarea
               id="editImages"
               class="admin-products__textarea"
+              [class.admin-products__input--error]="editErrors.images"
               rows="5"
               name="editImages"
               [(ngModel)]="editForm.imageUrlsText"
@@ -363,20 +406,35 @@
 https://example.com/side.jpg
 https://example.com/back.jpg"
             ></textarea>
-
+            <p class="admin-products__field-error" *ngIf="editErrors.images">
+              {{ editErrors.images }}
+            </p>
             <small class="admin-products__help-text">
               Enter one image URL per line.
             </small>
+
+            <div
+              class="admin-products__preview-grid"
+              *ngIf="editGalleryPreviewUrls.length"
+            >
+              <div
+                class="admin-products__preview"
+                *ngFor="let url of editGalleryPreviewUrls"
+              >
+                <img
+                  [src]="url"
+                  alt="Gallery preview"
+                  (error)="onPreviewError($event)"
+                />
+              </div>
+            </div>
           </div>
 
-          <!-- =================================================
-               DESCRIPTION
-               ================================================= -->
+          <!-- Description -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
-            <label for="editDescription"> Product Description </label>
-
+            <label for="editDescription">Product Description</label>
             <quill-editor
               class="admin-products__quill"
               theme="snow"
@@ -387,9 +445,7 @@ https://example.com/back.jpg"
             ></quill-editor>
           </div>
 
-          <!-- =================================================
-               PRODUCT DETAILS (bullets)
-               ================================================= -->
+          <!-- Details -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
@@ -397,7 +453,6 @@ https://example.com/back.jpg"
               <h3>Product details</h3>
               <p>Bullet points shown on the product page (one per line).</p>
             </div>
-
             <label for="editDetails">Detail bullets</label>
             <textarea
               id="editDetails"
@@ -414,9 +469,7 @@ Model wears size S"
             </small>
           </div>
 
-          <!-- =================================================
-               SHIPPING
-               ================================================= -->
+          <!-- Shipping -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
@@ -431,9 +484,7 @@ Model wears size S"
             ></textarea>
           </div>
 
-          <!-- =================================================
-               RETURNS
-               ================================================= -->
+          <!-- Returns -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
@@ -448,23 +499,18 @@ Model wears size S"
             ></textarea>
           </div>
 
-          <!-- =================================================
-               COLORS & GALLERIES
-               ================================================= -->
-
+          <!-- Colors -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
             <div class="admin-products__section-heading">
               <h3>Colors &amp; Galleries</h3>
-
               <p>
                 Add the available colors for this product. Each color can have
                 its own swatch and gallery images.
               </p>
             </div>
 
-            <!-- Color Rows -->
             <div
               *ngFor="let row of editForm.colorRows; let i = index"
               class="admin-products__variant-card"
@@ -473,23 +519,19 @@ Model wears size S"
                 <span class="admin-products__variant-number">
                   Color {{ i + 1 }}
                 </span>
-
                 <button
                   type="button"
                   class="admin-products__remove-btn"
                   (click)="removeColorRow(i)"
                 >
                   <i class="fa-solid fa-trash" aria-hidden="true"></i>
-
-                  <span> Remove </span>
+                  <span>Remove</span>
                 </button>
               </div>
 
               <div class="admin-products__variant-fields">
-                <!-- Color Name -->
                 <div class="admin-products__form-group">
-                  <label [for]="'colorName' + i"> Color Name </label>
-
+                  <label [for]="'colorName' + i">Color Name</label>
                   <input
                     type="text"
                     class="admin-products__input"
@@ -500,10 +542,8 @@ Model wears size S"
                   />
                 </div>
 
-                <!-- Hex -->
                 <div class="admin-products__form-group">
-                  <label [for]="'colorValue' + i"> Hex Value </label>
-
+                  <label [for]="'colorValue' + i">Hex Value</label>
                   <input
                     type="text"
                     class="admin-products__input"
@@ -514,10 +554,8 @@ Model wears size S"
                   />
                 </div>
 
-                <!-- Swatch -->
                 <div class="admin-products__form-group">
-                  <label [for]="'colorImage' + i"> Swatch Image URL </label>
-
+                  <label [for]="'colorImage' + i">Swatch Image URL</label>
                   <input
                     type="text"
                     class="admin-products__input"
@@ -526,55 +564,70 @@ Model wears size S"
                     [name]="'colorImage' + i"
                     [id]="'colorImage' + i"
                   />
+                  <div
+                    class="admin-products__preview"
+                    *ngIf="row.image.trim() && isImageUrl(row.image)"
+                  >
+                    <img
+                      [src]="row.image.trim()"
+                      alt="Swatch preview"
+                      (error)="onPreviewError($event)"
+                    />
+                  </div>
                 </div>
 
-                <!-- Gallery -->
                 <div
                   class="admin-products__form-group admin-products__form-group--full"
                 >
                   <label [for]="'colorGallery' + i">
                     Color Gallery Images
                   </label>
-
                   <textarea
                     class="admin-products__textarea"
                     rows="4"
-                    placeholder="https://example.com/black-front.jpg
-https://example.com/black-side.jpg"
+                    placeholder="One URL per line"
                     [(ngModel)]="row.galleryText"
                     [name]="'colorGallery' + i"
                     [id]="'colorGallery' + i"
                   ></textarea>
-
                   <small class="admin-products__help-text">
                     Enter one gallery image URL per line.
                   </small>
+                  <div
+                    class="admin-products__preview-grid"
+                    *ngIf="previewUrlsFromText(row.galleryText).length"
+                  >
+                    <div
+                      class="admin-products__preview"
+                      *ngFor="let url of previewUrlsFromText(row.galleryText)"
+                    >
+                      <img
+                        [src]="url"
+                        alt="Color gallery preview"
+                        (error)="onPreviewError($event)"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Add Color -->
             <button
               type="button"
               class="admin-products__secondary-btn"
               (click)="addColorRow()"
             >
               <i class="fa-solid fa-plus" aria-hidden="true"></i>
-
-              <span> Add Color </span>
+              <span>Add Color</span>
             </button>
           </div>
 
-          <!-- =================================================
-               SIZES
-               ================================================= -->
-
+          <!-- Sizes -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
             <div class="admin-products__section-heading">
               <h3>Sizes</h3>
-
               <p>Add the sizes available for this product.</p>
             </div>
 
@@ -584,8 +637,7 @@ https://example.com/black-side.jpg"
             >
               <div class="admin-products__option-fields">
                 <div class="admin-products__form-group">
-                  <label [for]="'sizeName' + i"> Name </label>
-
+                  <label [for]="'sizeName' + i">Name</label>
                   <input
                     type="text"
                     class="admin-products__input"
@@ -595,10 +647,8 @@ https://example.com/black-side.jpg"
                     [id]="'sizeName' + i"
                   />
                 </div>
-
                 <div class="admin-products__form-group">
-                  <label [for]="'sizeValue' + i"> Value </label>
-
+                  <label [for]="'sizeValue' + i">Value</label>
                   <input
                     type="text"
                     class="admin-products__input"
@@ -609,15 +659,13 @@ https://example.com/black-side.jpg"
                   />
                 </div>
               </div>
-
               <button
                 type="button"
                 class="admin-products__remove-btn"
                 (click)="removeSizeRow(i)"
               >
                 <i class="fa-solid fa-trash" aria-hidden="true"></i>
-
-                <span> Remove </span>
+                <span>Remove</span>
               </button>
             </div>
 
@@ -627,21 +675,16 @@ https://example.com/black-side.jpg"
               (click)="addSizeRow()"
             >
               <i class="fa-solid fa-plus" aria-hidden="true"></i>
-
-              <span> Add Size </span>
+              <span>Add Size</span>
             </button>
           </div>
 
-          <!-- =================================================
-               LENGTHS
-               ================================================= -->
-
+          <!-- Lengths -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
             <div class="admin-products__section-heading">
               <h3>Lengths</h3>
-
               <p>
                 Add length options when the product supports different lengths.
               </p>
@@ -653,8 +696,7 @@ https://example.com/black-side.jpg"
             >
               <div class="admin-products__option-fields">
                 <div class="admin-products__form-group">
-                  <label [for]="'lengthName' + i"> Name </label>
-
+                  <label [for]="'lengthName' + i">Name</label>
                   <input
                     type="text"
                     class="admin-products__input"
@@ -664,10 +706,8 @@ https://example.com/black-side.jpg"
                     [id]="'lengthName' + i"
                   />
                 </div>
-
                 <div class="admin-products__form-group">
-                  <label [for]="'lengthValue' + i"> Value </label>
-
+                  <label [for]="'lengthValue' + i">Value</label>
                   <input
                     type="text"
                     class="admin-products__input"
@@ -678,15 +718,13 @@ https://example.com/black-side.jpg"
                   />
                 </div>
               </div>
-
               <button
                 type="button"
                 class="admin-products__remove-btn"
                 (click)="removeLengthRow(i)"
               >
                 <i class="fa-solid fa-trash" aria-hidden="true"></i>
-
-                <span> Remove </span>
+                <span>Remove</span>
               </button>
             </div>
 
@@ -696,15 +734,11 @@ https://example.com/black-side.jpg"
               (click)="addLengthRow()"
             >
               <i class="fa-solid fa-plus" aria-hidden="true"></i>
-
-              <span> Add Length </span>
+              <span>Add Length</span>
             </button>
           </div>
 
-          <!-- =================================================
-               ACTIVE STATUS
-               ================================================= -->
-
+          <!-- Active -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
@@ -714,14 +748,9 @@ https://example.com/black-side.jpg"
                 name="editActive"
                 [(ngModel)]="editForm.active"
               />
-
-              <span> Active — make this product visible on the shop </span>
+              <span>Active — make this product visible on the shop</span>
             </label>
           </div>
-
-          <!-- =================================================
-               EDIT ACTIONS
-               ================================================= -->
 
           <div class="admin-products__form-actions">
             <button
@@ -731,11 +760,9 @@ https://example.com/black-side.jpg"
             >
               Cancel
             </button>
-
             <button type="submit" class="admin-products__save-btn">
               <i class="fa-solid fa-check" aria-hidden="true"></i>
-
-              <span> Save Changes </span>
+              <span>Save Changes</span>
             </button>
           </div>
         </form>
@@ -744,8 +771,8 @@ https://example.com/black-side.jpg"
   </div>
 
   <!-- =====================================================
-     DELETE PRODUCT MODAL
-====================================================== -->
+       DELETE PRODUCT MODAL
+  ====================================================== -->
   <div
     class="admin-products__delete-modal"
     *ngIf="showDeleteModal"
@@ -758,29 +785,21 @@ https://example.com/black-side.jpg"
       aria-labelledby="deleteProductTitle"
       (click)="$event.stopPropagation()"
     >
-      <!-- Icon -->
       <div class="admin-products__delete-icon">
         <i class="fa-solid fa-trash" aria-hidden="true"></i>
       </div>
-
-      <!-- Content -->
       <div class="admin-products__delete-content">
         <h2 id="deleteProductTitle" class="admin-products__delete-title">
           Delete Product?
         </h2>
-
         <p class="admin-products__delete-message">
           Are you sure you want to delete
-          <strong>{{ productToDelete?.name }}</strong
-          >?
+          <strong>{{ productToDelete?.name }}</strong>?
         </p>
-
         <p class="admin-products__delete-warning">
           This action cannot be undone.
         </p>
       </div>
-
-      <!-- Actions -->
       <div class="admin-products__delete-actions">
         <button
           type="button"
@@ -789,14 +808,12 @@ https://example.com/black-side.jpg"
         >
           Cancel
         </button>
-
         <button
           type="button"
           class="admin-products__delete-confirm-btn"
           (click)="confirmDelete()"
         >
           <i class="fa-solid fa-trash" aria-hidden="true"></i>
-
           <span>Delete Product</span>
         </button>
       </div>
@@ -805,71 +822,52 @@ https://example.com/black-side.jpg"
 
   <!-- =====================================================
        PRODUCT SUMMARY
-       ===================================================== -->
-
+  ====================================================== -->
   <div class="admin-products__summary">
     <div class="row g-4">
-      <!-- Total -->
       <div class="col-12 col-sm-6 col-xl-3">
         <div class="admin-products__summary-card">
           <div class="admin-products__summary-icon">
             <i class="fa-solid fa-box" aria-hidden="true"></i>
           </div>
-
           <div class="admin-products__summary-content">
-            <span class="admin-products__summary-label"> Total Products </span>
-
-            <h3 class="admin-products__summary-value">
-              {{ totalCount }}
-            </h3>
+            <span class="admin-products__summary-label">Total Products</span>
+            <h3 class="admin-products__summary-value">{{ totalCount }}</h3>
           </div>
         </div>
       </div>
 
-      <!-- Active -->
       <div class="col-12 col-sm-6 col-xl-3">
         <div class="admin-products__summary-card">
           <div class="admin-products__summary-icon">
             <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
           </div>
-
           <div class="admin-products__summary-content">
-            <span class="admin-products__summary-label"> Active Products </span>
-
-            <h3 class="admin-products__summary-value">
-              {{ activeCount }}
-            </h3>
+            <span class="admin-products__summary-label">Active Products</span>
+            <h3 class="admin-products__summary-value">{{ activeCount }}</h3>
           </div>
         </div>
       </div>
 
-      <!-- Inactive -->
       <div class="col-12 col-sm-6 col-xl-3">
         <div class="admin-products__summary-card">
           <div class="admin-products__summary-icon">
             <i class="fa-solid fa-box-open" aria-hidden="true"></i>
           </div>
-
           <div class="admin-products__summary-content">
-            <span class="admin-products__summary-label"> Inactive </span>
-
-            <h3 class="admin-products__summary-value">
-              {{ inactiveCount }}
-            </h3>
+            <span class="admin-products__summary-label">Inactive</span>
+            <h3 class="admin-products__summary-value">{{ inactiveCount }}</h3>
           </div>
         </div>
       </div>
 
-      <!-- Low Stock -->
       <div class="col-12 col-sm-6 col-xl-3">
         <div class="admin-products__summary-card">
           <div class="admin-products__summary-icon">
             <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
           </div>
-
           <div class="admin-products__summary-content">
-            <span class="admin-products__summary-label"> Low Stock </span>
-
+            <span class="admin-products__summary-label">Low Stock</span>
             <h3 class="admin-products__summary-value">0</h3>
           </div>
         </div>
@@ -879,29 +877,20 @@ https://example.com/black-side.jpg"
 
   <!-- =====================================================
        PRODUCTS MANAGEMENT
-       ===================================================== -->
-
+  ====================================================== -->
   <section class="admin-products__content">
-    <!-- Content Header -->
     <div class="admin-products__content-header">
       <div>
         <h2 class="admin-products__content-title">All Products</h2>
-
         <p class="admin-products__content-subtitle">
           View and manage all products in your store.
         </p>
       </div>
     </div>
 
-    <!-- =================================================
-         TOOLBAR
-         ================================================= -->
-
     <div class="admin-products__toolbar">
-      <!-- Search -->
       <div class="admin-products__search">
         <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-
         <input
           type="text"
           class="admin-products__search-input"
@@ -910,70 +899,77 @@ https://example.com/black-side.jpg"
         />
       </div>
 
-      <!-- Filters -->
       <div class="admin-products__filters">
-        <select class="admin-products__select" [(ngModel)]="categoryFilter">
+        <select
+          class="admin-products__select"
+          [(ngModel)]="categoryFilter"
+          (ngModelChange)="onCategoryFilterChange()"
+        >
           <option value="">All Categories</option>
-
           <option *ngFor="let cat of categories" [value]="cat">
             {{ categoryLabel(cat) }}
           </option>
         </select>
 
+        <select
+          class="admin-products__select"
+          [(ngModel)]="subcategoryFilter"
+          [disabled]="!categoryFilter || !subcategoriesForFilter.length"
+        >
+          <option value="">All Subcategories</option>
+          <option *ngFor="let sub of subcategoriesForFilter" [value]="sub.slug">
+            {{ sub.name }}
+          </option>
+        </select>
+
+        <select class="admin-products__select" [(ngModel)]="collectionFilter">
+          <option value="">All Collections</option>
+          <option *ngFor="let col of storeCollections" [value]="col.slug">
+            {{ col.name }}
+          </option>
+        </select>
+
         <select class="admin-products__select" [(ngModel)]="statusFilter">
           <option value="">All Status</option>
-
           <option value="active">Active</option>
-
           <option value="inactive">Inactive</option>
         </select>
       </div>
     </div>
-
-    <!-- =================================================
-         PRODUCT TABLE
-         ================================================= -->
 
     <div class="admin-products__table-wrapper">
       <table class="admin-products__table">
         <thead>
           <tr>
             <th>Product</th>
-
             <th>Brand</th>
-
-            <th>Category</th>
-
+            <th>Catalog</th>
             <th>Price</th>
-
             <th>Stock</th>
-
             <th>Status</th>
-
             <th class="admin-products__actions-heading">Actions</th>
           </tr>
         </thead>
 
         <tbody>
-          <!-- Empty State -->
           <tr *ngIf="!filteredProducts.length">
             <td colspan="7" class="text-center py-4">No products found.</td>
           </tr>
 
-          <!-- Products -->
           <tr *ngFor="let product of filteredProducts">
-            <!-- Product -->
             <td>
               <div class="admin-products__product">
                 <div class="admin-products__image">
-                  <img [src]="product.images[0]" [alt]="product.name" />
+                  <img
+                    [src]="product.images[0]"
+                    [alt]="product.name"
+                    (error)="onPreviewError($event)"
+                  />
                 </div>
-
                 <div class="admin-products__product-info">
                   <span class="admin-products__product-name">
                     {{ product.name }}
                   </span>
-
                   <span class="admin-products__product-id">
                     #{{ product.id }}
                   </span>
@@ -981,23 +977,36 @@ https://example.com/black-side.jpg"
               </div>
             </td>
 
-            <!-- Brand -->
+            <td>{{ product.brand }}</td>
+
             <td>
-              {{ product.brand }}
+              <div class="admin-products__catalog">
+                <span class="admin-products__catalog-category">
+                  {{ categoryLabel(product.category) }}
+                </span>
+                <span
+                  class="admin-products__catalog-sub"
+                  *ngIf="product.subcategory"
+                >
+                  {{ subcategoryLabel(product.subcategory) }}
+                </span>
+                <div
+                  class="admin-products__catalog-collections"
+                  *ngIf="product.collections?.length"
+                >
+                  <span
+                    class="admin-products__chip"
+                    *ngFor="let col of product.collections"
+                  >
+                    {{ col.name }}
+                  </span>
+                </div>
+              </div>
             </td>
 
-            <!-- Category -->
-            <td>
-              {{ categoryLabel(product.category) }}
-            </td>
-
-            <!-- Price -->
-            <td>${{ product.price | number: "1.2-2" }}</td>
-
-            <!-- Stock -->
+            <td>${{ product.price | number: '1.2-2' }}</td>
             <td>—</td>
 
-            <!-- Status -->
             <td>
               <button
                 type="button"
@@ -1006,14 +1015,12 @@ https://example.com/black-side.jpg"
                 [class.admin-products__status--draft]="!product.active"
                 (click)="toggleActive(product)"
               >
-                {{ product.active ? "Active" : "Inactive" }}
+                {{ product.active ? 'Active' : 'Inactive' }}
               </button>
             </td>
 
-            <!-- Actions -->
             <td>
               <div class="admin-products__actions">
-                <!-- Edit -->
                 <button
                   type="button"
                   class="admin-products__action-btn admin-products__action-btn--edit"
@@ -1022,13 +1029,11 @@ https://example.com/black-side.jpg"
                 >
                   <i class="fa-solid fa-pen" aria-hidden="true"></i>
                 </button>
-
-                <!-- Delete -->
                 <button
                   type="button"
                   class="admin-products__action-btn admin-products__action-btn--delete"
-                  [attr.aria-label]="'Delete ' + product.name"
                   (click)="openDeleteModal(product)"
+                  [attr.aria-label]="'Delete ' + product.name"
                 >
                   <i class="fa-solid fa-trash" aria-hidden="true"></i>
                 </button>
@@ -1039,17 +1044,9 @@ https://example.com/black-side.jpg"
       </table>
     </div>
 
-    <!-- =================================================
-         RESULTS
-         ================================================= -->
-
     <div class="admin-products__footer" *ngIf="products.length">
       <p class="admin-products__results">
-        Showing
-        {{ filteredProducts.length }}
-        of
-        {{ products.length }}
-        products
+        Showing {{ filteredProducts.length }} of {{ products.length }} products
       </p>
     </div>
   </section>
