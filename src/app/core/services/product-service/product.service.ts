@@ -78,7 +78,7 @@ export class ProductService {
    */
   setProductActive(productId: string, active: boolean): void {
     const products = this.productsSource.value.map((product) =>
-      product.id === productId ? { ...product, active } : product
+      product.id === productId ? { ...product, active } : product,
     );
 
     this.setProducts(products);
@@ -109,11 +109,12 @@ export class ProductService {
     imageUrl: string;
     description: string;
     active?: boolean;
+    stock?: number;
   }): Product {
     const name = input.name.trim();
     const subcategory = this.normalizeSubcategory(
       input.category,
-      input.subcategory
+      input.subcategory,
     );
 
     const product: Product = {
@@ -135,6 +136,8 @@ export class ProductService {
       rating: 0,
       reviewCount: 0,
       active: input.active ?? true,
+      stock: input.stock ?? 0,
+
       createdAt: new Date().toISOString(),
     };
 
@@ -187,7 +190,7 @@ export class ProductService {
     };
 
     const products = this.productsSource.value.map((p) =>
-      p.id === productId ? updated : p
+      p.id === productId ? updated : p,
     );
 
     this.setProducts(products);
@@ -209,7 +212,7 @@ export class ProductService {
     }
 
     const updatedProducts = products.filter(
-      (product) => product.id !== productId
+      (product) => product.id !== productId,
     );
 
     this.setProducts(updatedProducts);
@@ -234,8 +237,8 @@ export class ProductService {
       (product) =>
         product.active &&
         product.collections?.some(
-          (collection) => collection.slug === collectionSlug
-        )
+          (collection) => collection.slug === collectionSlug,
+        ),
     );
   }
 
@@ -249,7 +252,7 @@ export class ProductService {
         (product) =>
           product.active &&
           product.oldPrice != null &&
-          product.oldPrice > product.price
+          product.oldPrice > product.price,
       )
       .slice(0, limit);
   }
@@ -259,22 +262,21 @@ export class ProductService {
       (item) =>
         item.active &&
         item.id !== product.id &&
-        item.category === product.category
+        item.category === product.category,
     );
 
     const sameSubcategory = sameCategory.filter(
-      (item) => item.subcategory === product.subcategory
+      (item) => item.subcategory === product.subcategory,
     );
 
-    let pool =
-      sameSubcategory.length >= limit ? sameSubcategory : sameCategory;
+    let pool = sameSubcategory.length >= limit ? sameSubcategory : sameCategory;
 
     if (pool.length < limit) {
       const others = this.productsSource.value.filter(
         (item) =>
           item.active &&
           item.id !== product.id &&
-          !pool.some((p) => p.id === item.id)
+          !pool.some((p) => p.id === item.id),
       );
       pool = [...pool, ...others];
     }
@@ -284,14 +286,103 @@ export class ProductService {
 
   getProductsByCategory(category: Category): Product[] {
     return this.productsSource.value.filter(
-      (product) => product.active && product.category === category
+      (product) => product.active && product.category === category,
     );
   }
 
   getProductsBySubcategory(subcategory: string): Product[] {
     return this.productsSource.value.filter(
-      (product) => product.active && product.subcategory === subcategory
+      (product) => product.active && product.subcategory === subcategory,
     );
+  }
+
+  // ============================================================
+  // STOCK
+  // ============================================================
+
+  /**
+   * True when the product can be sold (at least 1 unit).
+   * Storefront uses this for "Out of stock" UI.
+   */
+  isInStock(product: Product): boolean {
+    return product.stock > 0;
+  }
+
+  /**
+   * Units available to buy right now.
+   * Never returns negative.
+   */
+  getAvailableStock(product: Product): number {
+    return Math.max(0, product.stock);
+  }
+
+  /**
+   * Clamp a requested quantity to what is actually available.
+   * Example: stock 3, request 10 → 3
+   */
+  clampQuantityToStock(product: Product, quantity: number): number {
+    if (quantity < 1) {
+      return 0;
+    }
+
+    return Math.min(quantity, this.getAvailableStock(product));
+  }
+
+  /**
+   * Decrease stock after a successful order.
+   * Returns false if product missing or not enough stock.
+   *
+   * Why here?
+   * One place owns inventory rules + localStorage persistence
+   * (via setProducts).
+   */
+  reduceStock(productId: string, quantity: number): boolean {
+    if (quantity < 1) {
+      return false;
+    }
+
+    const current = this.productsSource.value.find((p) => p.id === productId);
+
+    if (!current) {
+      return false;
+    }
+
+    if (current.stock < quantity) {
+      return false;
+    }
+
+    const products = this.productsSource.value.map((product) =>
+      product.id === productId
+        ? { ...product, stock: product.stock - quantity }
+        : product,
+    );
+
+    this.setProducts(products);
+    return true;
+  }
+
+  /**
+   * Optional: put stock back (e.g. cancelled order).
+   */
+  restoreStock(productId: string, quantity: number): boolean {
+    if (quantity < 1) {
+      return false;
+    }
+
+    const current = this.productsSource.value.find((p) => p.id === productId);
+
+    if (!current) {
+      return false;
+    }
+
+    const products = this.productsSource.value.map((product) =>
+      product.id === productId
+        ? { ...product, stock: product.stock + quantity }
+        : product,
+    );
+
+    this.setProducts(products);
+    return true;
   }
 
   /**
@@ -375,7 +466,11 @@ export class ProductService {
         return [...PRODUCTS];
       }
 
-      return parsed;
+      // Ensure every product has a numeric stock
+      return parsed.map((product) => ({
+        ...product,
+        stock: typeof product.stock === 'number' ? product.stock : 0,
+      }));
     } catch {
       return [...PRODUCTS];
     }
@@ -395,7 +490,7 @@ export class ProductService {
    */
   private normalizeSubcategory(
     category: Category,
-    subcategory?: string | null
+    subcategory?: string | null,
   ): string | undefined {
     const slug = subcategory?.trim();
 
@@ -404,7 +499,7 @@ export class ProductService {
     }
 
     const isValid = SUBCATEGORIES.some(
-      (sub) => sub.slug === slug && sub.category === category
+      (sub) => sub.slug === slug && sub.category === category,
     );
 
     return isValid ? slug : undefined;
@@ -420,7 +515,7 @@ export class ProductService {
 
   private applyFilters(
     products: Product[],
-    filters: ProductFilters
+    filters: ProductFilters,
   ): Product[] {
     let result = products.filter((product) => product.active);
 
@@ -428,26 +523,26 @@ export class ProductService {
       const term = filters.search.trim().toLowerCase();
 
       result = result.filter((product) =>
-        this.matchesSearchTerm(product, term)
+        this.matchesSearchTerm(product, term),
       );
     }
 
     if (filters.category) {
       result = result.filter(
-        (product) => product.category === filters.category
+        (product) => product.category === filters.category,
       );
     }
 
     if (filters.subcategory) {
       result = result.filter(
-        (product) => product.subcategory === filters.subcategory
+        (product) => product.subcategory === filters.subcategory,
       );
     }
 
     if (filters.brand) {
       result = result.filter(
         (product) =>
-          product.brand.toLowerCase() === filters.brand!.toLowerCase()
+          product.brand.toLowerCase() === filters.brand!.toLowerCase(),
       );
     }
 
@@ -458,8 +553,8 @@ export class ProductService {
     if (filters.collection) {
       result = result.filter((product) =>
         product.collections?.some(
-          (collection) => collection.slug === filters.collection
-        )
+          (collection) => collection.slug === filters.collection,
+        ),
       );
     }
 
@@ -534,7 +629,7 @@ export class ProductService {
     const inCollections = !!product.collections?.some(
       (collection) =>
         collection.name.toLowerCase().includes(term) ||
-        collection.slug.toLowerCase().includes(term)
+        collection.slug.toLowerCase().includes(term),
     );
 
     return (

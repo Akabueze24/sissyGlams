@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { CartItem } from 'src/app/core/models/cart-models/cart.model';
-
 import { CheckoutData } from 'src/app/core/models/checkout-models/checkout.model';
 import { Country } from 'src/app/core/models/checkout-models/country.model';
 import { ShippingQuote } from 'src/app/core/models/checkout-models/shippingQuote.model';
-
 import { COUNTRIES } from 'src/app/core/models/checkout-models/data/country.data';
 
 import { CartService } from 'src/app/core/services/cart-service/cart.service';
 import { CheckoutService } from 'src/app/core/services/checkout-service/checkout.service';
-import { Router } from '@angular/router';
 import { OrderService } from 'src/app/core/services/order-service/order.service';
 import { AuthService } from 'src/app/core/services/auth-service/auth.service';
+import { ProductService } from 'src/app/core/services/product-service/product.service';
+import { ToastService } from 'src/app/core/services/toast-service/toast.service';
 
 @Component({
   selector: 'app-checkout',
@@ -38,7 +38,6 @@ export class CheckoutComponent implements OnInit {
   // ============================================================
 
   cartItems: CartItem[] = [];
-
   subtotal = 0;
 
   // ============================================================
@@ -46,7 +45,6 @@ export class CheckoutComponent implements OnInit {
   // ============================================================
 
   shippingQuote: ShippingQuote | null = null;
-
   shippingCost: number | null = null;
 
   // ============================================================
@@ -54,12 +52,6 @@ export class CheckoutComponent implements OnInit {
   // ============================================================
 
   total: number | null = null;
-
-  // ============================================================
-  // CURRENCY
-  // ============================================================
-
-  shippingCurrency = '$';
 
   // ============================================================
   // CONSTRUCTOR
@@ -70,43 +62,32 @@ export class CheckoutComponent implements OnInit {
     private cartService: CartService,
     private checkoutService: CheckoutService,
     private orderService: OrderService,
+    private productService: ProductService,
     private authService: AuthService,
-    private router: Router,
+    private toastService: ToastService,
+    private router: Router
   ) {}
 
   // ============================================================
-  // INITIALIZE
+  // LIFECYCLE
   // ============================================================
 
   ngOnInit(): void {
     this.createCheckoutForm();
-
     this.prefillFromUser();
 
+    // Align cart with stock before checkout UI
+    this.cartService.syncQuantitiesWithStock();
+
     this.loadCart();
-
     this.watchCountryChanges();
-
     this.watchShippingChanges();
-
     this.watchPaymentChanges();
-
     this.loadShippingQuote(this.checkoutForm.get('country')?.value);
   }
 
-  private prefillFromUser(): void {
-  const user = this.authService.getCurrentUser();
-  if (!user) return;
-
-  this.checkoutForm.patchValue({
-    email: user.email || '',
-    firstName: user.firstName || '',
-    lastName: user.lastName || '',
-  });
-}
-
   // ============================================================
-  // CREATE CHECKOUT FORM
+  // FORM SETUP
   // ============================================================
 
   private createCheckoutForm(): void {
@@ -181,36 +162,44 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+  private prefillFromUser(): void {
+    const user = this.authService.getCurrentUser();
+
+    if (!user) {
+      return;
+    }
+
+    this.checkoutForm.patchValue({
+      email: user.email || '',
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
+    });
+  }
+
   // ============================================================
-  // LOAD CART
+  // CART
   // ============================================================
 
   private loadCart(): void {
     this.cartService.cartItems$.subscribe((items) => {
       this.cartItems = items;
 
-      // Guard: no items → leave checkout
       if (!items.length) {
         this.router.navigate(['/cart']);
         return;
       }
 
       this.calculateSubtotal();
-
       this.calculateTotal();
     });
   }
-
-  // ============================================================
-  // CALCULATE SUBTOTAL
-  // ============================================================
 
   private calculateSubtotal(): void {
     this.subtotal = this.checkoutService.calculateSubtotal(this.cartItems);
   }
 
   // ============================================================
-  // WATCH COUNTRY
+  // SHIPPING
   // ============================================================
 
   private watchCountryChanges(): void {
@@ -218,97 +207,43 @@ export class CheckoutComponent implements OnInit {
       .get('country')
       ?.valueChanges.subscribe((countryCode: string) => {
         this.loadShippingQuote(countryCode);
-
         this.saveCheckoutPreferences();
       });
   }
 
-  // ============================================================
-  // LOAD SHIPPING QUOTE
-  // ============================================================
-
   private loadShippingQuote(countryCode: string): void {
     this.shippingQuote = this.checkoutService.getShippingQuote(countryCode);
-
     this.updateShippingCost();
   }
-
-  // ============================================================
-  // WATCH SHIPPING METHOD
-  // ============================================================
 
   private watchShippingChanges(): void {
     this.checkoutForm.get('shippingMethod')?.valueChanges.subscribe(() => {
       this.updateShippingCost();
-
       this.saveCheckoutPreferences();
     });
   }
-
-  // ============================================================
-  // UPDATE SHIPPING COST
-  // ============================================================
 
   private updateShippingCost(): void {
     const shippingMethod = this.checkoutForm.get('shippingMethod')?.value;
 
     this.shippingCost = this.checkoutService.getShippingCost(
       shippingMethod,
-      this.shippingQuote,
+      this.shippingQuote
     );
 
     this.calculateTotal();
   }
 
-  // ============================================================
-  // CALCULATE TOTAL
-  // ============================================================
-
   private calculateTotal(): void {
     this.total = this.checkoutService.calculateTotal(
       this.subtotal,
-      this.shippingCost,
+      this.shippingCost
     );
   }
 
   // ============================================================
-  // CHECKOUT DATA
+  // PREFERENCES
   // ============================================================
-
-  private getCheckoutData(): CheckoutData {
-    return this.checkoutForm.value as CheckoutData;
-  }
-
-  // ============================================================
-  // SUBMIT CHECKOUT
-  // ============================================================
-
-  submitCheckout(): void {
-    if (this.checkoutForm.invalid) {
-      this.checkoutForm.markAllAsTouched();
-      return;
-    }
-
-    if (this.shippingCost === null || this.total === null) {
-      return;
-    }
-
-    const checkoutData = this.getCheckoutData();
-
-    const order = this.checkoutService.createOrder(
-      checkoutData,
-      this.cartItems,
-      this.subtotal,
-      this.shippingCost,
-      this.total,
-    );
-
-    this.orderService.saveOrder(order);
-    this.cartService.clearCart();
-    console.log('Order created:', order);
-
-    this.router.navigate(['/order-confirmation']);
-  }
 
   private watchPaymentChanges(): void {
     this.checkoutForm.get('paymentMethod')?.valueChanges.subscribe(() => {
@@ -325,7 +260,87 @@ export class CheckoutComponent implements OnInit {
   }
 
   // ============================================================
-  // SHIPPING DISPLAY VALUES
+  // SUBMIT
+  // ============================================================
+
+  private getCheckoutData(): CheckoutData {
+    return this.checkoutForm.value as CheckoutData;
+  }
+
+  /**
+   * Place order flow:
+   * 1. Validate form + shipping/total
+   * 2. Sync cart to live stock
+   * 3. Final stock check
+   * 4. Create + save order
+   * 5. Reduce stock per line
+   * 6. Clear cart → confirmation
+   */
+  submitCheckout(): void {
+    if (this.checkoutForm.invalid) {
+      this.checkoutForm.markAllAsTouched();
+      return;
+    }
+
+    if (this.shippingCost === null || this.total === null) {
+      this.toastService.info('Please select a country and shipping method.');
+      return;
+    }
+
+    // Align quantities with current catalog stock
+    this.cartService.syncQuantitiesWithStock();
+
+    const items = this.cartService.getCartItems();
+
+    if (!items.length) {
+      this.toastService.info('Your cart is empty or items are out of stock.');
+      this.router.navigate(['/cart']);
+      return;
+    }
+
+    // Final stock check — abort if anything is short
+    for (const item of items) {
+      const product = this.productService.getProductById(item.product.id);
+      const available = product
+        ? this.productService.getAvailableStock(product)
+        : 0;
+
+      if (item.quantity > available) {
+        this.toastService.info(
+          `Not enough stock for "${item.product.name}". Please update your cart.`
+        );
+        this.router.navigate(['/cart']);
+        return;
+      }
+    }
+
+    const subtotal = this.checkoutService.calculateSubtotal(items);
+    const total =
+      this.checkoutService.calculateTotal(subtotal, this.shippingCost) ??
+      this.total;
+
+    const order = this.checkoutService.createOrder(
+      this.getCheckoutData(),
+      items,
+      subtotal,
+      this.shippingCost,
+      total
+    );
+
+    // Persist order first
+    this.orderService.saveOrder(order);
+
+    // Then reduce inventory
+    for (const item of items) {
+      this.productService.reduceStock(item.product.id, item.quantity);
+    }
+
+    this.cartService.clearCart();
+    this.router.navigate(['/order-confirmation']);
+  }
+
+  // ============================================================
+  // TEMPLATE HELPERS
   // ============================================================
 
   get standardShipping(): number | null {

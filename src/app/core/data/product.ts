@@ -131,6 +131,7 @@ export const PRODUCTS: Product[] = [
     createdAt: '2026-08-20T10:30:00.000Z',
 
     active: true,
+    stock: 30,
   },
 
   // ------------------------------------------------------------
@@ -235,6 +236,7 @@ export const PRODUCTS: Product[] = [
     createdAt: '2026-08-20T10:30:00.000Z',
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -350,6 +352,7 @@ export const PRODUCTS: Product[] = [
 
     createdAt: '2026-08-20T10:30:00.000Z',
     active: true,
+    stock: 3,
   },
 
   // ------------------------------------------------------------
@@ -451,6 +454,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -556,6 +560,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -659,6 +664,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -767,6 +773,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -870,6 +877,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -975,6 +983,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1080,6 +1089,7 @@ export const PRODUCTS: Product[] = [
     createdAt: '2026-08-20T10:30:00.000Z',
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1195,6 +1205,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1291,6 +1302,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1392,6 +1404,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1463,6 +1476,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1559,6 +1573,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1607,6 +1622,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1656,6 +1672,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Best Sellers', slug: 'best-sellers' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1710,6 +1727,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Featured', slug: 'featured' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1758,6 +1776,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1807,6 +1826,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1856,6 +1876,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Best Sellers', slug: 'best-sellers' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1904,6 +1925,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Featured', slug: 'featured' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -1956,6 +1978,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2005,6 +2028,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2050,6 +2074,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2099,6 +2124,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2147,6 +2173,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Best Sellers', slug: 'best-sellers' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2203,6 +2230,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2255,6 +2283,7 @@ export const PRODUCTS: Product[] = [
     ],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2301,6 +2330,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2341,6 +2371,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Best Sellers', slug: 'best-sellers' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2381,6 +2412,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2422,6 +2454,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Featured', slug: 'featured' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2462,6 +2495,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2502,6 +2536,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'BBC Addiction', slug: 'bbc-addiction' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2542,6 +2577,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Best Sellers', slug: 'best-sellers' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2582,6 +2618,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Featured', slug: 'featured' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2622,6 +2659,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2662,6 +2700,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Best Sellers', slug: 'best-sellers' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2702,6 +2741,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2742,6 +2782,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Featured', slug: 'featured' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2783,6 +2824,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Best Sellers', slug: 'best-sellers' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2823,6 +2865,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2863,6 +2906,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Featured', slug: 'featured' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2903,6 +2947,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2944,6 +2989,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Goth Style', slug: 'goth-style' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -2985,6 +3031,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -3026,6 +3073,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Best Sellers', slug: 'best-sellers' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -3067,6 +3115,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Goth Style', slug: 'goth-style' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -3108,6 +3157,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -3149,6 +3199,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Featured', slug: 'featured' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -3196,6 +3247,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -3237,6 +3289,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Lolita Fashion', slug: 'lolita-fashion' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -3278,6 +3331,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Best Sellers', slug: 'best-sellers' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -3319,6 +3373,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 2,
   },
 
   // ============================================================
@@ -3366,6 +3421,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: true,
+    stock: 30,
   },
 
   // ------------------------------------------------------------
@@ -3410,6 +3466,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Sissy Cosplay', slug: 'sissy-cosplay' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -3459,6 +3516,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Best Sellers', slug: 'best-sellers' }],
 
     active: true,
+    stock: 30,
   },
 
   // ------------------------------------------------------------
@@ -3507,6 +3565,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Featured', slug: 'featured' }],
 
     active: true,
+    stock: 30,
   },
 
   // ============================================================
@@ -3543,6 +3602,7 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'New Arrivals', slug: 'new-arrivals' }],
 
     active: false,
+    stock: 30
   },
 
   // ------------------------------------------------------------
@@ -3577,5 +3637,6 @@ export const PRODUCTS: Product[] = [
     collections: [{ name: 'Feminize Your Space', slug: 'feminize-your-space' }],
 
     active: false,
+    stock: 30
   },
 ];

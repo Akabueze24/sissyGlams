@@ -151,6 +151,29 @@
     }
   }
 
+  &__clear-filters {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+
+    padding: 0.5rem 0.85rem;
+    border: 1px solid $color-border;
+    border-radius: 0.45rem;
+    background: $color-white;
+    color: $color-text-muted;
+
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $brand-pink;
+      color: $brand-pink;
+    }
+  }
+
   // =========================================================
   // ADD PRODUCT FORM
   // =========================================================

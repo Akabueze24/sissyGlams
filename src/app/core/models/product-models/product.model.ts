@@ -86,6 +86,7 @@ export interface Product {
   // ========================================
 
   active: boolean;
+  stock: number
 
   createdAt?: string;
 }

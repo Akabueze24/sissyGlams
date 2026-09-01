@@ -1,5 +1,4 @@
 <main class="cart-page container-fluid">
-
   <!-- Breadcrumb -->
   <nav aria-label="breadcrumb" class="cart-page__breadcrumb-nav">
     <ol class="breadcrumb">
@@ -7,18 +6,14 @@
         <a routerLink="/">Home</a>
       </li>
 
-      <li class="breadcrumb-item active" aria-current="page">
-        Cart
-      </li>
+      <li class="breadcrumb-item active" aria-current="page">Cart</li>
     </ol>
   </nav>
 
   <!-- Page header -->
   <header class="cart-page__header">
     <h1 class="cart-page__title">Shopping Bag</h1>
-    <p class="cart-page__subtitle">
-      Review your items before checkout.
-    </p>
+    <p class="cart-page__subtitle">Review your items before checkout.</p>
   </header>
 
   <!-- ============================================================
@@ -29,58 +24,32 @@
     *ngIf="cartItems.length === 0"
     aria-label="Empty shopping bag"
   >
-    <i
-      class="fa-solid fa-bag-shopping cart-empty__icon"
-      aria-hidden="true"
-    ></i>
+    <i class="fa-solid fa-bag-shopping cart-empty__icon" aria-hidden="true"></i>
 
-    <h2 class="cart-empty__title">
-      Your Shopping Bag Is Empty
-    </h2>
+    <h2 class="cart-empty__title">Your Shopping Bag Is Empty</h2>
 
-    <p class="cart-empty__text">
-      You haven't added anything to your bag yet.
-    </p>
+    <p class="cart-empty__text">You haven't added anything to your bag yet.</p>
 
-    <a
-      class="cart-empty__cta"
-      routerLink="/shop"
-    >
-      Continue Shopping
-    </a>
+    <a class="cart-empty__cta" routerLink="/shop"> Continue Shopping </a>
   </section>
 
   <!-- ============================================================
        CART CONTENT
   ============================================================= -->
-  <div
-    class="row cart-content gy-4"
-    *ngIf="cartItems.length > 0"
-  >
-
+  <div class="row cart-content gy-4" *ngIf="cartItems.length > 0">
     <!-- ==========================================================
          CART ITEMS
     =========================================================== -->
     <div class="col-12 col-lg-8">
-
-      <section
-        class="cart-items"
-        aria-label="Items in your bag"
-      >
-
-        <h2 class="cart-items__heading">
-          Your Items
-        </h2>
+      <section class="cart-items" aria-label="Items in your bag">
+        <h2 class="cart-items__heading">Your Items</h2>
 
         <ul class="cart-items__list">
-
           <!-- ====================================================
                SINGLE CART ITEM
           ===================================================== -->
           <li *ngFor="let item of cartItems">
-
             <article class="cart-item">
-
               <!-- Product Image -->
               <img
                 class="cart-item__image"
@@ -89,10 +58,8 @@
               />
 
               <div class="cart-item__body">
-
                 <!-- Product Information -->
                 <div class="cart-item__info">
-
                   <h3 class="cart-item__name">
                     <a [routerLink]="['/product-view', item.product.slug]">
                       {{ item.product.name }}
@@ -105,157 +72,122 @@
 
                   <!-- Product Options -->
                   <ul class="cart-item__options">
-
                     <!-- Color -->
-                    <li *ngIf="item.color">
-                      Color: {{ item.color.name }}
-                    </li>
+                    <li *ngIf="item.color">Color: {{ item.color.name }}</li>
 
                     <!-- Size -->
-                    <li *ngIf="item.size">
-                      Size: {{ item.size.value }}
-                    </li>
+                    <li *ngIf="item.size">Size: {{ item.size.value }}</li>
 
                     <!-- Length -->
-                    <li *ngIf="item.length">
-                      Length: {{ item.length.value }}
-                    </li>
-
+                    <li *ngIf="item.length">Length: {{ item.length.value }}</li>
                   </ul>
-
                 </div>
 
                 <!-- Unit Price -->
                 <div class="cart-item__price">
-                  ${{ item.product.price | number: '1.2-2' }}
+                  ${{ item.product.price | number: "1.2-2" }}
                 </div>
 
+                <!-- Quantity -->
                 <!-- Quantity -->
                 <div
                   class="cart-item__quantity"
                   role="group"
                   [attr.aria-label]="item.product.name + ' quantity'"
                 >
-
-                  <!-- Decrease -->
                   <button
                     class="cart-item__qty-btn"
                     type="button"
                     aria-label="Decrease quantity"
                     (click)="decreaseQuantity(item)"
                   >
-                    <i
-                      class="fa-solid fa-minus"
-                      aria-hidden="true"
-                    ></i>
+                    <i class="fa-solid fa-minus" aria-hidden="true"></i>
                   </button>
 
-                  <!-- Current Quantity -->
                   <span class="cart-item__qty-value">
                     {{ item.quantity }}
                   </span>
 
-                  <!-- Increase -->
                   <button
                     class="cart-item__qty-btn"
                     type="button"
                     aria-label="Increase quantity"
+                    [disabled]="!canIncrease(item)"
                     (click)="increaseQuantity(item)"
                   >
-                    <i
-                      class="fa-solid fa-plus"
-                      aria-hidden="true"
-                    ></i>
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
                   </button>
-
                 </div>
+
+                <p
+                  class="cart-item__stock-hint"
+                  *ngIf="
+                    getAvailableStock(item) > 0 && getAvailableStock(item) <= 5
+                  "
+                >
+                  Only {{ getAvailableStock(item) }} left
+                </p>
 
                 <!-- Item Total -->
                 <div class="cart-item__total">
-                  ${{ item.product.price * item.quantity | number: '1.2-2' }}
+                  ${{ item.product.price * item.quantity | number: "1.2-2" }}
                 </div>
 
                 <!-- Remove -->
                 <button
                   class="cart-item__remove"
                   type="button"
-                  [attr.aria-label]="'Remove ' + item.product.name + ' from bag'"
+                  [attr.aria-label]="
+                    'Remove ' + item.product.name + ' from bag'
+                  "
                   (click)="removeItem(item)"
                 >
-                  <i
-                    class="fa-regular fa-trash-can"
-                    aria-hidden="true"
-                  ></i>
+                  <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
 
-                  <span>
-                    Remove
-                  </span>
+                  <span> Remove </span>
                 </button>
-
               </div>
-
             </article>
-
           </li>
-
         </ul>
-
       </section>
-
     </div>
 
     <!-- ==========================================================
          CART SUMMARY
     =========================================================== -->
     <div class="col-12 col-lg-4">
-
-      <aside
-        class="cart-summary"
-        aria-label="Cart summary"
-      >
-
-        <h2 class="cart-summary__heading">
-          Cart Summary
-        </h2>
+      <aside class="cart-summary" aria-label="Cart summary">
+        <h2 class="cart-summary__heading">Cart Summary</h2>
 
         <!-- Subtotal -->
         <div class="cart-summary__row">
           <span>Subtotal</span>
 
-          <span>
-            ${{ getCartTotal() | number: '1.2-2' }}
-          </span>
+          <span> ${{ getCartTotal() | number: "1.2-2" }} </span>
         </div>
 
         <!-- Shipping -->
         <div class="cart-summary__row">
           <span>Shipping</span>
 
-          <span class="cart-summary__muted">
-            Calculated at checkout
-          </span>
+          <span class="cart-summary__muted"> Calculated at checkout </span>
         </div>
 
         <!-- Discount -->
         <div class="cart-summary__row">
           <span>Discount</span>
 
-          <span class="cart-summary__discount">
-            &minus;$0.00
-          </span>
+          <span class="cart-summary__discount"> &minus;$0.00 </span>
         </div>
 
         <hr class="cart-summary__divider" />
 
         <!-- Total -->
-        <div
-          class="cart-summary__row cart-summary__row--total"
-        >
+        <div class="cart-summary__row cart-summary__row--total">
           <span>Estimated Total</span>
 
-          <span>
-            ${{ getCartTotal() | number: '1.2-2' }}
-          </span>
+          <span> ${{ getCartTotal() | number: "1.2-2" }} </span>
         </div>
 
         <!-- Checkout -->
@@ -270,19 +202,14 @@
         <p class="cart-summary__shipping-note">
           Free shipping on orders over $50.
         </p>
-
       </aside>
 
       <!-- ========================================================
            TRUST FEATURES
       ========================================================= -->
       <ul class="cart-trust">
-
         <li class="cart-trust__item">
-          <i
-            class="fa-solid fa-shield-halved"
-            aria-hidden="true"
-          ></i>
+          <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
 
           <span>
             <strong>Secure Checkout</strong>
@@ -291,10 +218,7 @@
         </li>
 
         <li class="cart-trust__item">
-          <i
-            class="fa-solid fa-rotate-left"
-            aria-hidden="true"
-          ></i>
+          <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
 
           <span>
             <strong>Easy Returns</strong>
@@ -303,36 +227,22 @@
         </li>
 
         <li class="cart-trust__item">
-          <i
-            class="fa-solid fa-headset"
-            aria-hidden="true"
-          ></i>
+          <i class="fa-solid fa-headset" aria-hidden="true"></i>
 
           <span>
             <strong>Customer Support</strong>
             We're here to help
           </span>
         </li>
-
       </ul>
-
     </div>
-
   </div>
 
   <!-- ============================================================
        CONTINUE SHOPPING
   ============================================================= -->
-  <div
-    class="cart-page__continue-wrap"
-    *ngIf="cartItems.length > 0"
-  >
-    <a
-      class="cart-page__continue"
-      routerLink="/shop"
-    >
-      Continue Shopping
-    </a>
+  <div class="cart-page__continue-wrap" *ngIf="cartItems.length > 0">
+    <a class="cart-page__continue" routerLink="/shop"> Continue Shopping </a>
   </div>
 
   <!-- ============================================================
@@ -343,14 +253,10 @@
     aria-labelledby="cartRecommendationsHeading"
     *ngIf="relatedProducts.length"
   >
-    <h2
-      class="cart-recommendations__title"
-      id="cartRecommendationsHeading"
-    >
+    <h2 class="cart-recommendations__title" id="cartRecommendationsHeading">
       You May Also Like
     </h2>
 
     <app-collection-slider [products]="relatedProducts"></app-collection-slider>
   </section>
-
 </main>

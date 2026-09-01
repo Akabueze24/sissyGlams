@@ -52,7 +52,7 @@ export class ProductViewComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private route: ActivatedRoute,
     private cartService: CartService,
-    private wishlistService: WishlistService
+    private wishlistService: WishlistService,
   ) {}
 
   // ============================================================
@@ -70,18 +70,29 @@ export class ProductViewComponent implements OnInit, OnDestroy {
         if (this.product) {
           this.isWishlisted = this.wishlistService.isInWishlist(this.product);
         }
-      }
+      },
     );
   }
 
   ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
+    this.routeSubscription?.unsubscribe();
+    this.wishlistSubscription?.unsubscribe();
+  }
 
-    if (this.wishlistSubscription) {
-      this.wishlistSubscription.unsubscribe();
-    }
+  // ============================================================
+  // STOCK (UI helpers)
+  // ============================================================
+
+  /** Shopper can buy at least 1 unit */
+  get isInStock(): boolean {
+    return !!this.product && this.productService.isInStock(this.product);
+  }
+
+  /** Max quantity allowed on this page */
+  get maxQuantity(): number {
+    return this.product
+      ? this.productService.getAvailableStock(this.product)
+      : 0;
   }
 
   // ============================================================
@@ -128,11 +139,14 @@ export class ProductViewComponent implements OnInit, OnDestroy {
       this.selectedLength = this.product.lengths[0];
     }
 
+    // Quantity never starts above stock
+    this.quantity = this.maxQuantity > 0 ? 1 : 0;
+
     this.updateGallery();
 
     this.relatedProducts = this.productService.getRelatedProducts(
       this.product,
-      8
+      8,
     );
   }
 
@@ -157,7 +171,7 @@ export class ProductViewComponent implements OnInit, OnDestroy {
     }
 
     const gallery = this.product.colorGalleries.find(
-      (item) => item.color.value === this.selectedColor?.value
+      (item) => item.color.value === this.selectedColor?.value,
     );
 
     this.galleryImages = gallery?.images ?? this.product.images;
@@ -176,7 +190,15 @@ export class ProductViewComponent implements OnInit, OnDestroy {
   // ============================================================
 
   increaseQuantity(): void {
-    this.quantity++;
+    if (!this.product) {
+      return;
+    }
+
+    const max = this.productService.getAvailableStock(this.product);
+
+    if (this.quantity < max) {
+      this.quantity++;
+    }
   }
 
   decreaseQuantity(): void {
@@ -194,9 +216,19 @@ export class ProductViewComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Enforce stock at the action boundary
+    const qty = this.productService.clampQuantityToStock(
+      this.product,
+      this.quantity,
+    );
+
+    if (qty < 1) {
+      return;
+    }
+
     this.cartService.addToCart({
       product: this.product,
-      quantity: this.quantity,
+      quantity: qty,
       color: this.selectedColor,
       size: this.selectedSize,
       length: this.selectedLength,

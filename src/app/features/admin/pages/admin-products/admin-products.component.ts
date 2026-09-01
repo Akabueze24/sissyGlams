@@ -19,12 +19,19 @@ interface OptionRow {
   value: string;
 }
 
+/** Low-stock threshold for the summary card */
+const LOW_STOCK_THRESHOLD = 5;
+
 @Component({
   selector: 'app-admin-products',
   templateUrl: './admin-products.component.html',
   styleUrls: ['./admin-products.component.scss'],
 })
 export class AdminProductsComponent implements OnInit, OnDestroy {
+  // ============================================================
+  // LIST + FILTERS
+  // ============================================================
+
   products: Product[] = [];
 
   searchTerm = '';
@@ -49,6 +56,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     subcategory: '',
     collectionSlugs: [] as string[],
     price: 0,
+    stock: 0,
     imageUrl: '',
     description: '',
     active: true,
@@ -59,6 +67,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     brand?: string;
     category?: string;
     price?: string;
+    stock?: string;
     imageUrl?: string;
     description?: string;
   } = {};
@@ -78,6 +87,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     collectionSlugs: [] as string[],
     price: 0,
     oldPrice: null as number | null,
+    stock: 0,
     imageUrlsText: '',
     description: '',
     detailsText: '',
@@ -94,6 +104,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     brand?: string;
     category?: string;
     price?: string;
+    stock?: string;
     images?: string;
   } = {};
 
@@ -115,6 +126,10 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
   private productsSubscription!: Subscription;
 
+  // ============================================================
+  // LIFECYCLE
+  // ============================================================
+
   constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
@@ -127,7 +142,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     this.productsSubscription = this.productService.adminProducts$.subscribe(
       (products) => {
         this.products = products;
-      },
+      }
     );
   }
 
@@ -137,7 +152,108 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   }
 
   // ============================================================
-  // SUBCATEGORY HELPERS (forms + toolbar filter)
+  // SUMMARY
+  // ============================================================
+
+  get totalCount(): number {
+    return this.products.length;
+  }
+
+  get activeCount(): number {
+    return this.products.filter((p) => p.active).length;
+  }
+
+  get inactiveCount(): number {
+    return this.products.filter((p) => !p.active).length;
+  }
+
+  /** Products with stock between 1 and threshold (not zero) */
+  get lowStockCount(): number {
+    return this.products.filter(
+      (p) => p.stock > 0 && p.stock <= LOW_STOCK_THRESHOLD
+    ).length;
+  }
+
+  // ============================================================
+  // TOOLBAR FILTERS
+  // ============================================================
+
+  get hasActiveFilters(): boolean {
+    return !!(
+      this.searchTerm.trim() ||
+      this.categoryFilter ||
+      this.subcategoryFilter ||
+      this.collectionFilter ||
+      this.statusFilter
+    );
+  }
+
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.categoryFilter = '';
+    this.subcategoryFilter = '';
+    this.collectionFilter = '';
+    this.statusFilter = '';
+  }
+
+  onCategoryFilterChange(): void {
+    this.subcategoryFilter = '';
+  }
+
+  get subcategoriesForFilter(): Subcategory[] {
+    if (!this.categoryFilter) {
+      return [];
+    }
+
+    return (
+      this.productService
+        .getCategoryNav()
+        .find((item) => item.category === this.categoryFilter)
+        ?.subcategories ?? []
+    );
+  }
+
+  get filteredProducts(): Product[] {
+    let result = [...this.products];
+    const term = this.normalizeSearch(this.searchTerm);
+
+    if (term) {
+      result = result.filter((product) => this.matchesAdminSearch(product, term));
+    }
+
+    if (this.categoryFilter) {
+      result = result.filter(
+        (product) => product.category === this.categoryFilter
+      );
+    }
+
+    if (this.subcategoryFilter) {
+      result = result.filter(
+        (product) => product.subcategory === this.subcategoryFilter
+      );
+    }
+
+    if (this.collectionFilter) {
+      result = result.filter((product) =>
+        product.collections?.some(
+          (collection) => collection.slug === this.collectionFilter
+        )
+      );
+    }
+
+    if (this.statusFilter === 'active') {
+      result = result.filter((product) => product.active);
+    }
+
+    if (this.statusFilter === 'inactive') {
+      result = result.filter((product) => !product.active);
+    }
+
+    return result;
+  }
+
+  // ============================================================
+  // SUBCATEGORY (forms)
   // ============================================================
 
   get subcategoriesForAdd(): Subcategory[] {
@@ -166,19 +282,6 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     );
   }
 
-  get subcategoriesForFilter(): Subcategory[] {
-    if (!this.categoryFilter) {
-      return [];
-    }
-
-    return (
-      this.productService
-        .getCategoryNav()
-        .find((item) => item.category === this.categoryFilter)?.subcategories ??
-      []
-    );
-  }
-
   onAddCategoryChange(): void {
     this.addForm.subcategory = '';
   }
@@ -187,18 +290,14 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     this.editForm.subcategory = '';
   }
 
-  onCategoryFilterChange(): void {
-    this.subcategoryFilter = '';
-  }
-
   // ============================================================
-  // COLLECTION HELPERS
+  // COLLECTIONS
   // ============================================================
 
   toggleCollectionSlug(
     list: string[],
     slug: string,
-    checked: boolean,
+    checked: boolean
   ): string[] {
     if (checked) {
       return list.includes(slug) ? list : [...list, slug];
@@ -207,58 +306,10 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     return list.filter((item) => item !== slug);
   }
 
-  private collectionsFromSlugs(slugs: string[]) {
+  private collectionsFromSlugs(slugs: string[]): StoreCollection[] {
     return this.storeCollections.filter((collection) =>
-      slugs.includes(collection.slug),
+      slugs.includes(collection.slug)
     );
-  }
-
-  // ============================================================
-  // FILTERED LIST
-  // ============================================================
-
-  get filteredProducts(): Product[] {
-    let result = [...this.products];
-    const term = this.searchTerm.trim().toLowerCase();
-
-    if (term) {
-      result = result.filter((product) => {
-        const name = product.name.toLowerCase();
-        const id = product.id.toLowerCase();
-        const brand = product.brand.toLowerCase();
-        return name.includes(term) || id.includes(term) || brand.includes(term);
-      });
-    }
-
-    if (this.categoryFilter) {
-      result = result.filter(
-        (product) => product.category === this.categoryFilter,
-      );
-    }
-
-    if (this.subcategoryFilter) {
-      result = result.filter(
-        (product) => product.subcategory === this.subcategoryFilter,
-      );
-    }
-
-    if (this.collectionFilter) {
-      result = result.filter((product) =>
-        product.collections?.some(
-          (collection) => collection.slug === this.collectionFilter,
-        ),
-      );
-    }
-
-    if (this.statusFilter === 'active') {
-      result = result.filter((product) => product.active);
-    }
-
-    if (this.statusFilter === 'inactive') {
-      result = result.filter((product) => !product.active);
-    }
-
-    return result;
   }
 
   // ============================================================
@@ -292,11 +343,15 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       errors.price = 'Price must be greater than 0.';
     }
 
+    if (this.addForm.stock == null || this.addForm.stock < 0) {
+      errors.stock = 'Stock cannot be negative.';
+    }
+
     if (!this.addForm.imageUrl.trim()) {
       errors.imageUrl = 'Product image URL is required.';
     }
 
-    if (!this.addForm.description.trim()) {
+    if (!this.stripHtml(this.addForm.description)) {
       errors.description = 'Description is required.';
     }
 
@@ -323,10 +378,11 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       errors.price = 'Price must be greater than 0.';
     }
 
-    const images = this.editForm.imageUrlsText
-      .split('\n')
-      .map((url) => url.trim())
-      .filter((url) => !!url);
+    if (this.editForm.stock == null || this.editForm.stock < 0) {
+      errors.stock = 'Stock cannot be negative.';
+    }
+
+    const images = this.previewUrlsFromText(this.editForm.imageUrlsText);
 
     if (!images.length) {
       errors.images = 'Add at least one gallery image URL.';
@@ -358,7 +414,9 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const collections = this.collectionsFromSlugs(this.addForm.collectionSlugs);
+    const collections = this.collectionsFromSlugs(
+      this.addForm.collectionSlugs
+    );
 
     this.productService.addProduct({
       name: this.addForm.name,
@@ -367,6 +425,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       subcategory: this.addForm.subcategory || undefined,
       collections: collections.length ? collections : undefined,
       price: Number(this.addForm.price),
+      stock: Number(this.addForm.stock),
       imageUrl: this.addForm.imageUrl,
       description: this.addForm.description,
       active: this.addForm.active,
@@ -383,6 +442,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       subcategory: '',
       collectionSlugs: [],
       price: 0,
+      stock: 0,
       imageUrl: '',
       description: '',
       active: true,
@@ -401,7 +461,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
     const colorRows: ColorRow[] = (product.colors ?? []).map((color) => {
       const gallery = product.colorGalleries?.find(
-        (g) => g.color.value === color.value,
+        (g) => g.color.value === color.value
       );
 
       return {
@@ -420,6 +480,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       collectionSlugs: (product.collections ?? []).map((c) => c.slug),
       price: product.price,
       oldPrice: product.oldPrice ?? null,
+      stock: product.stock ?? 0,
       imageUrlsText: (product.images ?? []).join('\n'),
       description: product.productDetails?.description ?? '',
       detailsText: (product.productDetails?.details ?? []).join('\n'),
@@ -457,10 +518,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const images = this.editForm.imageUrlsText
-      .split('\n')
-      .map((url) => url.trim())
-      .filter((url) => !!url);
+    const images = this.previewUrlsFromText(this.editForm.imageUrlsText);
 
     const details = this.editForm.detailsText
       .split('\n')
@@ -478,10 +536,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     const colorGalleries = this.editForm.colorRows
       .filter((row) => row.name.trim() && row.value.trim())
       .map((row) => {
-        const galleryImages = row.galleryText
-          .split('\n')
-          .map((url) => url.trim())
-          .filter((url) => !!url);
+        const galleryImages = this.previewUrlsFromText(row.galleryText);
 
         return {
           color: {
@@ -508,7 +563,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       }));
 
     const collections = this.collectionsFromSlugs(
-      this.editForm.collectionSlugs,
+      this.editForm.collectionSlugs
     );
 
     this.productService.updateProduct(this.editingProductId, {
@@ -522,6 +577,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
         this.editForm.oldPrice != null && this.editForm.oldPrice > 0
           ? Number(this.editForm.oldPrice)
           : undefined,
+      stock: Number(this.editForm.stock),
       images,
       active: this.editForm.active,
       productDetails: {
@@ -540,7 +596,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   }
 
   // ============================================================
-  // VARIANT ROW HELPERS
+  // VARIANT ROWS
   // ============================================================
 
   addColorRow(): void {
@@ -598,20 +654,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   }
 
   // ============================================================
-  // SUMMARY
+  // LABELS + PREVIEW HELPERS
   // ============================================================
-
-  get totalCount(): number {
-    return this.products.length;
-  }
-
-  get activeCount(): number {
-    return this.products.filter((p) => p.active).length;
-  }
-
-  get inactiveCount(): number {
-    return this.products.filter((p) => !p.active).length;
-  }
 
   categoryLabel(category: string): string {
     return category
@@ -633,12 +677,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     return sub?.name ?? this.categoryLabel(slug);
   }
 
-  /** Split gallery textarea into clean URLs */
   get editGalleryPreviewUrls(): string[] {
-    return this.editForm.imageUrlsText
-      .split('\n')
-      .map((url) => url.trim())
-      .filter((url) => !!url);
+    return this.previewUrlsFromText(this.editForm.imageUrlsText);
   }
 
   previewUrlsFromText(text: string): string[] {
@@ -650,7 +690,11 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
   isImageUrl(url: string): boolean {
     const value = url.trim();
-    if (!value) return false;
+
+    if (!value) {
+      return false;
+    }
+
     return (
       /^https?:\/\//i.test(value) ||
       /\.(jpe?g|png|gif|webp|svg)(\?.*)?$/i.test(value)
@@ -660,5 +704,55 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   onPreviewError(event: Event): void {
     const img = event.target as HTMLImageElement;
     img.src = 'https://placehold.co/80x80?text=Invalid';
+  }
+
+  // ============================================================
+  // PRIVATE HELPERS
+  // ============================================================
+
+  private normalizeSearch(value: string): string {
+    return value
+      .toLowerCase()
+      .replace(/[-_]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  private matchesAdminSearch(product: Product, term: string): boolean {
+    const name = this.normalizeSearch(product.name);
+    const id = this.normalizeSearch(product.id);
+    const brand = this.normalizeSearch(product.brand);
+    const category = this.normalizeSearch(product.category);
+    const categoryLabel = this.normalizeSearch(
+      this.categoryLabel(product.category)
+    );
+    const subcategory = this.normalizeSearch(product.subcategory ?? '');
+    const subcategoryLabel = this.normalizeSearch(
+      this.subcategoryLabel(product.subcategory)
+    );
+
+    const inCollections = (product.collections ?? []).some((collection) => {
+      const colName = this.normalizeSearch(collection.name);
+      const colSlug = this.normalizeSearch(collection.slug);
+      return colName.includes(term) || colSlug.includes(term);
+    });
+
+    return (
+      name.includes(term) ||
+      id.includes(term) ||
+      brand.includes(term) ||
+      category.includes(term) ||
+      categoryLabel.includes(term) ||
+      subcategory.includes(term) ||
+      subcategoryLabel.includes(term) ||
+      inCollections
+    );
+  }
+
+  private stripHtml(value: string): string {
+    return value
+      .replace(/<[^>]*>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .trim();
   }
 }

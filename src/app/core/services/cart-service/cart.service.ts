@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { CartItem } from '../../models/cart-models/cart.model';
 import { ToastService } from '../toast-service/toast.service';
+import { ProductService } from '../product-service/product.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,7 @@ export class CartService {
   // ============================================================
 
   private cartCountSubject = new BehaviorSubject<number>(
-    this.calculateCartCount(),
+    this.calculateCartCount()
   );
 
   cartCount$ = this.cartCountSubject.asObservable();
@@ -33,7 +34,7 @@ export class CartService {
   // ============================================================
 
   private cartTotalSubject = new BehaviorSubject<number>(
-    this.calculateCartTotal(),
+    this.calculateCartTotal()
   );
 
   cartTotal$ = this.cartTotalSubject.asObservable();
@@ -42,7 +43,10 @@ export class CartService {
   // CONSTRUCTOR
   // ============================================================
 
-  constructor(private toastService: ToastService) {}
+  constructor(
+    private toastService: ToastService,
+    private productService: ProductService
+  ) {}
 
   // ============================================================
   // LOAD CART FROM LOCAL STORAGE
@@ -63,16 +67,9 @@ export class CartService {
   // ============================================================
 
   private updateCart(): void {
-    // Save the latest cart
     this.saveCart();
-
-    // Tell anyone listening that the cart changed
     this.cartItemsSubject.next(this.cartItems);
-
-    // Tell anyone listening the new cart count
     this.cartCountSubject.next(this.calculateCartCount());
-
-    // Tell anyone listening the new cart total
     this.cartTotalSubject.next(this.calculateCartTotal());
   }
 
@@ -85,10 +82,62 @@ export class CartService {
   }
 
   // ============================================================
+  // STOCK (live from ProductService — not the cart snapshot)
+  // ============================================================
+
+  private getLiveStock(productId: string): number {
+    const product = this.productService.getProductById(productId);
+
+    if (!product) {
+      return 0;
+    }
+
+    return this.productService.getAvailableStock(product);
+  }
+
+  /**
+   * Fix quantities if admin lowered stock after items were added.
+   * Call when opening cart / checkout.
+   */
+  syncQuantitiesWithStock(): void {
+    let changed = false;
+
+    this.cartItems = this.cartItems
+      .map((item) => {
+        const stock = this.getLiveStock(item.product.id);
+
+        if (stock < 1) {
+          changed = true;
+          return { ...item, quantity: 0 };
+        }
+
+        if (item.quantity > stock) {
+          changed = true;
+          return { ...item, quantity: stock };
+        }
+
+        return item;
+      })
+      .filter((item) => item.quantity > 0);
+
+    if (changed) {
+      this.updateCart();
+      this.toastService.info('Some quantities were updated to match stock.');
+    }
+  }
+
+  // ============================================================
   // ADD TO CART
   // ============================================================
 
   addToCart(item: CartItem): void {
+    const stock = this.getLiveStock(item.product.id);
+
+    if (stock < 1) {
+      this.toastService.info('This product is out of stock.');
+      return;
+    }
+
     const existingItem = this.cartItems.find((cartItem) => {
       return (
         cartItem.product.id === item.product.id &&
@@ -99,14 +148,34 @@ export class CartService {
     });
 
     if (existingItem) {
-      existingItem.quantity += item.quantity;
+      const nextQty = existingItem.quantity + item.quantity;
+
+      if (nextQty > stock) {
+        existingItem.quantity = stock;
+        this.updateCart();
+        this.toastService.info(
+          `Only ${stock} available. Quantity updated to ${stock}.`
+        );
+        return;
+      }
+
+      existingItem.quantity = nextQty;
     } else {
-      this.cartItems.push(item);
+      const qty = Math.min(item.quantity, stock);
+
+      if (qty < 1) {
+        this.toastService.info('This product is out of stock.');
+        return;
+      }
+
+      // Keep full item (product + color/size/length) — colorGalleries stay on product
+      this.cartItems.push({
+        ...item,
+        quantity: qty,
+      });
     }
 
     this.updateCart();
-
-    // Toast notification
     this.toastService.success('Product added to your cart.');
   }
 
@@ -127,10 +196,7 @@ export class CartService {
 
     if (index !== -1) {
       this.cartItems.splice(index, 1);
-
       this.updateCart();
-
-      // Toast notification
       this.toastService.info('Product removed from your cart.');
     }
   }
@@ -140,8 +206,18 @@ export class CartService {
   // ============================================================
 
   increaseQuantity(item: CartItem): void {
-    item.quantity++;
+    const stock = this.getLiveStock(item.product.id);
 
+    if (item.quantity >= stock) {
+      this.toastService.info(
+        stock < 1
+          ? 'This product is out of stock.'
+          : `Only ${stock} available.`
+      );
+      return;
+    }
+
+    item.quantity++;
     this.updateCart();
   }
 
@@ -152,7 +228,6 @@ export class CartService {
   decreaseQuantity(item: CartItem): void {
     if (item.quantity > 1) {
       item.quantity--;
-
       this.updateCart();
     }
   }
@@ -199,10 +274,7 @@ export class CartService {
 
   clearCart(): void {
     this.cartItems = [];
-
     this.updateCart();
-
-    // Toast notification
     this.toastService.info('Your cart has been cleared.');
   }
 }

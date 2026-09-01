@@ -128,6 +128,23 @@
         </p>
       </div>
 
+      <div class="admin-products__form-group">
+        <label for="productStock">Stock *</label>
+        <input
+          id="productStock"
+          type="number"
+          min="0"
+          step="1"
+          class="admin-products__input"
+          [class.admin-products__input--error]="addErrors.stock"
+          name="stock"
+          [(ngModel)]="addForm.stock"
+        />
+        <p class="admin-products__field-error" *ngIf="addErrors.stock">
+          {{ addErrors.stock }}
+        </p>
+      </div>
+
       <div class="admin-products__form-group admin-products__form-group--full">
         <label for="productImage">Product Image URL *</label>
         <input
@@ -181,15 +198,18 @@
 
       <div class="admin-products__form-group admin-products__form-group--full">
         <label for="productDescription">Product Description *</label>
-        <textarea
+
+        <quill-editor
           id="productDescription"
-          class="admin-products__textarea"
+          class="admin-products__quill"
           [class.admin-products__input--error]="addErrors.description"
-          rows="6"
-          placeholder="Write a description for this product..."
-          name="description"
+          theme="snow"
+          [modules]="quillModules"
           [(ngModel)]="addForm.description"
-        ></textarea>
+          name="description"
+          placeholder="Write a description for this product..."
+        ></quill-editor>
+
         <p class="admin-products__field-error" *ngIf="addErrors.description">
           {{ addErrors.description }}
         </p>
@@ -380,6 +400,23 @@
               name="editOldPrice"
               [(ngModel)]="editForm.oldPrice"
             />
+          </div>
+
+          <div class="admin-products__form-group">
+            <label for="editStock">Stock *</label>
+            <input
+              id="editStock"
+              type="number"
+              min="0"
+              step="1"
+              class="admin-products__input"
+              [class.admin-products__input--error]="editErrors.stock"
+              name="editStock"
+              [(ngModel)]="editForm.stock"
+            />
+            <p class="admin-products__field-error" *ngIf="editErrors.stock">
+              {{ editErrors.stock }}
+            </p>
           </div>
 
           <!-- Default gallery -->
@@ -794,7 +831,8 @@ Model wears size S"
         </h2>
         <p class="admin-products__delete-message">
           Are you sure you want to delete
-          <strong>{{ productToDelete?.name }}</strong>?
+          <strong>{{ productToDelete?.name }}</strong
+          >?
         </p>
         <p class="admin-products__delete-warning">
           This action cannot be undone.
@@ -868,7 +906,7 @@ Model wears size S"
           </div>
           <div class="admin-products__summary-content">
             <span class="admin-products__summary-label">Low Stock</span>
-            <h3 class="admin-products__summary-value">0</h3>
+            <h3 class="admin-products__summary-value">{{ lowStockCount }}</h3>
           </div>
         </div>
       </div>
@@ -935,6 +973,16 @@ Model wears size S"
           <option value="inactive">Inactive</option>
         </select>
       </div>
+
+      <button
+        type="button"
+        class="admin-products__clear-filters"
+        *ngIf="hasActiveFilters"
+        (click)="clearFilters()"
+      >
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        <span>Clear filters</span>
+      </button>
     </div>
 
     <div class="admin-products__table-wrapper">
@@ -943,7 +991,7 @@ Model wears size S"
           <tr>
             <th>Product</th>
             <th>Brand</th>
-            <th>Catalog</th>
+            <th>Category</th>
             <th>Price</th>
             <th>Stock</th>
             <th>Status</th>
@@ -957,6 +1005,7 @@ Model wears size S"
           </tr>
 
           <tr *ngFor="let product of filteredProducts">
+            <!-- PRODUCT -->
             <td>
               <div class="admin-products__product">
                 <div class="admin-products__image">
@@ -966,6 +1015,7 @@ Model wears size S"
                     (error)="onPreviewError($event)"
                   />
                 </div>
+
                 <div class="admin-products__product-info">
                   <span class="admin-products__product-name">
                     {{ product.name }}
@@ -977,19 +1027,23 @@ Model wears size S"
               </div>
             </td>
 
+            <!-- BRAND -->
             <td>{{ product.brand }}</td>
 
+            <!-- CATEGORY (+ subcategory + collections under it) -->
             <td>
               <div class="admin-products__catalog">
                 <span class="admin-products__catalog-category">
                   {{ categoryLabel(product.category) }}
                 </span>
+
                 <span
                   class="admin-products__catalog-sub"
                   *ngIf="product.subcategory"
                 >
                   {{ subcategoryLabel(product.subcategory) }}
                 </span>
+
                 <div
                   class="admin-products__catalog-collections"
                   *ngIf="product.collections?.length"
@@ -1004,9 +1058,17 @@ Model wears size S"
               </div>
             </td>
 
-            <td>${{ product.price | number: '1.2-2' }}</td>
-            <td>—</td>
+            <!-- PRICE -->
+            <td>${{ product.price | number: "1.2-2" }}</td>
 
+            <td
+              [class.admin-products__stock--low]="product.stock <= 5"
+              [class.admin-products__stock--out]="product.stock === 0"
+            >
+              {{ product.stock }}
+            </td>
+
+            <!-- STATUS -->
             <td>
               <button
                 type="button"
@@ -1015,10 +1077,11 @@ Model wears size S"
                 [class.admin-products__status--draft]="!product.active"
                 (click)="toggleActive(product)"
               >
-                {{ product.active ? 'Active' : 'Inactive' }}
+                {{ product.active ? "Active" : "Inactive" }}
               </button>
             </td>
 
+            <!-- ACTIONS -->
             <td>
               <div class="admin-products__actions">
                 <button
@@ -1029,6 +1092,7 @@ Model wears size S"
                 >
                   <i class="fa-solid fa-pen" aria-hidden="true"></i>
                 </button>
+
                 <button
                   type="button"
                   class="admin-products__action-btn admin-products__action-btn--delete"

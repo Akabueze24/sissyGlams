@@ -119,9 +119,10 @@
         </div>
 
         <!-- Description -->
-        <p class="product-info__description">
-          {{ product?.productDetails?.description }}
-        </p>
+        <p
+          class="product-info__description"
+          [innerHTML]="product?.productDetails?.description"
+        ></p>
 
         <hr class="product-info__divider" />
 
@@ -247,45 +248,63 @@
         ========================================================= -->
 
         <div class="product-actions">
-          <!-- Quantity -->
-          <div
-            class="quantity-stepper"
-            role="group"
-            aria-label="Product quantity"
-          >
-            <button
-              class="quantity-stepper__btn"
-              type="button"
-              aria-label="Decrease quantity"
-              (click)="decreaseQuantity()"
+          <!-- In stock: quantity + add -->
+          <ng-container *ngIf="isInStock; else outOfStock">
+            <div
+              class="quantity-stepper"
+              role="group"
+              aria-label="Product quantity"
             >
-              <i class="fa-solid fa-minus" aria-hidden="true"></i>
-            </button>
+              <button
+                class="quantity-stepper__btn"
+                type="button"
+                aria-label="Decrease quantity"
+                [disabled]="quantity <= 1"
+                (click)="decreaseQuantity()"
+              >
+                <i class="fa-solid fa-minus" aria-hidden="true"></i>
+              </button>
 
-            <span class="quantity-stepper__value" aria-live="polite">
-              {{ quantity }}
-            </span>
+              <span class="quantity-stepper__value" aria-live="polite">
+                {{ quantity }}
+              </span>
+
+              <button
+                class="quantity-stepper__btn"
+                type="button"
+                aria-label="Increase quantity"
+                [disabled]="quantity >= maxQuantity"
+                (click)="increaseQuantity()"
+              >
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <p class="product-info__stock-hint" *ngIf="product">
+              <span *ngIf="product.stock <= 5"
+                >Only {{ product.stock }} left</span
+              >
+              <span *ngIf="product.stock > 5">{{product.stock}} In stock</span>
+            </p>
 
             <button
-              class="quantity-stepper__btn"
+              class="product-actions__add-to-bag"
               type="button"
-              aria-label="Increase quantity"
-              (click)="increaseQuantity()"
+              (click)="addToCart()"
+              [disabled]="!product?.stock"
             >
-              <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              Add to Bag
             </button>
-          </div>
+          </ng-container>
 
-          <!-- Add to bag -->
-          <button
-            class="product-actions__add-to-bag"
-            type="button"
-            (click)="addToCart()"
-          >
-            Add to Bag
-          </button>
+          <ng-template #outOfStock>
+            <p class="product-info__out-of-stock">Out of stock</p>
+            <button class="product-actions__add-to-bag" type="button" disabled>
+              Out of Stock
+            </button>
+          </ng-template>
 
-          <!-- Wishlist -->
+          <!-- Wishlist stays available even when out of stock -->
           <button
             class="product-actions__wishlist"
             type="button"
@@ -390,9 +409,7 @@
         role="tabpanel"
         aria-labelledby="tab-description-btn"
       >
-        <p [innerHTML]="product?.productDetails?.description">
-          
-        </p>
+        <p [innerHTML]="product?.productDetails?.description"></p>
       </div>
 
       <!-- ========================================================
