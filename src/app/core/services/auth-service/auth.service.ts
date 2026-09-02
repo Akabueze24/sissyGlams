@@ -8,7 +8,7 @@ import { AuthModalRequest } from '../../models/auth-models/auth-modal-request.mo
 
 import { ToastService } from '../toast-service/toast.service';
 
-// New type for the modal request
+// Auth modal modes
 export type AuthMode = 'login' | 'register';
 
 @Injectable({
@@ -16,11 +16,29 @@ export type AuthMode = 'login' | 'register';
 })
 export class AuthService {
   // ============================================================
+  // LOCAL STORAGE KEYS
+  // ============================================================
+
+  /**
+   * Stores the currently logged-in user.
+   *
+   * This is the user's SESSION.
+   */
+  private readonly CURRENT_USER_KEY = 'sissy-dream-user';
+
+  /**
+   * Stores all registered users.
+   *
+   * This is the user's ACCOUNT DATABASE for now.
+   */
+  private readonly REGISTERED_USERS_KEY = 'sissy-dream-users';
+
+  // ============================================================
   // AUTHENTICATED USER
   // ============================================================
 
   private currentUserSubject = new BehaviorSubject<User | null>(
-    this.loadUser(),
+    this.loadCurrentUser(),
   );
 
   currentUser$: Observable<User | null> =
@@ -30,10 +48,8 @@ export class AuthService {
   // AUTH MODAL CONTROL
   // ============================================================
 
-  // This Subject is used to tell the AuthComponent to open
   private authModalRequestSubject = new Subject<AuthModalRequest>();
 
-  // Components can subscribe to this
   authModalRequest$ = this.authModalRequestSubject.asObservable();
 
   // ============================================================
@@ -46,10 +62,6 @@ export class AuthService {
   // OPEN AUTH MODAL
   // ============================================================
 
-  /**
-   * Call this method from anywhere (Guard, Header, Checkout, etc.)
-   * to open the Auth modal.
-   */
   openAuthModal(
     mode: AuthMode = 'login',
     redirectUrl: string = '/account',
@@ -67,9 +79,31 @@ export class AuthService {
   // ============================================================
 
   register(registerData: Register): void {
-    // Temporary implementation.
-    // We will connect this to the backend later.
+    /*
+     * Get all users that have already registered.
+     */
+    const registeredUsers = this.loadRegisteredUsers();
 
+    /*
+     * Check whether this email is already registered.
+     */
+    const existingUser = registeredUsers.find(
+      (user) => user.email.toLowerCase() === registerData.email.toLowerCase(),
+    );
+
+    if (existingUser) {
+      this.toastService.error(
+        'An account with this email already exists.',
+      );
+
+      return;
+    }
+
+    /*
+     * Create the public user information.
+     *
+     * Notice that password is NOT stored inside User.
+     */
     const user: User = {
       id: crypto.randomUUID(),
       firstName: registerData.firstName,
@@ -77,10 +111,40 @@ export class AuthService {
       email: registerData.email,
     };
 
-    this.saveUser(user);
+    /*
+     * Create the account record.
+     *
+     * The password is kept here so login can verify it.
+     */
+    const registeredUser: RegisteredUser = {
+      ...user,
+      password: registerData.password,
+    };
 
-    // Show success toast
-    this.toastService.success('Your account has been created successfully.');
+    /*
+     * Add the new account to our registered-users list.
+     */
+    registeredUsers.push(registeredUser);
+
+    /*
+     * Save all registered accounts.
+     */
+    localStorage.setItem(
+      this.REGISTERED_USERS_KEY,
+      JSON.stringify(registeredUsers),
+    );
+
+    /*
+     * Automatically log the newly registered user in.
+     */
+    this.saveCurrentUser(user);
+
+    /*
+     * Show success message.
+     */
+    this.toastService.success(
+      'Your account has been created successfully.',
+    );
   }
 
   // ============================================================
@@ -88,22 +152,54 @@ export class AuthService {
   // ============================================================
 
   login(loginData: Login): void {
-    // Temporary implementation.
-    // Real authentication will happen through the backend later.
+    /*
+     * Load every account that has registered.
+     */
+    const registeredUsers = this.loadRegisteredUsers();
 
-    const savedUser = this.loadUser();
+    /*
+     * Find an account matching BOTH:
+     *
+     * 1. Email
+     * 2. Password
+     */
+    const registeredUser = registeredUsers.find(
+      (user) =>
+        user.email.toLowerCase() === loginData.email.toLowerCase() &&
+        user.password === loginData.password,
+    );
 
-    if (!savedUser) {
-      // User does not exist
+    /*
+     * No matching account was found.
+     */
+    if (!registeredUser) {
       this.toastService.error('Incorrect email or password.');
 
       return;
     }
 
-    this.currentUserSubject.next(savedUser);
+    /*
+     * Remove the password before putting the user
+     * into the currently-logged-in session.
+     */
+    const user: User = {
+      id: registeredUser.id,
+      firstName: registeredUser.firstName,
+      lastName: registeredUser.lastName,
+      email: registeredUser.email,
+    };
 
-    // Show success toast
-    this.toastService.success(`Welcome back, ${savedUser.firstName}!`);
+    /*
+     * Save the current session.
+     */
+    this.saveCurrentUser(user);
+
+    /*
+     * Show success message.
+     */
+    this.toastService.success(
+      `Welcome back, ${user.firstName}!`,
+    );
   }
 
   // ============================================================
@@ -111,12 +207,23 @@ export class AuthService {
   // ============================================================
 
   logout(): void {
-    localStorage.removeItem('sissy-dream-user');
+    /*
+     * IMPORTANT:
+     *
+     * We ONLY remove the currently logged-in user.
+     *
+     * We DO NOT remove sissy-dream-users.
+     *
+     * Therefore the account still exists and can be
+     * used to login again.
+     */
+    localStorage.removeItem(this.CURRENT_USER_KEY);
 
     this.currentUserSubject.next(null);
 
-    // Show success toast
-    this.toastService.success('You have been logged out successfully.');
+    this.toastService.success(
+      'You have been logged out successfully.',
+    );
   }
 
   // ============================================================
@@ -136,21 +243,31 @@ export class AuthService {
   }
 
   // ============================================================
-  // SAVE USER
+  // SAVE CURRENT USER
   // ============================================================
 
-  private saveUser(user: User): void {
-    localStorage.setItem('sissy-dream-user', JSON.stringify(user));
+  private saveCurrentUser(user: User): void {
+    /*
+     * Store only the public user information.
+     *
+     * Password is NOT stored here.
+     */
+    localStorage.setItem(
+      this.CURRENT_USER_KEY,
+      JSON.stringify(user),
+    );
 
     this.currentUserSubject.next(user);
   }
 
   // ============================================================
-  // LOAD USER
+  // LOAD CURRENT USER
   // ============================================================
 
-  private loadUser(): User | null {
-    const savedUser = localStorage.getItem('sissy-dream-user');
+  private loadCurrentUser(): User | null {
+    const savedUser = localStorage.getItem(
+      this.CURRENT_USER_KEY,
+    );
 
     if (!savedUser) {
       return null;
@@ -159,7 +276,28 @@ export class AuthService {
     try {
       return JSON.parse(savedUser) as User;
     } catch {
+      localStorage.removeItem(this.CURRENT_USER_KEY);
       return null;
+    }
+  }
+
+  // ============================================================
+  // LOAD REGISTERED USERS
+  // ============================================================
+
+  private loadRegisteredUsers(): RegisteredUser[] {
+    const savedUsers = localStorage.getItem(
+      this.REGISTERED_USERS_KEY,
+    );
+
+    if (!savedUsers) {
+      return [];
+    }
+
+    try {
+      return JSON.parse(savedUsers) as RegisteredUser[];
+    } catch {
+      return [];
     }
   }
 
@@ -168,9 +306,54 @@ export class AuthService {
   // ============================================================
 
   updateUser(user: User): void {
-    this.saveUser(user);
+    /*
+     * Update the currently logged-in session.
+     */
+    this.saveCurrentUser(user);
 
-    // Show success toast
-    this.toastService.success('Your account has been updated successfully.');
+    /*
+     * Also update the corresponding registered account.
+     *
+     * We keep the existing password.
+     */
+    const registeredUsers = this.loadRegisteredUsers();
+
+    const index = registeredUsers.findIndex(
+      (registeredUser) => registeredUser.id === user.id,
+    );
+
+    if (index !== -1) {
+      registeredUsers[index] = {
+        ...registeredUsers[index],
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      };
+
+      localStorage.setItem(
+        this.REGISTERED_USERS_KEY,
+        JSON.stringify(registeredUsers),
+      );
+    }
+
+    this.toastService.success(
+      'Your account has been updated successfully.',
+    );
   }
+}
+
+// ============================================================
+// REGISTERED USER TYPE
+// ============================================================
+
+/**
+ * This is used internally by AuthService.
+ *
+ * User remains your public user model.
+ *
+ * RegisteredUser additionally contains the password
+ * needed for our temporary frontend authentication.
+ */
+interface RegisteredUser extends User {
+  password: string;
 }

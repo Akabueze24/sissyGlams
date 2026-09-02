@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { Order } from '../../models/order-models/order.model';
 import { ToastService } from '../toast-service/toast.service';
+import { ProductService } from '../product-service/product.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,19 +15,20 @@ export class OrderService {
   private ordersSource = new BehaviorSubject<Order[]>(this.loadOrders());
   orders$ = this.ordersSource.asObservable();
 
-  constructor(private toastService: ToastService) {}
+  constructor(
+    private toastService: ToastService,
+    private productService: ProductService
+  ) {}
 
   // ============================================================
   // SAVE
   // ============================================================
 
   saveOrder(order: Order): void {
-    // 1) Full history (newest first)
     const orders = [order, ...this.ordersSource.value];
     localStorage.setItem(this.ORDERS_KEY, JSON.stringify(orders));
     this.ordersSource.next(orders);
 
-    // 2) Latest only — for confirmation page
     localStorage.setItem(this.LATEST_ORDER_KEY, JSON.stringify(order));
 
     this.toastService.success('Your order has been saved successfully.');
@@ -36,7 +38,6 @@ export class OrderService {
   // READ
   // ============================================================
 
-  /** Latest order (confirmation page) */
   getOrder(): Order | null {
     return this.getLatestOrder();
   }
@@ -52,13 +53,61 @@ export class OrderService {
     }
   }
 
-  /** All orders (account page later) */
   getOrders(): Order[] {
     return this.ordersSource.value;
   }
 
   getOrderById(id: string): Order | null {
     return this.ordersSource.value.find((order) => order.id === id) ?? null;
+  }
+
+  getOrdersByEmail(email: string): Order[] {
+    const normalized = email.trim().toLowerCase();
+    return this.ordersSource.value.filter(
+      (order) =>
+        (order.customer?.email ?? '').trim().toLowerCase() === normalized
+    );
+  }
+
+  // ============================================================
+  // STATUS
+  // ============================================================
+
+  /**
+   * Update order status.
+   * When status becomes "cancelled" for the first time, restore stock
+   * for every line on the order.
+   */
+  updateOrderStatus(orderId: string, orderStatus: Order['orderStatus']): void {
+    const current = this.ordersSource.value.find((o) => o.id === orderId);
+
+    if (!current) {
+      return;
+    }
+
+    const previousStatus = current.orderStatus;
+
+    const orders = this.ordersSource.value.map((order) =>
+      order.id === orderId ? { ...order, orderStatus } : order
+    );
+
+    localStorage.setItem(this.ORDERS_KEY, JSON.stringify(orders));
+    this.ordersSource.next(orders);
+
+    const latest = this.getLatestOrder();
+    if (latest?.id === orderId) {
+      localStorage.setItem(
+        this.LATEST_ORDER_KEY,
+        JSON.stringify({ ...latest, orderStatus })
+      );
+    }
+
+    // Only restore when entering cancelled (not if already cancelled)
+    if (orderStatus === 'cancelled' && previousStatus !== 'cancelled') {
+      this.restoreStockForOrder(current);
+    }
+
+    this.toastService.success(`Order status updated to ${orderStatus}.`);
   }
 
   // ============================================================
@@ -90,23 +139,9 @@ export class OrderService {
     }
   }
 
-  updateOrderStatus(orderId: string, orderStatus: Order['orderStatus']): void {
-    const orders = this.ordersSource.value.map((order) =>
-      order.id === orderId ? { ...order, orderStatus } : order,
-    );
-
-    localStorage.setItem(this.ORDERS_KEY, JSON.stringify(orders));
-    this.ordersSource.next(orders);
-
-    // Keep latest in sync if this is the latest order
-    const latest = this.getLatestOrder();
-    if (latest?.id === orderId) {
-      localStorage.setItem(
-        this.LATEST_ORDER_KEY,
-        JSON.stringify({ ...latest, orderStatus }),
-      );
+  private restoreStockForOrder(order: Order): void {
+    for (const item of order.items) {
+      this.productService.restoreStock(item.productId, item.quantity);
     }
-
-    this.toastService.success(`Order status updated to ${orderStatus}.`);
   }
 }
