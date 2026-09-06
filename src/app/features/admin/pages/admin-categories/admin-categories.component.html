@@ -1,15 +1,10 @@
 <div class="admin-categories">
-
   <!-- =====================================================
        PAGE HEADER
   ====================================================== -->
   <div class="admin-categories__header">
-
     <div class="admin-categories__heading">
-      <h1 class="admin-categories__title">
-        Categories
-      </h1>
-
+      <h1 class="admin-categories__title">Categories</h1>
       <p class="admin-categories__subtitle">
         Organize and manage your store product categories and subcategories.
       </p>
@@ -18,1341 +13,715 @@
     <button
       type="button"
       class="admin-categories__add-btn"
+      (click)="openAddForm()"
     >
-      <i class="fa-solid fa-plus"></i>
+      <i class="fa-solid fa-plus" aria-hidden="true"></i>
       <span>Add Category</span>
     </button>
-
   </div>
 
+  <!-- =====================================================
+       ADD CATEGORY FORM
+  ====================================================== -->
+  <section class="admin-categories__add-form" *ngIf="showAddForm">
+    <div class="admin-categories__add-form-header">
+      <div class="admin-categories__add-form-heading">
+        <h2 class="admin-categories__add-form-title">Add category</h2>
+        <p class="admin-categories__add-form-subtitle">
+          Create a category and optionally add subcategories now.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="admin-categories__add-form-close"
+        (click)="closeAddForm()"
+        aria-label="Close add category form"
+      >
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="admin-categories__add-form-body">
+      <div class="admin-categories__form-group">
+        <label class="admin-categories__form-label" for="newCategoryLabel">
+          Category name
+        </label>
+        <input
+          id="newCategoryLabel"
+          type="text"
+          class="admin-categories__form-input"
+          name="newCategoryLabel"
+          [(ngModel)]="newCategoryLabel"
+          placeholder="e.g. Dresses"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="admin-categories__pending-subs">
+        <p class="admin-categories__form-label">
+          Subcategories <span>(optional)</span>
+        </p>
+
+        <ul *ngIf="pendingSubNames.length">
+          <li *ngFor="let name of pendingSubNames; let i = index">
+            <span>{{ name }}</span>
+            <button
+              type="button"
+              (click)="removePendingSubcategory(i)"
+              [attr.aria-label]="'Remove ' + name"
+            >
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+          </li>
+        </ul>
+
+        <p
+          class="admin-categories__empty-subcategories"
+          *ngIf="!pendingSubNames.length"
+        >
+          No subcategories added yet.
+        </p>
+
+        <div class="admin-categories__pending-add">
+          <input
+            type="text"
+            class="admin-categories__form-input"
+            name="pendingSubDraft"
+            [(ngModel)]="pendingSubDraft"
+            placeholder="e.g. Mini Dresses"
+            autocomplete="off"
+            (keydown.enter)="$event.preventDefault(); addPendingSubcategory()"
+          />
+          <button type="button" (click)="addPendingSubcategory()">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            Add subcategory
+          </button>
+        </div>
+      </div>
+
+      <div class="admin-categories__form-error" *ngIf="addError" role="alert">
+        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+        <span>{{ addError }}</span>
+      </div>
+
+      <div class="admin-categories__form-actions">
+        <button
+          type="button"
+          class="admin-categories__form-btn admin-categories__form-btn--secondary"
+          (click)="closeAddForm()"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="admin-categories__form-btn admin-categories__form-btn--primary"
+          (click)="submitAddCategory()"
+        >
+          <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          Add Category
+        </button>
+      </div>
+    </div>
+  </section>
 
   <!-- =====================================================
        SUMMARY CARDS
   ====================================================== -->
   <div class="admin-categories__summary">
-
     <div class="row g-4">
-
-      <!-- Total Categories -->
       <div class="col-12 col-sm-6 col-xl-3">
-
         <div class="admin-categories__summary-card">
-
           <div class="admin-categories__summary-icon">
-            <i class="fa-solid fa-layer-group"></i>
+            <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
           </div>
-
           <div class="admin-categories__summary-content">
-
-            <span class="admin-categories__summary-label">
-              Total Categories
-            </span>
-
+            <span class="admin-categories__summary-label">Total Categories</span>
             <h3 class="admin-categories__summary-value">
-              10
+              {{ totalCategories }}
             </h3>
-
           </div>
-
         </div>
-
       </div>
 
-
-      <!-- Total Subcategories -->
       <div class="col-12 col-sm-6 col-xl-3">
-
         <div class="admin-categories__summary-card">
-
           <div class="admin-categories__summary-icon">
-            <i class="fa-solid fa-sitemap"></i>
+            <i class="fa-solid fa-sitemap" aria-hidden="true"></i>
           </div>
-
           <div class="admin-categories__summary-content">
-
             <span class="admin-categories__summary-label">
               Total Subcategories
             </span>
-
             <h3 class="admin-categories__summary-value">
-              26
+              {{ totalSubcategories }}
             </h3>
-
           </div>
-
         </div>
-
       </div>
 
-
-      <!-- Categorized Products -->
       <div class="col-12 col-sm-6 col-xl-3">
-
         <div class="admin-categories__summary-card">
-
           <div class="admin-categories__summary-icon">
-            <i class="fa-solid fa-box"></i>
+            <i class="fa-solid fa-box" aria-hidden="true"></i>
           </div>
-
           <div class="admin-categories__summary-content">
-
             <span class="admin-categories__summary-label">
               Categorized Products
             </span>
-
             <h3 class="admin-categories__summary-value">
-              128
+              {{ categorizedProducts }}
             </h3>
-
           </div>
-
         </div>
-
       </div>
 
-
-      <!-- Empty Categories -->
       <div class="col-12 col-sm-6 col-xl-3">
-
         <div class="admin-categories__summary-card">
-
           <div class="admin-categories__summary-icon">
-            <i class="fa-solid fa-folder-open"></i>
+            <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
           </div>
-
           <div class="admin-categories__summary-content">
-
-            <span class="admin-categories__summary-label">
-              Empty Categories
-            </span>
-
+            <span class="admin-categories__summary-label">Empty Categories</span>
             <h3 class="admin-categories__summary-value">
-              1
+              {{ emptyCategories }}
             </h3>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
-
 
   <!-- =====================================================
        MAIN CONTENT
   ====================================================== -->
   <section class="admin-categories__content">
-
-    <!-- Content Header -->
     <div class="admin-categories__content-header">
-
       <div>
-
-        <h2 class="admin-categories__content-title">
-          All Categories
-        </h2>
-
+        <h2 class="admin-categories__content-title">All Categories</h2>
         <p class="admin-categories__content-subtitle">
           Manage categories and their subcategories.
         </p>
-
       </div>
-
     </div>
 
-
-    <!-- ===================================================
-         TOOLBAR
-    ==================================================== -->
     <div class="admin-categories__toolbar">
-
-      <!-- Search -->
       <div class="admin-categories__search">
-
-        <i class="fa-solid fa-magnifying-glass"></i>
-
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
         <input
           type="text"
           class="admin-categories__search-input"
           placeholder="Search categories or subcategories..."
+          name="searchTerm"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchOrFilterChange()"
         />
-
       </div>
 
-
-      <!-- Filter -->
       <div class="admin-categories__filters">
-
-        <select class="admin-categories__select">
-
-          <option selected>
-            All Categories
-          </option>
-
-          <option>
-            Active
-          </option>
-
-          <option>
-            Inactive
-          </option>
-
+        <select
+          class="admin-categories__select"
+          name="statusFilter"
+          [(ngModel)]="statusFilter"
+          (ngModelChange)="onSearchOrFilterChange()"
+          aria-label="Filter categories"
+        >
+          <option value="">All Categories</option>
+          <option value="with-products">With products</option>
+          <option value="empty">Empty</option>
         </select>
-
       </div>
-
     </div>
 
+    <div
+      class="admin-categories__form-error"
+      *ngIf="categoryDeleteError"
+      role="alert"
+    >
+      <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+      <span>{{ categoryDeleteError }}</span>
+    </div>
 
-    <!-- ===================================================
-         CATEGORY TABLE
-    ==================================================== -->
     <div class="admin-categories__table-wrapper">
-
       <table class="admin-categories__table">
-
         <thead>
-
           <tr>
-
-            <th>
-              Category
-            </th>
-
-            <th>
-              Subcategories
-            </th>
-
-            <th>
-              Products
-            </th>
-
-            <th>
-              Status
-            </th>
-
-            <th>
-              Created
-            </th>
-
-            <th class="admin-categories__actions-heading">
-              Actions
-            </th>
-
+            <th>Category</th>
+            <th>Subcategories</th>
+            <th>Products</th>
+            <th>Status</th>
+            <th>Slug</th>
+            <th class="admin-categories__actions-heading">Actions</th>
           </tr>
-
         </thead>
 
-
         <tbody>
-
-
-          <!-- =================================================
-               DRESSES
-          ================================================== -->
-          <tr>
-
-            <!-- Category -->
+          <tr *ngFor="let row of filteredRows; trackBy: trackByCategory">
             <td>
-
               <div class="admin-categories__category">
-
-                <div class="admin-categories__category-icon">
-                  <i class="fa-solid fa-shirt"></i>
-                </div>
-
                 <div class="admin-categories__category-info">
-
                   <span class="admin-categories__category-name">
-                    Dresses
+                    {{ row.label }}
                   </span>
-
-                  <span class="admin-categories__category-description">
-                    Dresses and fashion pieces
-                  </span>
-
                   <span class="admin-categories__category-count">
-                    4 subcategories
+                    {{ row.subcategories.length }}
+                    subcategor{{
+                      row.subcategories.length === 1 ? "y" : "ies"
+                    }}
                   </span>
-
                 </div>
-
               </div>
-
             </td>
 
-
-            <!-- Subcategories -->
             <td>
-
-              <div class="admin-categories__subcategories">
-
-                <span class="admin-categories__subcategory">
-                  Mini Dresses
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Midi Dresses
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Maxi Dresses
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Bodycon Dresses
-                </span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              32
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-categories__status admin-categories__status--active"
+              <div
+                class="admin-categories__subcategories"
+                *ngIf="row.subcategories.length; else noSubs"
               >
-                Active
+                <span
+                  class="admin-categories__subcategory"
+                  *ngFor="let sub of row.subcategories; trackBy: trackBySub"
+                >
+                  {{ sub.name }}
+                </span>
+              </div>
+              <ng-template #noSubs>
+                <span class="admin-categories__empty-subcategories">
+                  No subcategories
+                </span>
+              </ng-template>
+            </td>
+
+            <td>{{ row.productCount }}</td>
+
+            <td>
+              <span
+                class="admin-categories__status"
+                [class.admin-categories__status--active]="!isEmpty(row)"
+                [class.admin-categories__status--inactive]="isEmpty(row)"
+              >
+                {{ isEmpty(row) ? "Empty" : "In use" }}
               </span>
-
             </td>
 
-
             <td>
-              Jan 12, 2026
+              <code class="admin-categories__slug">{{ row.category }}</code>
             </td>
 
-
             <td>
-
               <div class="admin-categories__actions">
-
                 <button
                   type="button"
                   class="admin-categories__action-btn admin-categories__action-btn--view"
-                  aria-label="View Dresses"
+                  (click)="openViewModal(row)"
+                  [attr.aria-label]="'View subcategories for ' + row.label"
+                  title="View subcategories"
                 >
-                  <i class="fa-solid fa-eye"></i>
+                  <i class="fa-solid fa-eye" aria-hidden="true"></i>
                 </button>
 
                 <button
                   type="button"
                   class="admin-categories__action-btn admin-categories__action-btn--edit"
-                  aria-label="Edit Dresses"
+                  (click)="openEditModal(row)"
+                  [attr.aria-label]="'Edit ' + row.label"
+                  title="Edit category"
                 >
-                  <i class="fa-solid fa-pen"></i>
+                  <i class="fa-solid fa-pen" aria-hidden="true"></i>
                 </button>
 
                 <button
                   type="button"
                   class="admin-categories__action-btn admin-categories__action-btn--delete"
-                  aria-label="Delete Dresses"
+                  (click)="openDeleteCategoryModal(row)"
+                  [attr.aria-label]="'Delete ' + row.label"
+                  title="Delete category"
                 >
-                  <i class="fa-solid fa-trash"></i>
+                  <i class="fa-solid fa-trash" aria-hidden="true"></i>
                 </button>
-
               </div>
-
             </td>
-
           </tr>
 
-
-          <!-- =================================================
-               WIGS
-          ================================================== -->
-          <tr>
-
-            <td>
-
-              <div class="admin-categories__category">
-
-                <div class="admin-categories__category-icon">
-                  <i class="fa-solid fa-wand-magic-sparkles"></i>
-                </div>
-
-                <div class="admin-categories__category-info">
-
-                  <span class="admin-categories__category-name">
-                    Wigs
-                  </span>
-
-                  <span class="admin-categories__category-description">
-                    Wigs and hair collections
-                  </span>
-
-                  <span class="admin-categories__category-count">
-                    3 subcategories
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__subcategories">
-
-                <span class="admin-categories__subcategory">
-                  Human Hair
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Bob Wigs
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Lace Front
-                </span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              18
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-categories__status admin-categories__status--active"
-              >
-                Active
-              </span>
-
-            </td>
-
-
-            <td>
-              Jan 15, 2026
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__actions">
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--view"
-                  aria-label="View Wigs"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--edit"
-                  aria-label="Edit Wigs"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--delete"
-                  aria-label="Delete Wigs"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-
-              </div>
-
-            </td>
-
+          <tr *ngIf="!filteredRows.length">
+            <td colspan="6">No categories match your search.</td>
           </tr>
-
-
-          <!-- =================================================
-               LINGERIE
-          ================================================== -->
-          <tr>
-
-            <td>
-
-              <div class="admin-categories__category">
-
-                <div class="admin-categories__category-icon">
-                  <i class="fa-solid fa-gem"></i>
-                </div>
-
-                <div class="admin-categories__category-info">
-
-                  <span class="admin-categories__category-name">
-                    Lingerie
-                  </span>
-
-                  <span class="admin-categories__category-description">
-                    Lingerie and intimate wear
-                  </span>
-
-                  <span class="admin-categories__category-count">
-                    3 subcategories
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__subcategories">
-
-                <span class="admin-categories__subcategory">
-                  Bras
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Panties
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Lingerie Sets
-                </span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              21
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-categories__status admin-categories__status--active"
-              >
-                Active
-              </span>
-
-            </td>
-
-
-            <td>
-              Jan 18, 2026
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__actions">
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--view"
-                  aria-label="View Lingerie"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--edit"
-                  aria-label="Edit Lingerie"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--delete"
-                  aria-label="Delete Lingerie"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-
-              </div>
-
-            </td>
-
-          </tr>
-
-
-          <!-- =================================================
-               SHAPERS
-          ================================================== -->
-          <tr>
-
-            <td>
-
-              <div class="admin-categories__category">
-
-                <div class="admin-categories__category-icon">
-                  <i class="fa-solid fa-compress"></i>
-                </div>
-
-                <div class="admin-categories__category-info">
-
-                  <span class="admin-categories__category-name">
-                    Shapers
-                  </span>
-
-                  <span class="admin-categories__category-description">
-                    Body shapers and control wear
-                  </span>
-
-                  <span class="admin-categories__category-count">
-                    2 subcategories
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__subcategories">
-
-                <span class="admin-categories__subcategory">
-                  Waist Trainers
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Body Shapers
-                </span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              14
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-categories__status admin-categories__status--active"
-              >
-                Active
-              </span>
-
-            </td>
-
-
-            <td>
-              Jan 20, 2026
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__actions">
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--view"
-                  aria-label="View Shapers"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--edit"
-                  aria-label="Edit Shapers"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--delete"
-                  aria-label="Delete Shapers"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-
-              </div>
-
-            </td>
-
-          </tr>
-
-
-          <!-- =================================================
-               SHOES
-          ================================================== -->
-          <tr>
-
-            <td>
-
-              <div class="admin-categories__category">
-
-                <div class="admin-categories__category-icon">
-                  <i class="fa-solid fa-shoe-prints"></i>
-                </div>
-
-                <div class="admin-categories__category-info">
-
-                  <span class="admin-categories__category-name">
-                    Shoes
-                  </span>
-
-                  <span class="admin-categories__category-description">
-                    Shoes and footwear
-                  </span>
-
-                  <span class="admin-categories__category-count">
-                    3 subcategories
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__subcategories">
-
-                <span class="admin-categories__subcategory">
-                  Heels
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Sandals
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Flats
-                </span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              12
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-categories__status admin-categories__status--active"
-              >
-                Active
-              </span>
-
-            </td>
-
-
-            <td>
-              Jan 24, 2026
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__actions">
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--view"
-                  aria-label="View Shoes"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--edit"
-                  aria-label="Edit Shoes"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--delete"
-                  aria-label="Delete Shoes"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-
-              </div>
-
-            </td>
-
-          </tr>
-
-
-          <!-- =================================================
-               TOPS
-          ================================================== -->
-          <tr>
-
-            <td>
-
-              <div class="admin-categories__category">
-
-                <div class="admin-categories__category-icon">
-                  <i class="fa-solid fa-shirt"></i>
-                </div>
-
-                <div class="admin-categories__category-info">
-
-                  <span class="admin-categories__category-name">
-                    Tops
-                  </span>
-
-                  <span class="admin-categories__category-description">
-                    Tops and fashion tops
-                  </span>
-
-                  <span class="admin-categories__category-count">
-                    2 subcategories
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__subcategories">
-
-                <span class="admin-categories__subcategory">
-                  Crop Tops
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Blouses
-                </span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              10
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-categories__status admin-categories__status--active"
-              >
-                Active
-              </span>
-
-            </td>
-
-
-            <td>
-              Jan 26, 2026
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__actions">
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--view"
-                  aria-label="View Tops"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--edit"
-                  aria-label="Edit Tops"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--delete"
-                  aria-label="Delete Tops"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-
-              </div>
-
-            </td>
-
-          </tr>
-
-
-          <!-- =================================================
-               BOTTOMS
-          ================================================== -->
-          <tr>
-
-            <td>
-
-              <div class="admin-categories__category">
-
-                <div class="admin-categories__category-icon">
-                  <i class="fa-solid fa-socks"></i>
-                </div>
-
-                <div class="admin-categories__category-info">
-
-                  <span class="admin-categories__category-name">
-                    Bottoms
-                  </span>
-
-                  <span class="admin-categories__category-description">
-                    Skirts, trousers and bottoms
-                  </span>
-
-                  <span class="admin-categories__category-count">
-                    2 subcategories
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__subcategories">
-
-                <span class="admin-categories__subcategory">
-                  Skirts
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Trousers
-                </span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              8
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-categories__status admin-categories__status--active"
-              >
-                Active
-              </span>
-
-            </td>
-
-
-            <td>
-              Jan 28, 2026
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__actions">
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--view"
-                  aria-label="View Bottoms"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--edit"
-                  aria-label="Edit Bottoms"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--delete"
-                  aria-label="Delete Bottoms"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-
-              </div>
-
-            </td>
-
-          </tr>
-
-
-          <!-- =================================================
-               MAKE-UP
-          ================================================== -->
-          <tr>
-
-            <td>
-
-              <div class="admin-categories__category">
-
-                <div class="admin-categories__category-icon">
-                  <i class="fa-solid fa-sparkles"></i>
-                </div>
-
-                <div class="admin-categories__category-info">
-
-                  <span class="admin-categories__category-name">
-                    Make-up
-                  </span>
-
-                  <span class="admin-categories__category-description">
-                    Beauty and make-up products
-                  </span>
-
-                  <span class="admin-categories__category-count">
-                    2 subcategories
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__subcategories">
-
-                <span class="admin-categories__subcategory">
-                  Face
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Lips
-                </span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              7
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-categories__status admin-categories__status--active"
-              >
-                Active
-              </span>
-
-            </td>
-
-
-            <td>
-              Feb 02, 2026
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__actions">
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--view"
-                  aria-label="View Make-up"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--edit"
-                  aria-label="Edit Make-up"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--delete"
-                  aria-label="Delete Make-up"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-
-              </div>
-
-            </td>
-
-          </tr>
-
-
-          <!-- =================================================
-               ACCESSORIES
-          ================================================== -->
-          <tr>
-
-            <td>
-
-              <div class="admin-categories__category">
-
-                <div class="admin-categories__category-icon">
-                  <i class="fa-solid fa-gift"></i>
-                </div>
-
-                <div class="admin-categories__category-info">
-
-                  <span class="admin-categories__category-name">
-                    Accessories
-                  </span>
-
-                  <span class="admin-categories__category-description">
-                    Fashion accessories
-                  </span>
-
-                  <span class="admin-categories__category-count">
-                    2 subcategories
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__subcategories">
-
-                <span class="admin-categories__subcategory">
-                  Jewelry
-                </span>
-
-                <span class="admin-categories__subcategory">
-                  Bags
-                </span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              6
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-categories__status admin-categories__status--active"
-              >
-                Active
-              </span>
-
-            </td>
-
-
-            <td>
-              Feb 05, 2026
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__actions">
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--view"
-                  aria-label="View Accessories"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--edit"
-                  aria-label="Edit Accessories"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--delete"
-                  aria-label="Delete Accessories"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-
-              </div>
-
-            </td>
-
-          </tr>
-
-
-          <!-- =================================================
-               EBOOKS
-          ================================================== -->
-          <tr>
-
-            <td>
-
-              <div class="admin-categories__category">
-
-                <div class="admin-categories__category-icon">
-                  <i class="fa-solid fa-book"></i>
-                </div>
-
-                <div class="admin-categories__category-info">
-
-                  <span class="admin-categories__category-name">
-                    Ebooks
-                  </span>
-
-                  <span class="admin-categories__category-description">
-                    Digital products and resources
-                  </span>
-
-                  <span class="admin-categories__category-count">
-                    0 subcategories
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <span class="admin-categories__empty-subcategories">
-                No subcategories
-              </span>
-
-            </td>
-
-
-            <td>
-              0
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-categories__status admin-categories__status--inactive"
-              >
-                Inactive
-              </span>
-
-            </td>
-
-
-            <td>
-              Feb 08, 2026
-            </td>
-
-
-            <td>
-
-              <div class="admin-categories__actions">
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--view"
-                  aria-label="View Ebooks"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--edit"
-                  aria-label="Edit Ebooks"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-categories__action-btn admin-categories__action-btn--delete"
-                  aria-label="Delete Ebooks"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-
-              </div>
-
-            </td>
-
-          </tr>
-
         </tbody>
-
       </table>
-
     </div>
 
-
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
     <div class="admin-categories__footer">
-
       <p class="admin-categories__results">
-        Showing 1–10 of 10 categories
+        Showing {{ filteredRows.length }} of {{ totalCategories }} categories
       </p>
-
-      <app-pagination></app-pagination>
-
     </div>
-
   </section>
 
+  <!-- =====================================================
+       EDIT CATEGORY MODAL
+  ====================================================== -->
+  <div
+    class="admin-categories__modal"
+    *ngIf="showEditModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="editCategoryTitle"
+  >
+    <div
+      class="admin-categories__modal-backdrop"
+      (click)="closeEditModal()"
+    ></div>
+
+    <div
+      class="admin-categories__modal-dialog"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="admin-categories__modal-header">
+        <div class="admin-categories__modal-heading">
+          <h2 id="editCategoryTitle" class="admin-categories__modal-title">
+            Edit category
+          </h2>
+          <p class="admin-categories__modal-subtitle">
+            Update the category name used throughout your store.
+          </p>
+        </div>
+        <button
+          type="button"
+          class="admin-categories__modal-close"
+          (click)="closeEditModal()"
+          aria-label="Close edit category"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="admin-categories__modal-body">
+        <div class="admin-categories__modal-field">
+          <label class="admin-categories__modal-label" for="editCategoryLabel">
+            Category name
+          </label>
+          <input
+            id="editCategoryLabel"
+            type="text"
+            class="admin-categories__modal-input"
+            name="editLabel"
+            [(ngModel)]="editLabel"
+            placeholder="Enter category name"
+            autocomplete="off"
+          />
+          <p class="admin-categories__modal-help" *ngIf="editingSlug">
+            Slug (unchanged): <code>{{ editingSlug }}</code>
+          </p>
+          <div
+            class="admin-categories__modal-error"
+            *ngIf="editError"
+            role="alert"
+          >
+            <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+            <span>{{ editError }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-categories__modal-footer">
+        <button
+          type="button"
+          class="admin-categories__modal-btn admin-categories__modal-btn--cancel"
+          (click)="closeEditModal()"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="admin-categories__modal-btn admin-categories__modal-btn--save"
+          (click)="submitEditCategory()"
+        >
+          <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+          Save changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       VIEW CATEGORY — SUBCATEGORIES
+  ====================================================== -->
+  <div
+    class="admin-categories__modal"
+    *ngIf="showViewModal && viewRow"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="viewCategoryTitle"
+  >
+    <div
+      class="admin-categories__modal-backdrop"
+      (click)="closeViewModal()"
+    ></div>
+
+    <div
+      class="admin-categories__modal-dialog admin-categories__modal-dialog--wide"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="admin-categories__modal-header">
+        <div class="admin-categories__modal-heading">
+          <h2 id="viewCategoryTitle" class="admin-categories__modal-title">
+            {{ viewRow.label }}
+          </h2>
+          <p class="admin-categories__modal-subtitle">
+            Slug: <code>{{ viewRow.category }}</code>
+            · {{ viewRow.productCount }} product{{
+              viewRow.productCount === 1 ? "" : "s"
+            }}
+          </p>
+        </div>
+        <button
+          type="button"
+          class="admin-categories__modal-close"
+          (click)="closeViewModal()"
+          aria-label="Close view category"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="admin-categories__modal-body">
+        <h3 class="admin-categories__section-title">Subcategories</h3>
+
+        <ul
+          class="admin-categories__sub-list"
+          *ngIf="viewRow.subcategories.length; else noSubsView"
+        >
+          <li *ngFor="let sub of viewRow.subcategories; trackBy: trackBySub">
+            <ng-container *ngIf="editingSubSlug !== sub.slug">
+              <div class="admin-categories__sub-info">
+                <span>{{ sub.name }}</span>
+                <code>{{ sub.slug }}</code>
+              </div>
+              <div class="admin-categories__sub-actions">
+                <button
+                  type="button"
+                  (click)="startEditSubcategory(sub)"
+                  [attr.aria-label]="'Edit ' + sub.name"
+                  title="Edit subcategory"
+                >
+                  <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                </button>
+                <button
+                  type="button"
+                  (click)="openDeleteSubModal(sub)"
+                  [attr.aria-label]="'Delete ' + sub.name"
+                  title="Delete subcategory"
+                >
+                  <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                </button>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="editingSubSlug === sub.slug">
+              <input
+                type="text"
+                class="admin-categories__form-input"
+                name="editingSubName"
+                [(ngModel)]="editingSubName"
+                autocomplete="off"
+                aria-label="Subcategory name"
+              />
+              <button type="button" (click)="submitEditSubcategory()">
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
+                Save
+              </button>
+              <button type="button" (click)="cancelEditSubcategory()">
+                Cancel
+              </button>
+              <p
+                class="admin-categories__form-error"
+                *ngIf="subEditError"
+                role="alert"
+              >
+                {{ subEditError }}
+              </p>
+            </ng-container>
+          </li>
+        </ul>
+
+        <ng-template #noSubsView>
+          <p class="admin-categories__empty-subcategories">
+            No subcategories yet. Add one below.
+          </p>
+        </ng-template>
+
+        <div class="admin-categories__form-error" *ngIf="subError" role="alert">
+          <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+          <span>{{ subError }}</span>
+        </div>
+
+        <div class="admin-categories__sub-form">
+          <div class="admin-categories__form-group">
+            <label class="admin-categories__form-label" for="newSubcategoryName">
+              Add subcategory
+            </label>
+            <input
+              id="newSubcategoryName"
+              type="text"
+              class="admin-categories__form-input"
+              name="newSubcategoryName"
+              [(ngModel)]="newSubcategoryName"
+              placeholder="e.g. Lace Front"
+              autocomplete="off"
+              (keydown.enter)="$event.preventDefault(); submitAddSubcategory()"
+            />
+          </div>
+          <div class="admin-categories__form-actions">
+            <button
+              type="button"
+              class="admin-categories__form-btn admin-categories__form-btn--primary"
+              (click)="submitAddSubcategory()"
+            >
+              <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              Add subcategory
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       DELETE SUBCATEGORY CONFIRM
+  ====================================================== -->
+  <div
+    class="admin-categories__modal admin-categories__modal--confirm"
+    *ngIf="showDeleteSubModal && subToDelete"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deleteSubTitle"
+  >
+    <div
+      class="admin-categories__modal-backdrop"
+      (click)="closeDeleteSubModal()"
+    ></div>
+
+    <div
+      class="admin-categories__modal-dialog"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="admin-categories__modal-header">
+        <h2 id="deleteSubTitle" class="admin-categories__modal-title">
+          Delete subcategory?
+        </h2>
+        <button
+          type="button"
+          class="admin-categories__modal-close"
+          (click)="closeDeleteSubModal()"
+          aria-label="Close"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="admin-categories__modal-body">
+        <p>
+          You are about to delete
+          <strong>{{ subToDelete.name }}</strong>
+          (<code>{{ subToDelete.slug }}</code>). This cannot be undone.
+        </p>
+        <div
+          class="admin-categories__modal-error"
+          *ngIf="deleteSubError"
+          role="alert"
+        >
+          <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+          <span>{{ deleteSubError }}</span>
+        </div>
+      </div>
+
+      <div class="admin-categories__modal-footer">
+        <button
+          type="button"
+          class="admin-categories__modal-btn admin-categories__modal-btn--cancel"
+          (click)="closeDeleteSubModal()"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="admin-categories__modal-btn admin-categories__modal-btn--danger"
+          (click)="confirmDeleteSubcategory()"
+        >
+          <i class="fa-solid fa-trash" aria-hidden="true"></i>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       DELETE CATEGORY CONFIRM
+  ====================================================== -->
+  <div
+    class="admin-categories__modal admin-categories__modal--confirm"
+    *ngIf="showDeleteCategoryModal && categoryToDelete"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deleteCategoryTitle"
+  >
+    <div
+      class="admin-categories__modal-backdrop"
+      (click)="closeDeleteCategoryModal()"
+    ></div>
+
+    <div
+      class="admin-categories__modal-dialog"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="admin-categories__modal-header">
+        <h2 id="deleteCategoryTitle" class="admin-categories__modal-title">
+          Delete category?
+        </h2>
+        <button
+          type="button"
+          class="admin-categories__modal-close"
+          (click)="closeDeleteCategoryModal()"
+          aria-label="Close"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="admin-categories__modal-body">
+        <p>
+          You are about to delete
+          <strong>{{ categoryToDelete.label }}</strong>
+          (<code>{{ categoryToDelete.category }}</code>). Any subcategories under
+          it will be removed too. This cannot be undone.
+        </p>
+        <div
+          class="admin-categories__modal-error"
+          *ngIf="deleteCategoryError"
+          role="alert"
+        >
+          <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+          <span>{{ deleteCategoryError }}</span>
+        </div>
+      </div>
+
+      <div class="admin-categories__modal-footer">
+        <button
+          type="button"
+          class="admin-categories__modal-btn admin-categories__modal-btn--cancel"
+          (click)="closeDeleteCategoryModal()"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="admin-categories__modal-btn admin-categories__modal-btn--danger"
+          (click)="confirmDeleteCategory()"
+        >
+          <i class="fa-solid fa-trash" aria-hidden="true"></i>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

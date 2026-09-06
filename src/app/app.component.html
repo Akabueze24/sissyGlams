@@ -1,3 +1,46 @@
+<!-- Age Gate -->
+<div
+  class="age-gate-overlay"
+  *ngIf="!(isVerified$ | async) && !showRestrictedPage"
+>
+  <div class="age-gate-modal">
+    <div class="age-gate-icon">18+</div>
+
+    <h2>Age Verification</h2>
+
+    <p>This website contains adult-oriented products.</p>
+
+    <p class="age-gate-question">Are you 18 years or older?</p>
+
+    <div class="age-gate-actions">
+      <button type="button" class="btn-confirm" (click)="onConfirm()">
+        Yes, I'm 18+
+      </button>
+
+      <button type="button" class="btn-reject" (click)="onReject()">
+        No, Exit
+      </button>
+    </div>
+
+    <p class="age-gate-disclaimer">
+      By entering this website, you confirm that you are at least 18 years old.
+    </p>
+  </div>
+</div>
+
+<!-- Age Restricted Page -->
+<div class="age-restricted" *ngIf="showRestrictedPage">
+  <div class="age-restricted__content">
+    <div class="age-restricted__icon">18+</div>
+
+    <h1>Access Restricted</h1>
+
+    <p>You must be 18 years or older to access SissyGlams.</p>
+
+    <p>We’re sorry, but you cannot continue to our website.</p>
+  </div>
+</div>
+
 <!-- <app-header></app-header> -->
 
 <router-outlet></router-outlet>

@@ -43,7 +43,7 @@ import { AdminInventoryComponent } from './features/admin/pages/admin-inventory/
 import { SettingsComponent } from './features/admin/pages/settings/settings.component';
 import { SalesChartComponent } from './features/admin/pages/sales-chart/sales-chart.component';
 import { QuillModule } from 'ngx-quill';
-import { StoreLayoutComponent } from './layouts/store-layout/store-layout.component';
+import { StoreLayoutComponent } from './features/store-layout/store-layout.component';
 
 
 register();

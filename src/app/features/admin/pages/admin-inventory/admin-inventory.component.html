@@ -1,792 +1,275 @@
 <div class="admin-inventory">
-
   <!-- =====================================================
        PAGE HEADER
   ====================================================== -->
   <header class="admin-inventory__header">
-
     <div class="admin-inventory__heading">
-
-      <h1 class="admin-inventory__title">
-        Inventory
-      </h1>
+      <h1 class="admin-inventory__title">Inventory</h1>
 
       <p class="admin-inventory__subtitle">
         Monitor product stock levels and availability.
       </p>
-
     </div>
-
   </header>
-
 
   <!-- =====================================================
        INVENTORY SUMMARY
   ====================================================== -->
   <section class="admin-inventory__summary">
-
     <div class="row g-4">
-
       <!-- Total Products -->
       <div class="col-12 col-sm-6 col-xl-3">
-
         <div class="admin-inventory__summary-card">
-
           <div class="admin-inventory__summary-icon">
             <i class="fa-solid fa-boxes-stacked"></i>
           </div>
 
           <div class="admin-inventory__summary-content">
-
-            <span class="admin-inventory__summary-label">
-              Total Products
-            </span>
+            <span class="admin-inventory__summary-label"> Total Products </span>
 
             <h3 class="admin-inventory__summary-value">
-              128
+              {{ totalCount }}
             </h3>
-
           </div>
-
         </div>
-
       </div>
-
 
       <!-- In Stock -->
       <div class="col-12 col-sm-6 col-xl-3">
-
         <div class="admin-inventory__summary-card">
-
           <div class="admin-inventory__summary-icon">
             <i class="fa-solid fa-circle-check"></i>
           </div>
 
           <div class="admin-inventory__summary-content">
-
-            <span class="admin-inventory__summary-label">
-              In Stock
-            </span>
+            <span class="admin-inventory__summary-label"> In Stock </span>
 
             <h3 class="admin-inventory__summary-value">
-              104
+              {{ inStockCount }}
             </h3>
-
           </div>
-
         </div>
-
       </div>
-
 
       <!-- Low Stock -->
       <div class="col-12 col-sm-6 col-xl-3">
-
         <div class="admin-inventory__summary-card">
-
           <div class="admin-inventory__summary-icon">
             <i class="fa-solid fa-triangle-exclamation"></i>
           </div>
 
           <div class="admin-inventory__summary-content">
-
-            <span class="admin-inventory__summary-label">
-              Low Stock
-            </span>
+            <span class="admin-inventory__summary-label"> Low Stock </span>
 
             <h3 class="admin-inventory__summary-value">
-              18
+              {{ lowStockCount }}
             </h3>
-
           </div>
-
         </div>
-
       </div>
-
 
       <!-- Out of Stock -->
       <div class="col-12 col-sm-6 col-xl-3">
-
         <div class="admin-inventory__summary-card">
-
           <div class="admin-inventory__summary-icon">
             <i class="fa-solid fa-circle-xmark"></i>
           </div>
 
           <div class="admin-inventory__summary-content">
-
-            <span class="admin-inventory__summary-label">
-              Out of Stock
-            </span>
+            <span class="admin-inventory__summary-label"> Out of Stock </span>
 
             <h3 class="admin-inventory__summary-value">
-              6
+              {{ outOfStockCount }}
             </h3>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
-
   </section>
-
 
   <!-- =====================================================
        INVENTORY CONTENT
   ====================================================== -->
   <section class="admin-inventory__content">
-
     <!-- Content Header -->
     <div class="admin-inventory__content-header">
-
       <div>
-
-        <h2 class="admin-inventory__content-title">
-          Stock Overview
-        </h2>
+        <h2 class="admin-inventory__content-title">Stock Overview</h2>
 
         <p class="admin-inventory__content-subtitle">
           View and monitor the current stock of your products.
         </p>
-
       </div>
-
     </div>
-
 
     <!-- ===================================================
          TOOLBAR
     ==================================================== -->
     <div class="admin-inventory__toolbar">
-
       <!-- Search -->
       <div class="admin-inventory__search">
-
         <i class="fa-solid fa-magnifying-glass"></i>
 
         <input
           type="text"
           class="admin-inventory__search-input"
           placeholder="Search products or SKU..."
+          [(ngModel)]="searchTerm"
         />
-
       </div>
-
 
       <!-- Stock Filter -->
       <div class="admin-inventory__filters">
-
         <select
           class="admin-inventory__select"
+          [(ngModel)]="stockFilter"
           aria-label="Filter inventory by stock status"
         >
-
-          <option selected>
-            All Stock
-          </option>
-
-          <option>
-            In Stock
-          </option>
-
-          <option>
-            Low Stock
-          </option>
-
-          <option>
-            Out of Stock
-          </option>
-
+          <option value="">All Stock</option>
+          <option value="in-stock">In Stock</option>
+          <option value="low">Low Stock</option>
+          <option value="out">Out of Stock</option>
         </select>
-
       </div>
-
     </div>
-
 
     <!-- ===================================================
          INVENTORY TABLE
     ==================================================== -->
     <div class="admin-inventory__table-wrapper">
-
       <table class="admin-inventory__table">
-
         <thead>
-
           <tr>
+            <th>Product</th>
 
-            <th>
-              Product
-            </th>
+            <th>SKU</th>
 
-            <th>
-              SKU
-            </th>
+            <th>Category</th>
 
-            <th>
-              Category
-            </th>
+            <th>Subcategory</th>
 
-            <th>
-              Subcategory
-            </th>
+            <th>Stock</th>
 
-            <th>
-              Stock
-            </th>
+            <th>Status</th>
 
-            <th>
-              Status
-            </th>
+            <th>Last Updated</th>
 
-            <th>
-              Last Updated
-            </th>
-
-            <th class="admin-inventory__actions-heading">
-              Actions
-            </th>
-
+            <th class="admin-inventory__actions-heading">Actions</th>
           </tr>
-
         </thead>
 
-
         <tbody>
-
-          <!-- =================================================
-               PRODUCT 1
-          ================================================== -->
-          <tr>
-
+          <tr *ngFor="let product of filteredProducts">
             <td>
-
               <div class="admin-inventory__product">
-
                 <div class="admin-inventory__product-image">
-
-                  <img
-                    src="assets/images/products/placeholder.jpg"
-                    alt="Blush Satin Wrap Dress"
-                  />
-
+                  <img [src]="productImage(product)" [alt]="product.name" />
                 </div>
-
                 <div class="admin-inventory__product-info">
-
-                  <span class="admin-inventory__product-name">
-                    Blush Satin Wrap Dress
-                  </span>
-
-                  <span class="admin-inventory__product-variant">
-                    Standard
-                  </span>
-
+                  <span class="admin-inventory__product-name">{{
+                    product.name
+                  }}</span>
+                  <span class="admin-inventory__product-variant">{{
+                    product.brand
+                  }}</span>
                 </div>
-
               </div>
-
             </td>
 
+            <td>{{ product.id }}</td>
+            <td>{{ categoryLabel(product.category) }}</td>
+            <td>{{ subcategoryLabel(product.subcategory) }}</td>
 
             <td>
-              SG-DRE-001
+              <ng-container *ngIf="editingId !== product.id">
+                <span class="admin-inventory__stock-value">{{
+                  product.stock
+                }}</span>
+              </ng-container>
+              <ng-container *ngIf="editingId === product.id">
+                <input
+                  type="number"
+                  min="0"
+                  class="admin-inventory__stock-input"
+                  [(ngModel)]="editStock"
+                />
+              </ng-container>
             </td>
 
-
             <td>
-              Dresses
-            </td>
-
-
-            <td>
-              Evening Dresses
-            </td>
-
-
-            <td>
-
-              <span class="admin-inventory__stock-value">
-                24
-              </span>
-
-            </td>
-
-
-            <td>
-
               <span
-                class="admin-inventory__status admin-inventory__status--in-stock"
+                class="admin-inventory__status"
+                [class.admin-inventory__status--in-stock]="
+                  stockStatus(product) === 'in-stock'
+                "
+                [class.admin-inventory__status--low]="
+                  stockStatus(product) === 'low'
+                "
+                [class.admin-inventory__status--out]="
+                  stockStatus(product) === 'out'
+                "
               >
-                In Stock
+                {{ stockStatusLabel(product) }}
               </span>
-
             </td>
 
-
             <td>
-              Aug 24, 2026
+              {{
+                product.createdAt
+                  ? (product.createdAt | date: "mediumDate")
+                  : "—"
+              }}
             </td>
 
-
             <td>
-
               <div class="admin-inventory__actions">
-
                 <button
-                  type="button"
-                  class="admin-inventory__action-btn"
-                  aria-label="View inventory"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <button
+                  *ngIf="editingId !== product.id"
                   type="button"
                   class="admin-inventory__action-btn admin-inventory__action-btn--edit"
                   aria-label="Update stock"
+                  (click)="startEditStock(product)"
                 >
                   <i class="fa-solid fa-pen"></i>
                 </button>
 
-              </div>
-
-            </td>
-
-          </tr>
-
-
-          <!-- =================================================
-               PRODUCT 2
-          ================================================== -->
-          <tr>
-
-            <td>
-
-              <div class="admin-inventory__product">
-
-                <div class="admin-inventory__product-image">
-
-                  <img
-                    src="assets/images/products/placeholder.jpg"
-                    alt="Black Lace Front Wig"
-                  />
-
-                </div>
-
-                <div class="admin-inventory__product-info">
-
-                  <span class="admin-inventory__product-name">
-                    Black Lace Front Wig
-                  </span>
-
-                  <span class="admin-inventory__product-variant">
-                    20 inch
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              SG-WIG-002
-            </td>
-
-
-            <td>
-              Wigs
-            </td>
-
-
-            <td>
-              Lace Front Wigs
-            </td>
-
-
-            <td>
-
-              <span class="admin-inventory__stock-value">
-                7
-              </span>
-
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-inventory__status admin-inventory__status--low"
-              >
-                Low Stock
-              </span>
-
-            </td>
-
-
-            <td>
-              Aug 23, 2026
-            </td>
-
-
-            <td>
-
-              <div class="admin-inventory__actions">
-
                 <button
+                  *ngIf="editingId === product.id"
                   type="button"
                   class="admin-inventory__action-btn"
-                  aria-label="View inventory"
+                  aria-label="Save stock"
+                  (click)="saveEditStock(product)"
                 >
-                  <i class="fa-solid fa-eye"></i>
+                  <i class="fa-solid fa-check"></i>
                 </button>
 
                 <button
-                  type="button"
-                  class="admin-inventory__action-btn admin-inventory__action-btn--edit"
-                  aria-label="Update stock"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-              </div>
-
-            </td>
-
-          </tr>
-
-
-          <!-- =================================================
-               PRODUCT 3
-          ================================================== -->
-          <tr>
-
-            <td>
-
-              <div class="admin-inventory__product">
-
-                <div class="admin-inventory__product-image">
-
-                  <img
-                    src="assets/images/products/placeholder.jpg"
-                    alt="Pink Strappy Heels"
-                  />
-
-                </div>
-
-                <div class="admin-inventory__product-info">
-
-                  <span class="admin-inventory__product-name">
-                    Pink Strappy Heels
-                  </span>
-
-                  <span class="admin-inventory__product-variant">
-                    Size 39
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              SG-SHO-003
-            </td>
-
-
-            <td>
-              Shoes
-            </td>
-
-
-            <td>
-              Heels
-            </td>
-
-
-            <td>
-
-              <span class="admin-inventory__stock-value">
-                0
-              </span>
-
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-inventory__status admin-inventory__status--out"
-              >
-                Out of Stock
-              </span>
-
-            </td>
-
-
-            <td>
-              Aug 22, 2026
-            </td>
-
-
-            <td>
-
-              <div class="admin-inventory__actions">
-
-                <button
+                  *ngIf="editingId === product.id"
                   type="button"
                   class="admin-inventory__action-btn"
-                  aria-label="View inventory"
+                  aria-label="Cancel"
+                  (click)="cancelEditStock()"
                 >
-                  <i class="fa-solid fa-eye"></i>
+                  <i class="fa-solid fa-xmark"></i>
                 </button>
-
-                <button
-                  type="button"
-                  class="admin-inventory__action-btn admin-inventory__action-btn--edit"
-                  aria-label="Update stock"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
               </div>
-
             </td>
-
           </tr>
 
-
-          <!-- =================================================
-               PRODUCT 4
-          ================================================== -->
-          <tr>
-
-            <td>
-
-              <div class="admin-inventory__product">
-
-                <div class="admin-inventory__product-image">
-
-                  <img
-                    src="assets/images/products/placeholder.jpg"
-                    alt="Black Body Shaper"
-                  />
-
-                </div>
-
-                <div class="admin-inventory__product-info">
-
-                  <span class="admin-inventory__product-name">
-                    Black Body Shaper
-                  </span>
-
-                  <span class="admin-inventory__product-variant">
-                    Medium
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              SG-SHP-004
-            </td>
-
-
-            <td>
-              Shapers
-            </td>
-
-
-            <td>
-              Full Body Shapers
-            </td>
-
-
-            <td>
-
-              <span class="admin-inventory__stock-value">
-                16
-              </span>
-
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-inventory__status admin-inventory__status--in-stock"
-              >
-                In Stock
-              </span>
-
-            </td>
-
-
-            <td>
-              Aug 21, 2026
-            </td>
-
-
-            <td>
-
-              <div class="admin-inventory__actions">
-
-                <button
-                  type="button"
-                  class="admin-inventory__action-btn"
-                  aria-label="View inventory"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-inventory__action-btn admin-inventory__action-btn--edit"
-                  aria-label="Update stock"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-              </div>
-
-            </td>
-
+          <tr *ngIf="!filteredProducts.length">
+            <td colspan="8">No products match your filters.</td>
           </tr>
-
-
-          <!-- =================================================
-               PRODUCT 5
-          ================================================== -->
-          <tr>
-
-            <td>
-
-              <div class="admin-inventory__product">
-
-                <div class="admin-inventory__product-image">
-
-                  <img
-                    src="assets/images/products/placeholder.jpg"
-                    alt="White Lace Lingerie Set"
-                  />
-
-                </div>
-
-                <div class="admin-inventory__product-info">
-
-                  <span class="admin-inventory__product-name">
-                    White Lace Lingerie Set
-                  </span>
-
-                  <span class="admin-inventory__product-variant">
-                    Large
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              SG-LIN-005
-            </td>
-
-
-            <td>
-              Lingerie
-            </td>
-
-
-            <td>
-              Lingerie Sets
-            </td>
-
-
-            <td>
-
-              <span class="admin-inventory__stock-value">
-                5
-              </span>
-
-            </td>
-
-
-            <td>
-
-              <span
-                class="admin-inventory__status admin-inventory__status--low"
-              >
-                Low Stock
-              </span>
-
-            </td>
-
-
-            <td>
-              Aug 20, 2026
-            </td>
-
-
-            <td>
-
-              <div class="admin-inventory__actions">
-
-                <button
-                  type="button"
-                  class="admin-inventory__action-btn"
-                  aria-label="View inventory"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="admin-inventory__action-btn admin-inventory__action-btn--edit"
-                  aria-label="Update stock"
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-
-              </div>
-
-            </td>
-
-          </tr>
-
         </tbody>
-
       </table>
-
     </div>
-
 
     <!-- =====================================================
          INVENTORY FOOTER
     ====================================================== -->
     <footer class="admin-inventory__footer">
-
-      <p class="admin-inventory__results">
-        Showing 1–5 of 128 products
-      </p>
+      <p class="admin-inventory__results">Showing 1–5 of 128 products</p>
 
       <app-pagination></app-pagination>
-
     </footer>
-
   </section>
-
 </div>

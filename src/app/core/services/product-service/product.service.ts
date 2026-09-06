@@ -5,10 +5,10 @@ import { Product } from '../../models/product-models/product.model';
 import { ProductFilters } from '../../models/product-models/product-filter.model';
 import { Category } from '../../models/product-models/category.model';
 import { CategoryNavItem } from '../../models/product-models/category-nav-item.model';
-import { SUBCATEGORIES } from '../../models/product-models/subcategories.model';
 import { PRODUCTS } from '../../data/product';
 import { StoreCollection } from '../../models/product-models/store-collection.model';
 import { STORE_COLLECTIONS } from '../../models/product-models/store-collections';
+import { CategoryService } from '../category-service/category.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,12 +21,10 @@ export class ProductService {
   private readonly PRODUCTS_STORAGE_KEY = 'sissy-dream-products';
 
   // ============================================================
-  // STATE (private subjects)
+  // STATE
   // ============================================================
 
-  /** All products (active + inactive) — loaded from localStorage or mock */
   private productsSource = new BehaviorSubject<Product[]>(this.loadProducts());
-
   private filtersSource = new BehaviorSubject<ProductFilters>({});
 
   // ============================================================
@@ -36,14 +34,20 @@ export class ProductService {
   products$ = this.productsSource.asObservable();
   filters$ = this.filtersSource.asObservable();
 
-  /** Admin list: every product */
+  /** Admin: every product */
   adminProducts$ = this.productsSource.asObservable();
 
-  /** Shop grid: only active products + current filters */
+  /** Shop: active + current filters */
   filteredProducts$: Observable<Product[]> = combineLatest([
     this.products$,
     this.filters$,
   ]).pipe(map(([products, filters]) => this.applyFilters(products, filters)));
+
+  // ============================================================
+  // CONSTRUCTOR
+  // ============================================================
+
+  constructor(private categoryService: CategoryService) {}
 
   // ============================================================
   // FILTER STATE
@@ -65,40 +69,26 @@ export class ProductService {
   }
 
   // ============================================================
-  // ADMIN
+  // ADMIN — products
   // ============================================================
 
   getAllProducts(): Product[] {
     return this.productsSource.value;
   }
 
-  /**
-   * Set whether a product is live on the storefront.
-   * Admin still sees inactive products in the list.
-   */
   setProductActive(productId: string, active: boolean): void {
     const products = this.productsSource.value.map((product) =>
-      product.id === productId ? { ...product, active } : product,
+      product.id === productId ? { ...product, active } : product
     );
-
     this.setProducts(products);
   }
 
-  /** Flip active ↔ inactive for one product */
   toggleProductActive(productId: string): void {
     const product = this.productsSource.value.find((p) => p.id === productId);
-
-    if (!product) {
-      return;
-    }
-
+    if (!product) return;
     this.setProductActive(productId, !product.active);
   }
 
-  /**
-   * Create a product (minimal fields for admin "Add product").
-   * Saved to memory + localStorage via setProducts.
-   */
   addProduct(input: {
     name: string;
     brand: string;
@@ -114,7 +104,7 @@ export class ProductService {
     const name = input.name.trim();
     const subcategory = this.normalizeSubcategory(
       input.category,
-      input.subcategory,
+      input.subcategory
     );
 
     const product: Product = {
@@ -137,30 +127,20 @@ export class ProductService {
       reviewCount: 0,
       active: input.active ?? true,
       stock: input.stock ?? 0,
-
       createdAt: new Date().toISOString(),
     };
 
     this.setProducts([product, ...this.productsSource.value]);
-
     return product;
   }
 
-  /**
-   * Replace a product by id. Saves via setProducts (memory + localStorage).
-   */
   updateProduct(productId: string, changes: Partial<Product>): Product | null {
     const current = this.productsSource.value.find((p) => p.id === productId);
-
-    if (!current) {
-      return null;
-    }
+    if (!current) return null;
 
     const name = changes.name?.trim() ?? current.name;
     const category = changes.category ?? current.category;
 
-    // Prefer explicit subcategory from changes; otherwise keep current.
-    // Then force it to match the final category (or clear it).
     const rawSubcategory =
       changes.subcategory !== undefined
         ? changes.subcategory
@@ -189,34 +169,20 @@ export class ProductService {
         : current.productDetails,
     };
 
-    const products = this.productsSource.value.map((p) =>
-      p.id === productId ? updated : p,
+    this.setProducts(
+      this.productsSource.value.map((p) => (p.id === productId ? updated : p))
     );
-
-    this.setProducts(products);
 
     return updated;
   }
 
-  /**
-   * Permanently delete a product by id.
-   * Updates memory + localStorage through setProducts().
-   */
   deleteProduct(productId: string): boolean {
-    const products = this.productsSource.value;
+    const exists = this.productsSource.value.some((p) => p.id === productId);
+    if (!exists) return false;
 
-    const productExists = products.some((product) => product.id === productId);
-
-    if (!productExists) {
-      return false;
-    }
-
-    const updatedProducts = products.filter(
-      (product) => product.id !== productId,
+    this.setProducts(
+      this.productsSource.value.filter((p) => p.id !== productId)
     );
-
-    this.setProducts(updatedProducts);
-
     return true;
   }
 
@@ -225,20 +191,18 @@ export class ProductService {
   // ============================================================
 
   getProductById(id: string): Product | undefined {
-    return this.productsSource.value.find((product) => product.id === id);
+    return this.productsSource.value.find((p) => p.id === id);
   }
 
   getProductBySlug(slug: string): Product | undefined {
-    return this.productsSource.value.find((product) => product.slug === slug);
+    return this.productsSource.value.find((p) => p.slug === slug);
   }
 
   getProductsByCollection(collectionSlug: string): Product[] {
     return this.productsSource.value.filter(
-      (product) =>
-        product.active &&
-        product.collections?.some(
-          (collection) => collection.slug === collectionSlug,
-        ),
+      (p) =>
+        p.active &&
+        p.collections?.some((c) => c.slug === collectionSlug)
     );
   }
 
@@ -249,10 +213,8 @@ export class ProductService {
   getOnSaleProducts(limit: number = 8): Product[] {
     return this.productsSource.value
       .filter(
-        (product) =>
-          product.active &&
-          product.oldPrice != null &&
-          product.oldPrice > product.price,
+        (p) =>
+          p.active && p.oldPrice != null && p.oldPrice > p.price
       )
       .slice(0, limit);
   }
@@ -262,21 +224,22 @@ export class ProductService {
       (item) =>
         item.active &&
         item.id !== product.id &&
-        item.category === product.category,
+        item.category === product.category
     );
 
     const sameSubcategory = sameCategory.filter(
-      (item) => item.subcategory === product.subcategory,
+      (item) => item.subcategory === product.subcategory
     );
 
-    let pool = sameSubcategory.length >= limit ? sameSubcategory : sameCategory;
+    let pool =
+      sameSubcategory.length >= limit ? sameSubcategory : sameCategory;
 
     if (pool.length < limit) {
       const others = this.productsSource.value.filter(
         (item) =>
           item.active &&
           item.id !== product.id &&
-          !pool.some((p) => p.id === item.id),
+          !pool.some((p) => p.id === item.id)
       );
       pool = [...pool, ...others];
     }
@@ -286,13 +249,13 @@ export class ProductService {
 
   getProductsByCategory(category: Category): Product[] {
     return this.productsSource.value.filter(
-      (product) => product.active && product.category === category,
+      (p) => p.active && p.category === category
     );
   }
 
   getProductsBySubcategory(subcategory: string): Product[] {
     return this.productsSource.value.filter(
-      (product) => product.active && product.subcategory === subcategory,
+      (p) => p.active && p.subcategory === subcategory
     );
   }
 
@@ -300,101 +263,54 @@ export class ProductService {
   // STOCK
   // ============================================================
 
-  /**
-   * True when the product can be sold (at least 1 unit).
-   * Storefront uses this for "Out of stock" UI.
-   */
   isInStock(product: Product): boolean {
     return product.stock > 0;
   }
 
-  /**
-   * Units available to buy right now.
-   * Never returns negative.
-   */
   getAvailableStock(product: Product): number {
     return Math.max(0, product.stock);
   }
 
-  /**
-   * Clamp a requested quantity to what is actually available.
-   * Example: stock 3, request 10 → 3
-   */
   clampQuantityToStock(product: Product, quantity: number): number {
-    if (quantity < 1) {
-      return 0;
-    }
-
+    if (quantity < 1) return 0;
     return Math.min(quantity, this.getAvailableStock(product));
   }
 
-  /**
-   * Decrease stock after a successful order.
-   * Returns false if product missing or not enough stock.
-   *
-   * Why here?
-   * One place owns inventory rules + localStorage persistence
-   * (via setProducts).
-   */
   reduceStock(productId: string, quantity: number): boolean {
-    if (quantity < 1) {
-      return false;
-    }
+    if (quantity < 1) return false;
 
     const current = this.productsSource.value.find((p) => p.id === productId);
+    if (!current || current.stock < quantity) return false;
 
-    if (!current) {
-      return false;
-    }
-
-    if (current.stock < quantity) {
-      return false;
-    }
-
-    const products = this.productsSource.value.map((product) =>
-      product.id === productId
-        ? { ...product, stock: product.stock - quantity }
-        : product,
+    this.setProducts(
+      this.productsSource.value.map((p) =>
+        p.id === productId ? { ...p, stock: p.stock - quantity } : p
+      )
     );
-
-    this.setProducts(products);
     return true;
   }
 
-  /**
-   * Optional: put stock back (e.g. cancelled order).
-   */
   restoreStock(productId: string, quantity: number): boolean {
-    if (quantity < 1) {
-      return false;
-    }
+    if (quantity < 1) return false;
 
     const current = this.productsSource.value.find((p) => p.id === productId);
+    if (!current) return false;
 
-    if (!current) {
-      return false;
-    }
-
-    const products = this.productsSource.value.map((product) =>
-      product.id === productId
-        ? { ...product, stock: product.stock + quantity }
-        : product,
+    this.setProducts(
+      this.productsSource.value.map((p) =>
+        p.id === productId ? { ...p, stock: p.stock + quantity } : p
+      )
     );
-
-    this.setProducts(products);
     return true;
   }
 
-  /**
-   * Live search suggestions for the header dropdown.
-   * Requires at least 2 characters. Active products only.
-   */
+  // ============================================================
+  // SEARCH / PRICE / NAV / COLLECTIONS
+  // ============================================================
+
   searchSuggestions(term: string, limit: number = 6): Product[] {
     const value = term.trim().toLowerCase();
-
-    if (value.length < 2) {
-      return [];
-    }
+    if (value.length < 2) return [];
 
     return this.applyFilters(this.productsSource.value, {
       search: value,
@@ -403,39 +319,18 @@ export class ProductService {
 
   getPriceRange(): { min: number; max: number } {
     const products = this.productsSource.value.filter((p) => p.active);
+    if (!products.length) return { min: 0, max: 100 };
 
-    if (!products.length) {
-      return { min: 0, max: 100 };
-    }
-
-    const prices = products.map((product) => product.price);
-
+    const prices = products.map((p) => p.price);
     return {
       min: Math.floor(Math.min(...prices)),
       max: Math.ceil(Math.max(...prices)),
     };
   }
 
+  /** Delegates to CategoryService (single source of truth) */
   getCategoryNav(): CategoryNavItem[] {
-    const categoryOrder: Category[] = [
-      'dresses',
-      'wigs',
-      'lingerie',
-      'shapers',
-      'shoes',
-      'tops',
-      'bottoms',
-      'sissy-toys',
-      'make-up',
-      'accessories',
-      'ebooks',
-    ];
-
-    return categoryOrder.map((category) => ({
-      category,
-      label: this.formatCategoryLabel(category),
-      subcategories: SUBCATEGORIES.filter((sub) => sub.category === category),
-    }));
+    return this.categoryService.getCategoryNav();
   }
 
   getStoreCollections(): StoreCollection[] {
@@ -446,7 +341,6 @@ export class ProductService {
   // PRIVATE — persistence
   // ============================================================
 
-  /** Single door for catalog updates: memory + localStorage */
   private setProducts(products: Product[]): void {
     this.productsSource.next(products);
     this.saveProducts(products);
@@ -461,12 +355,10 @@ export class ProductService {
 
     try {
       const parsed = JSON.parse(raw) as Product[];
-
       if (!Array.isArray(parsed) || !parsed.length) {
         return [...PRODUCTS];
       }
 
-      // Ensure every product has a numeric stock
       return parsed.map((product) => ({
         ...product,
         stock: typeof product.stock === 'number' ? product.stock : 0,
@@ -485,22 +377,18 @@ export class ProductService {
   // ============================================================
 
   /**
-   * Ensures subcategory belongs to the given category.
-   * Prevents e.g. category: 'wigs' + subcategory: 'casual-dresses'.
+   * Subcategory must exist under CategoryService for this category.
    */
   private normalizeSubcategory(
     category: Category,
-    subcategory?: string | null,
+    subcategory?: string | null
   ): string | undefined {
     const slug = subcategory?.trim();
+    if (!slug) return undefined;
 
-    if (!slug) {
-      return undefined;
-    }
-
-    const isValid = SUBCATEGORIES.some(
-      (sub) => sub.slug === slug && sub.category === category,
-    );
+    const isValid = this.categoryService
+      .getSubcategories()
+      .some((sub) => sub.slug === slug && sub.category === category);
 
     return isValid ? slug : undefined;
   }
@@ -515,55 +403,45 @@ export class ProductService {
 
   private applyFilters(
     products: Product[],
-    filters: ProductFilters,
+    filters: ProductFilters
   ): Product[] {
-    let result = products.filter((product) => product.active);
+    let result = products.filter((p) => p.active);
 
     if (filters.search?.trim()) {
       const term = filters.search.trim().toLowerCase();
-
-      result = result.filter((product) =>
-        this.matchesSearchTerm(product, term),
-      );
+      result = result.filter((p) => this.matchesSearchTerm(p, term));
     }
 
     if (filters.category) {
-      result = result.filter(
-        (product) => product.category === filters.category,
-      );
+      result = result.filter((p) => p.category === filters.category);
     }
 
     if (filters.subcategory) {
-      result = result.filter(
-        (product) => product.subcategory === filters.subcategory,
-      );
+      result = result.filter((p) => p.subcategory === filters.subcategory);
     }
 
     if (filters.brand) {
       result = result.filter(
-        (product) =>
-          product.brand.toLowerCase() === filters.brand!.toLowerCase(),
+        (p) => p.brand.toLowerCase() === filters.brand!.toLowerCase()
       );
     }
 
     if (filters.rating != null) {
-      result = result.filter((product) => product.rating >= filters.rating!);
+      result = result.filter((p) => p.rating >= filters.rating!);
     }
 
     if (filters.collection) {
-      result = result.filter((product) =>
-        product.collections?.some(
-          (collection) => collection.slug === filters.collection,
-        ),
+      result = result.filter((p) =>
+        p.collections?.some((c) => c.slug === filters.collection)
       );
     }
 
     if (filters.minPrice != null) {
-      result = result.filter((product) => product.price >= filters.minPrice!);
+      result = result.filter((p) => p.price >= filters.minPrice!);
     }
 
     if (filters.maxPrice != null) {
-      result = result.filter((product) => product.price <= filters.maxPrice!);
+      result = result.filter((p) => p.price <= filters.maxPrice!);
     }
 
     switch (filters.sort) {
@@ -576,28 +454,21 @@ export class ProductService {
           );
         });
         break;
-
       case 'price-asc':
         result.sort((a, b) => a.price - b.price);
         break;
-
       case 'price-desc':
         result.sort((a, b) => b.price - a.price);
         break;
-
       case 'name-asc':
         result.sort((a, b) => a.name.localeCompare(b.name));
         break;
-
       case 'name-desc':
         result.sort((a, b) => b.name.localeCompare(a.name));
         break;
-
       case 'rating-desc':
         result.sort((a, b) => b.rating - a.rating);
         break;
-
-      case 'default':
       default:
         break;
     }
@@ -618,7 +489,9 @@ export class ProductService {
       this.formatCategoryLabel(product.category).toLowerCase().includes(term);
 
     const subcategoryMeta = product.subcategory
-      ? SUBCATEGORIES.find((sub) => sub.slug === product.subcategory)
+      ? this.categoryService
+          .getSubcategories()
+          .find((sub) => sub.slug === product.subcategory)
       : undefined;
 
     const inSubcategory =
@@ -627,9 +500,9 @@ export class ProductService {
         !!subcategoryMeta?.name.toLowerCase().includes(term));
 
     const inCollections = !!product.collections?.some(
-      (collection) =>
-        collection.name.toLowerCase().includes(term) ||
-        collection.slug.toLowerCase().includes(term),
+      (c) =>
+        c.name.toLowerCase().includes(term) ||
+        c.slug.toLowerCase().includes(term)
     );
 
     return (

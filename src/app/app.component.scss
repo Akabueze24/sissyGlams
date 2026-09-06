@@ -1,0 +1,518 @@
+// Import your variables file if not already imported globally via angular.json
+@import '../styles/variables';
+
+// ============================================================
+// AGE GATE OVERLAY
+// ============================================================
+
+.age-gate-overlay {
+  position: fixed;
+  inset: 0;
+
+  width: 100vw;
+  height: 100vh;
+  min-height: 100dvh;
+
+  background-color: rgba($color-black, 0.85);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 16px;
+
+  z-index: 99999;
+
+  font-family: $font-body;
+
+  box-sizing: border-box;
+}
+
+
+// ============================================================
+// AGE GATE MODAL
+// ============================================================
+
+.age-gate-modal {
+  background-color: $color-white;
+
+  padding: 40px 32px;
+
+  border-radius: 20px;
+
+  max-width: 460px;
+  width: 100%;
+
+  text-align: center;
+
+  border: 1px solid $color-border;
+
+  box-shadow: 0 25px 50px -12px rgba($color-black, 0.35);
+
+  box-sizing: border-box;
+
+
+  // ----------------------------------------------------------
+  // 18+ ICON
+  // ----------------------------------------------------------
+
+  .age-gate-icon {
+    width: 68px;
+    height: 68px;
+
+    background-color: $brand-pink-light;
+    color: $brand-pink-dark;
+
+    font-weight: 700;
+    font-size: 1.35rem;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 20px;
+
+    border: 2px solid darken($brand-pink-light, 3%);
+  }
+
+
+  // ----------------------------------------------------------
+  // HEADING
+  // ----------------------------------------------------------
+
+  h2 {
+    font-family: $font-heading;
+
+    font-size: 1.85rem;
+
+    color: $color-text-dark;
+
+    margin-bottom: 12px;
+
+    font-weight: 700;
+
+    line-height: 1.2;
+  }
+
+
+  // ----------------------------------------------------------
+  // DESCRIPTION
+  // ----------------------------------------------------------
+
+  p {
+    color: $color-text-muted;
+
+    font-size: 0.95rem;
+
+    margin-bottom: 8px;
+
+    line-height: 1.5;
+  }
+
+
+  // ----------------------------------------------------------
+  // QUESTION
+  // ----------------------------------------------------------
+
+  .age-gate-question {
+    font-weight: 600;
+
+    color: $brand-pink-dark;
+
+    margin-top: 14px;
+    margin-bottom: 32px;
+
+    font-size: 1.1rem;
+  }
+}
+
+
+// ============================================================
+// AGE GATE BUTTONS
+// ============================================================
+
+.age-gate-actions {
+  display: flex;
+
+  flex-direction: row;
+
+  gap: 16px;
+
+
+  button {
+    flex: 1;
+
+    padding: 14px 20px;
+
+    border-radius: 10px;
+
+    font-weight: 600;
+
+    font-size: 0.95rem;
+
+    cursor: pointer;
+
+    border: none;
+
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+
+    font-family: $font-body;
+
+    white-space: nowrap;
+
+
+    // Accessibility
+    &:focus-visible {
+      outline: 3px solid rgba($brand-pink, 0.35);
+
+      outline-offset: 3px;
+    }
+  }
+
+
+  // ----------------------------------------------------------
+  // YES BUTTON
+  // ----------------------------------------------------------
+
+  .btn-confirm {
+    background-color: $brand-pink;
+
+    color: $color-white;
+
+    box-shadow: 0 4px 12px rgba($brand-pink, 0.25);
+
+
+    &:hover {
+      background-color: $brand-pink-dark;
+
+      transform: translateY(-2px);
+
+      box-shadow: 0 6px 16px rgba($brand-pink-dark, 0.35);
+    }
+
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+
+  // ----------------------------------------------------------
+  // NO BUTTON
+  // ----------------------------------------------------------
+
+  .btn-reject {
+    background-color: $color-bg-light;
+
+    color: $color-text-dark;
+
+    border: 1px solid $color-border;
+
+
+    &:hover {
+      background-color: darken($color-bg-light, 4%);
+
+      color: $color-black;
+
+      border-color: darken($color-border, 10%);
+    }
+  }
+}
+
+
+// ============================================================
+// AGE RESTRICTED SCREEN
+// ============================================================
+
+.age-restricted {
+  position: fixed;
+
+  inset: 0;
+
+  width: 100vw;
+  height: 100vh;
+  min-height: 100dvh;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background-color: $color-bg-light;
+
+  box-sizing: border-box;
+
+  z-index: 100000;
+
+  font-family: $font-body;
+
+  overflow-y: auto;
+}
+
+
+// ============================================================
+// AGE RESTRICTED CONTENT CARD
+// ============================================================
+
+.age-restricted__content {
+  width: 100%;
+
+  max-width: 500px;
+
+  padding: 48px 36px;
+
+  background-color: $color-white;
+
+  border: 1px solid $color-border;
+
+  border-radius: 20px;
+
+  text-align: center;
+
+  box-shadow: 0 25px 60px rgba($color-black, 0.12);
+
+  box-sizing: border-box;
+}
+
+
+// ============================================================
+// RESTRICTED 18+ ICON
+// ============================================================
+
+.age-restricted__icon {
+  width: 76px;
+  height: 76px;
+
+  margin: 0 auto 24px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background-color: $brand-pink-light;
+
+  color: $brand-pink-dark;
+
+  border: 2px solid darken($brand-pink-light, 3%);
+
+  font-size: 1.45rem;
+
+  font-weight: 700;
+
+  box-sizing: border-box;
+}
+
+
+// ============================================================
+// RESTRICTED HEADING
+// ============================================================
+
+.age-restricted__content h1 {
+  margin: 0 0 16px;
+
+  font-family: $font-heading;
+
+  font-size: 2rem;
+
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  color: $color-text-dark;
+}
+
+
+// ============================================================
+// RESTRICTED TEXT
+// ============================================================
+
+.age-restricted__content p {
+  max-width: 400px;
+
+  margin: 0 auto 10px;
+
+  color: $color-text-muted;
+
+  font-family: $font-body;
+
+  font-size: 1rem;
+
+  line-height: 1.6;
+}
+
+
+// ============================================================
+// MOBILE RESPONSIVE
+// ============================================================
+
+@media (max-width: 576px) {
+
+  // ----------------------------------------------------------
+  // AGE GATE
+  // ----------------------------------------------------------
+
+  .age-gate-overlay {
+    padding: 16px;
+  }
+
+
+  .age-gate-modal {
+    padding: 28px 20px;
+
+    border-radius: 16px;
+
+
+    .age-gate-icon {
+      width: 56px;
+      height: 56px;
+
+      font-size: 1.15rem;
+
+      margin-bottom: 16px;
+    }
+
+
+    h2 {
+      font-size: 1.5rem;
+    }
+
+
+    p {
+      font-size: 0.875rem;
+    }
+
+
+    .age-gate-question {
+      font-size: 1rem;
+
+      margin-bottom: 24px;
+    }
+  }
+
+
+  // ----------------------------------------------------------
+  // AGE GATE BUTTONS
+  // ----------------------------------------------------------
+
+  .age-gate-actions {
+    flex-direction: column;
+
+    gap: 10px;
+
+
+    button {
+      width: 100%;
+
+      padding: 14px;
+
+      font-size: 1rem;
+    }
+
+
+    .btn-confirm {
+      order: 1;
+    }
+
+
+    .btn-reject {
+      order: 2;
+    }
+  }
+
+
+  // ----------------------------------------------------------
+  // RESTRICTED SCREEN
+  // ----------------------------------------------------------
+
+  .age-restricted {
+    padding: 16px;
+  }
+
+
+  .age-restricted__content {
+    padding: 36px 22px;
+
+    border-radius: 16px;
+  }
+
+
+  .age-restricted__icon {
+    width: 62px;
+    height: 62px;
+
+    margin-bottom: 20px;
+
+    font-size: 1.2rem;
+  }
+
+
+  .age-restricted__content h1 {
+    font-size: 1.6rem;
+
+    margin-bottom: 14px;
+  }
+
+
+  .age-restricted__content p {
+    font-size: 0.9rem;
+
+    line-height: 1.55;
+  }
+}
+
+
+// ============================================================
+// VERY SHORT SCREENS
+// Prevents the content from being cramped vertically
+// ============================================================
+
+@media (max-height: 600px) {
+
+  .age-gate-overlay {
+    align-items: flex-start;
+
+    overflow-y: auto;
+
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+
+  .age-gate-modal {
+    margin: auto 0;
+
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+
+
+  .age-restricted {
+    align-items: flex-start;
+
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+
+  .age-restricted__content {
+    margin: auto 0;
+
+    padding-top: 32px;
+    padding-bottom: 32px;
+  }
+}

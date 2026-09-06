@@ -92,9 +92,7 @@ export class AuthService {
     );
 
     if (existingUser) {
-      this.toastService.error(
-        'An account with this email already exists.',
-      );
+      this.toastService.error('An account with this email already exists.');
 
       return;
     }
@@ -142,9 +140,7 @@ export class AuthService {
     /*
      * Show success message.
      */
-    this.toastService.success(
-      'Your account has been created successfully.',
-    );
+    this.toastService.success('Your account has been created successfully.');
   }
 
   // ============================================================
@@ -197,9 +193,7 @@ export class AuthService {
     /*
      * Show success message.
      */
-    this.toastService.success(
-      `Welcome back, ${user.firstName}!`,
-    );
+    this.toastService.success(`Welcome back, ${user.firstName}!`);
   }
 
   // ============================================================
@@ -221,9 +215,7 @@ export class AuthService {
 
     this.currentUserSubject.next(null);
 
-    this.toastService.success(
-      'You have been logged out successfully.',
-    );
+    this.toastService.success('You have been logged out successfully.');
   }
 
   // ============================================================
@@ -252,10 +244,7 @@ export class AuthService {
      *
      * Password is NOT stored here.
      */
-    localStorage.setItem(
-      this.CURRENT_USER_KEY,
-      JSON.stringify(user),
-    );
+    localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(user));
 
     this.currentUserSubject.next(user);
   }
@@ -265,9 +254,7 @@ export class AuthService {
   // ============================================================
 
   private loadCurrentUser(): User | null {
-    const savedUser = localStorage.getItem(
-      this.CURRENT_USER_KEY,
-    );
+    const savedUser = localStorage.getItem(this.CURRENT_USER_KEY);
 
     if (!savedUser) {
       return null;
@@ -286,9 +273,7 @@ export class AuthService {
   // ============================================================
 
   private loadRegisteredUsers(): RegisteredUser[] {
-    const savedUsers = localStorage.getItem(
-      this.REGISTERED_USERS_KEY,
-    );
+    const savedUsers = localStorage.getItem(this.REGISTERED_USERS_KEY);
 
     if (!savedUsers) {
       return [];
@@ -336,9 +321,7 @@ export class AuthService {
       );
     }
 
-    this.toastService.success(
-      'Your account has been updated successfully.',
-    );
+    this.toastService.success('Your account has been updated successfully.');
   }
 }
 

@@ -65,14 +65,13 @@ export class AuthComponent implements OnInit, OnDestroy {
   // ============================================================
 
   ngOnInit(): void {
-    console.log('AuthComponent: ngOnInit ran - component is alive');
     this.createLoginForm();
     this.createRegisterForm();
 
     // Listen for requests to open the modal (from Guard, Header, etc.)
     this.modalSubscription = this.authService.authModalRequest$.subscribe(
       (request) => {
-        console.log('3. AuthComponent: received request', request);
+        
         this.open(request.mode, request.redirectUrl || '/account');
       },
     );
