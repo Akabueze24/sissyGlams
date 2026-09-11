@@ -19,7 +19,7 @@ import { CheckoutComponent } from './pages/checkout/checkout.component';
 import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { AdminLayoutComponent } from './features/admin/admin-layout/admin-layout.component';
-import { adminDashboardComponent } from './features/admin/pages/admin-dashboard/admin-dashboard.component';
+import { AdminDashboardComponent } from './features/admin/pages/admin-dashboard/admin-dashboard.component';
 import { AdminCustomersComponent } from './features/admin/pages/admin-customers/admin-customers.component';
 import { AdminInventoryComponent } from './features/admin/pages/admin-inventory/admin-inventory.component';
 import { AdminOrdersComponent } from './features/admin/pages/admin-orders/admin-orders.component';
@@ -110,7 +110,7 @@ const routes: Routes = [
     component: AdminLayoutComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', component: adminDashboardComponent },
+      { path: '', component: AdminDashboardComponent },
       { path: 'customers', component: AdminCustomersComponent },
       { path: 'inventory', component: AdminInventoryComponent },
       { path: 'orders', component: AdminOrdersComponent },
@@ -124,7 +124,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      scrollPositionRestoration: 'top',
+      scrollPositionRestoration: 'enabled',
       anchorScrolling: 'enabled',
     }),
   ],

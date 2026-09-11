@@ -1,4 +1,11 @@
-@import '../../../../../styles/variables' ;
+@import '../../../../../styles/variables';
+
+// ============================================================
+// GLOBAL SCROLL BEHAVIOR FOR ANCHOR TARGETING
+// ============================================================
+html {
+  scroll-behavior: smooth;
+}
 
 // ============================================================
 // ADMIN SETTINGS PAGE
@@ -65,6 +72,7 @@
 
     position: sticky;
     top: 1.5rem;
+    z-index: 10;
   }
 
   &__nav-item {
@@ -87,6 +95,7 @@
     font-weight: 500;
 
     text-align: left;
+    text-decoration: none; // Resets standard anchor link styling
 
     cursor: pointer;
 
@@ -111,7 +120,9 @@
       outline-offset: 1px;
     }
 
-    &--active {
+    // Active Link State (Works via [routerLinkActive] or custom .admin-settings__nav-item--active class)
+    &--active,
+    &.active {
       background-color: rgba($brand-pink, 0.1);
       color: $brand-pink;
       font-weight: 600;
@@ -137,6 +148,9 @@
     background-color: $color-white;
     border: 1px solid $color-border;
     border-radius: 0.75rem;
+
+    // Offset scroll position so target section headers aren't obscured under sticky elements
+    scroll-margin-top: 1.5rem;
 
     &:last-child {
       margin-bottom: 0;
@@ -550,6 +564,9 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0.35rem;
+
+      position: sticky;
+      top: 0;
     }
 
     &__nav-item {
@@ -558,6 +575,7 @@
 
     &__section {
       padding: 1.15rem;
+      scroll-margin-top: 1rem;
     }
   }
 

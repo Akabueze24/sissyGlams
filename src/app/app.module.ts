@@ -34,7 +34,7 @@ import { CheckoutComponent } from './pages/checkout/checkout.component';
 import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
 import { ToastComponent } from './shared/toast/toast.component';
 import { PaginationComponent } from './shared/pagination/pagination.component';
-import { adminDashboardComponent } from './features/admin/pages/admin-dashboard/admin-dashboard.component';
+import { AdminDashboardComponent } from './features/admin/pages/admin-dashboard/admin-dashboard.component';
 import { AdminProductsComponent } from './features/admin/pages/admin-products/admin-products.component';
 import { AdminOrdersComponent } from './features/admin/pages/admin-orders/admin-orders.component';
 import { AdminCustomersComponent } from './features/admin/pages/admin-customers/admin-customers.component';
@@ -44,6 +44,7 @@ import { SettingsComponent } from './features/admin/pages/settings/settings.comp
 import { SalesChartComponent } from './features/admin/pages/sales-chart/sales-chart.component';
 import { QuillModule } from 'ngx-quill';
 import { StoreLayoutComponent } from './features/store-layout/store-layout.component';
+import { RouterModule } from '@angular/router';
 
 
 register();
@@ -80,7 +81,7 @@ register();
     OrderConfirmationComponent,
     ToastComponent,
     PaginationComponent,
-    adminDashboardComponent,
+    AdminDashboardComponent,
     AdminProductsComponent,
     AdminOrdersComponent,
     AdminCustomersComponent,
@@ -98,6 +99,7 @@ register();
     FormsModule,
     ReactiveFormsModule,
     QuillModule.forRoot(),
+    RouterModule
 
   ],
   providers: [],

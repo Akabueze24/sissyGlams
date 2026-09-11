@@ -1,19 +1,12 @@
 <div class="admin-orders">
-  <!-- =====================================================
-       PAGE HEADER
-  ====================================================== -->
   <div class="admin-orders__header">
     <div class="admin-orders__heading">
       <h1 class="admin-orders__title">Orders</h1>
-      <p class="admin-orders__subtitle">
-        Manage and track customer orders.
-      </p>
+      <p class="admin-orders__subtitle">Manage and track customer orders.</p>
     </div>
   </div>
 
-  <!-- =====================================================
-       ORDER SUMMARY
-  ====================================================== -->
+  <!-- Summary -->
   <div class="admin-orders__summary">
     <div class="row g-4">
       <div class="col-12 col-sm-6 col-xl-3">
@@ -21,9 +14,13 @@
           <div class="admin-orders__summary-icon">
             <i class="fa-solid fa-bag-shopping"></i>
           </div>
+
           <div class="admin-orders__summary-content">
-            <span class="admin-orders__summary-label">Total Orders</span>
-            <h3 class="admin-orders__summary-value">{{ totalCount }}</h3>
+            <span class="admin-orders__summary-label"> Total Orders </span>
+
+            <h3 class="admin-orders__summary-value">
+              {{ totalCount }}
+            </h3>
           </div>
         </div>
       </div>
@@ -33,9 +30,13 @@
           <div class="admin-orders__summary-icon">
             <i class="fa-solid fa-clock"></i>
           </div>
+
           <div class="admin-orders__summary-content">
-            <span class="admin-orders__summary-label">Pending Orders</span>
-            <h3 class="admin-orders__summary-value">{{ pendingCount }}</h3>
+            <span class="admin-orders__summary-label"> Pending Orders </span>
+
+            <h3 class="admin-orders__summary-value">
+              {{ pendingCount }}
+            </h3>
           </div>
         </div>
       </div>
@@ -45,9 +46,13 @@
           <div class="admin-orders__summary-icon">
             <i class="fa-solid fa-spinner"></i>
           </div>
+
           <div class="admin-orders__summary-content">
-            <span class="admin-orders__summary-label">Processing</span>
-            <h3 class="admin-orders__summary-value">{{ processingCount }}</h3>
+            <span class="admin-orders__summary-label"> Processing </span>
+
+            <h3 class="admin-orders__summary-value">
+              {{ processingCount }}
+            </h3>
           </div>
         </div>
       </div>
@@ -57,41 +62,51 @@
           <div class="admin-orders__summary-icon">
             <i class="fa-solid fa-circle-check"></i>
           </div>
+
           <div class="admin-orders__summary-content">
-            <span class="admin-orders__summary-label">Completed</span>
-            <h3 class="admin-orders__summary-value">{{ completedCount }}</h3>
+            <span class="admin-orders__summary-label"> Completed </span>
+
+            <h3 class="admin-orders__summary-value">
+              {{ completedCount }}
+            </h3>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- =====================================================
-       ORDERS MANAGEMENT
-  ====================================================== -->
+  <!-- Orders Content -->
   <section class="admin-orders__content">
     <div class="admin-orders__content-header">
       <div>
         <h2 class="admin-orders__content-title">All Orders</h2>
+
         <p class="admin-orders__content-subtitle">
           View and manage all customer orders.
         </p>
       </div>
     </div>
 
+    <!-- Toolbar -->
     <div class="admin-orders__toolbar">
       <div class="admin-orders__search">
         <i class="fa-solid fa-magnifying-glass"></i>
+
         <input
           type="text"
           class="admin-orders__search-input"
           placeholder="Search orders..."
           [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilters()"
         />
       </div>
 
       <div class="admin-orders__filters">
-        <select class="admin-orders__select" [(ngModel)]="statusFilter">
+        <select
+          class="admin-orders__select"
+          [(ngModel)]="statusFilter"
+          (ngModelChange)="applyFilters()"
+        >
           <option value="">All Orders</option>
           <option value="pending">Pending</option>
           <option value="processing">Processing</option>
@@ -100,7 +115,11 @@
           <option value="cancelled">Cancelled</option>
         </select>
 
-        <select class="admin-orders__select" [(ngModel)]="paymentFilter">
+        <select
+          class="admin-orders__select"
+          [(ngModel)]="paymentFilter"
+          (ngModelChange)="applyFilters()"
+        >
           <option value="">All Payments</option>
           <option value="paid">Paid</option>
           <option value="pending">Pending</option>
@@ -110,6 +129,7 @@
       </div>
     </div>
 
+    <!-- Orders Table -->
     <div class="admin-orders__table-wrapper">
       <table class="admin-orders__table">
         <thead>
@@ -125,30 +145,37 @@
         </thead>
 
         <tbody>
+          <!-- Empty state -->
           <tr *ngIf="!filteredOrders.length">
             <td colspan="7" class="text-center py-4">
               {{
                 orders.length
-                  ? 'No orders match your filters.'
-                  : 'No orders yet. Orders placed in the store will show up here.'
+                  ? "No orders match your filters."
+                  : "No orders yet. Orders placed in the store will show up here."
               }}
             </td>
           </tr>
 
-          <tr *ngFor="let order of filteredOrders">
+          <!-- Orders -->
+          <tr *ngFor="let order of filteredOrders; trackBy: trackByOrderId">
+            <!-- Order ID -->
             <td>
-              <span class="admin-orders__order-id">#{{ order.id }}</span>
+              <span class="admin-orders__order-id"> #{{ order.id }} </span>
             </td>
 
+            <!-- Customer -->
             <td>
               <div class="admin-orders__customer">
                 <div class="admin-orders__avatar">
                   {{ customerInitials(order) }}
                 </div>
+
                 <div class="admin-orders__customer-info">
                   <span class="admin-orders__customer-name">
-                    {{ order.customer.firstName }} {{ order.customer.lastName }}
+                    {{ order.customer.firstName }}
+                    {{ order.customer.lastName }}
                   </span>
+
                   <span class="admin-orders__customer-email">
                     {{ order.customer.email }}
                   </span>
@@ -156,10 +183,15 @@
               </div>
             </td>
 
-            <td>{{ order.createdAt | date: 'mediumDate' }}</td>
+            <!-- Date -->
+            <td>
+              {{ order.createdAt | date: "mediumDate" }}
+            </td>
 
-            <td>${{ order.total | number: '1.2-2' }}</td>
+            <!-- Total -->
+            <td>${{ order.total | number: "1.2-2" }}</td>
 
+            <!-- Payment -->
             <td>
               <span
                 class="admin-orders__payment"
@@ -169,6 +201,7 @@
               </span>
             </td>
 
+            <!-- Status -->
             <td>
               <span
                 class="admin-orders__status"
@@ -178,6 +211,7 @@
               </span>
             </td>
 
+            <!-- Actions -->
             <td>
               <div class="admin-orders__actions">
                 <button
@@ -186,16 +220,8 @@
                   [attr.aria-label]="'View order ' + order.id"
                   (click)="viewOrder(order)"
                 >
-                  <i class="fa-solid fa-eye"></i>
+                  <i class="fa-solid fa-eye" aria-hidden="true"></i>
                 </button>
-                <!-- <button
-                  type="button"
-                  class="admin-orders__action-btn admin-orders__action-btn--edit"
-                  [attr.aria-label]="'Edit order ' + order.id"
-                  disabled
-                >
-                  <i class="fa-solid fa-pen"></i>
-                </button> -->
               </div>
             </td>
           </tr>
@@ -203,92 +229,231 @@
       </table>
     </div>
 
+    <!-- Footer -->
     <div class="admin-orders__footer" *ngIf="orders.length">
       <p class="admin-orders__results">
         Showing {{ filteredOrders.length }} of {{ orders.length }} order<span
           *ngIf="orders.length !== 1"
-          >s</span
         >
+          s
+        </span>
       </p>
     </div>
   </section>
 
-  <!-- Order detail -->
-  <div class="admin-orders__detail" *ngIf="selectedOrder as order">
-    <div class="admin-orders__detail-header">
-      <h2>Order #{{ order.id }}</h2>
-      <button type="button" (click)="closeOrderDetail()" aria-label="Close">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-    </div>
+  <!-- Order Details Modal -->
+  <div
+    class="admin-orders__modal"
+    *ngIf="selectedOrder as order"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="orderDetailTitle"
+  >
+    <!-- Backdrop -->
+    <div
+      class="admin-orders__modal-backdrop"
+      (click)="closeOrderDetail()"
+    ></div>
 
-    <div class="admin-orders__detail-section">
-      <h3>Customer</h3>
-      <p>{{ order.customer.firstName }} {{ order.customer.lastName }}</p>
-      <p>{{ order.customer.email }}</p>
-      <p>{{ order.customer.phone }}</p>
-    </div>
+    <!-- Modal -->
+    <div class="admin-orders__modal-dialog" (click)="$event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="admin-orders__modal-header">
+        <div class="admin-orders__modal-heading">
+          <span class="admin-orders__modal-eyebrow"> Order details </span>
 
-    <div class="admin-orders__detail-section">
-      <h3>Shipping</h3>
-      <p>
-        {{ order.shippingAddress.address }}
-        <span *ngIf="order.shippingAddress.apartment">
-          , {{ order.shippingAddress.apartment }}
-        </span>
-      </p>
-      <p>
-        {{ order.shippingAddress.city }},
-        {{ order.shippingAddress.state }}
-        {{ order.shippingAddress.postalCode }}
-      </p>
-      <p>{{ order.shippingAddress.country }}</p>
-      <p *ngIf="order.shippingAddress.deliveryLocation">
-        {{ order.shippingAddress.deliveryLocation }}
-      </p>
-    </div>
+          <h2 id="orderDetailTitle" class="admin-orders__modal-title">
+            #{{ order.id }}
+          </h2>
 
-    <div class="admin-orders__detail-section">
-      <h3>Items</h3>
-      <ul>
-        <li *ngFor="let item of order.items">
-          {{ item.productName }}
-          × {{ item.quantity }}
-          — ${{ item.price * item.quantity | number: '1.2-2' }}
-          <span *ngIf="item.size"> · Size: {{ item.size.name }}</span>
-          <span *ngIf="item.color"> · Color: {{ item.color.name }}</span>
-        </li>
-      </ul>
-    </div>
+          <p class="admin-orders__modal-subtitle">
+            Placed {{ order.createdAt | date: "medium" }}
+          </p>
+        </div>
 
-    <div class="admin-orders__detail-section">
-      <p>Subtotal: ${{ order.subtotal | number: '1.2-2' }}</p>
-      <p>
-        Shipping ({{ order.shippingMethod }}):
-        ${{ order.shippingCost | number: '1.2-2' }}
-      </p>
-      <p><strong>Total: ${{ order.total | number: '1.2-2' }}</strong></p>
-      <p>
-        Payment: {{ label(order.paymentStatus) }}
-        ({{ label(order.paymentMethod) }})
-      </p>
-      <p>Placed: {{ order.createdAt | date: 'medium' }}</p>
-    </div>
+        <button
+          type="button"
+          class="admin-orders__modal-close"
+          (click)="closeOrderDetail()"
+          aria-label="Close order details"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
 
-    <!-- Status update -->
-    <div class="admin-orders__detail-section">
-      <h3>Order status</h3>
-      <label class="visually-hidden" for="orderStatus">Order status</label>
-      <select
-        id="orderStatus"
-        class="admin-orders__select"
-        [ngModel]="order.orderStatus"
-        (ngModelChange)="onStatusChange(order, $event)"
-      >
-        <option *ngFor="let status of statusOptions" [value]="status">
-          {{ label(status) }}
-        </option>
-      </select>
+      <!-- Modal Body -->
+      <div class="admin-orders__modal-body">
+        <!-- Customer -->
+        <section class="admin-orders__detail-section">
+          <div class="admin-orders__detail-section-header">
+            <h3>Customer</h3>
+          </div>
+
+          <div class="admin-orders__customer-detail">
+            <div class="admin-orders__avatar">
+              {{ customerInitials(order) }}
+            </div>
+
+            <div>
+              <strong>
+                {{ order.customer.firstName }}
+                {{ order.customer.lastName }}
+              </strong>
+
+              <p>
+                {{ order.customer.email }}
+              </p>
+
+              <p>
+                {{ order.customer.phone }}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Shipping -->
+        <section class="admin-orders__detail-section">
+          <div class="admin-orders__detail-section-header">
+            <h3>Shipping address</h3>
+          </div>
+
+          <div class="admin-orders__shipping-address">
+            <p>
+              {{ order.shippingAddress.address }}
+
+              <span *ngIf="order.shippingAddress.apartment">
+                , {{ order.shippingAddress.apartment }}
+              </span>
+            </p>
+
+            <p>
+              {{ order.shippingAddress.city }},
+              {{ order.shippingAddress.state }}
+              {{ order.shippingAddress.postalCode }}
+            </p>
+
+            <p>
+              {{ order.shippingAddress.country }}
+            </p>
+
+            <p *ngIf="order.shippingAddress.deliveryLocation">
+              {{ order.shippingAddress.deliveryLocation }}
+            </p>
+          </div>
+        </section>
+
+        <!-- Items -->
+        <section class="admin-orders__detail-section">
+          <div class="admin-orders__detail-section-header">
+            <h3>
+              Items
+              <span> ({{ order.items.length }}) </span>
+            </h3>
+          </div>
+
+          <div class="admin-orders__items">
+            <div class="admin-orders__item" *ngFor="let item of order.items">
+              <div class="admin-orders__item-info">
+                <strong>
+                  {{ item.productName }}
+                </strong>
+
+                <div class="admin-orders__item-meta">
+                  <span> Qty: {{ item.quantity }} </span>
+
+                  <span *ngIf="item.size"> Size: {{ item.size.name }} </span>
+
+                  <span *ngIf="item.color"> Color: {{ item.color.name }} </span>
+                </div>
+              </div>
+
+              <strong class="admin-orders__item-price">
+                ${{ item.price * item.quantity | number: "1.2-2" }}
+              </strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- Totals -->
+        <section class="admin-orders__detail-section">
+          <div class="admin-orders__totals">
+            <div>
+              <span>Subtotal</span>
+
+              <strong> ${{ order.subtotal | number: "1.2-2" }} </strong>
+            </div>
+
+            <div>
+              <span> Shipping ({{ order.shippingMethod }}) </span>
+
+              <strong> ${{ order.shippingCost | number: "1.2-2" }} </strong>
+            </div>
+
+            <div class="admin-orders__totals-grand">
+              <span>Total</span>
+
+              <strong> ${{ order.total | number: "1.2-2" }} </strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- Payment -->
+        <section class="admin-orders__detail-section">
+          <div class="admin-orders__detail-grid">
+            <div>
+              <span class="admin-orders__detail-label"> Payment status </span>
+
+              <span
+                class="admin-orders__payment"
+                [ngClass]="paymentClass(order.paymentStatus)"
+              >
+                {{ label(order.paymentStatus) }}
+              </span>
+            </div>
+
+            <div>
+              <span class="admin-orders__detail-label"> Payment method </span>
+
+              <strong>
+                {{ label(order.paymentMethod) }}
+              </strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- Order Status -->
+        <section class="admin-orders__detail-section">
+          <div class="admin-orders__detail-section-header">
+            <h3>Order status</h3>
+          </div>
+
+          <label class="admin-orders__detail-label" for="orderStatus">
+            Update order status
+          </label>
+
+          <select
+            id="orderStatus"
+            class="admin-orders__select admin-orders__select--modal"
+            [ngModel]="order.orderStatus"
+            (ngModelChange)="onStatusChange(order, $event)"
+          >
+            <option *ngFor="let status of statusOptions" [value]="status">
+              {{ label(status) }}
+            </option>
+          </select>
+        </section>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="admin-orders__modal-footer">
+        <button
+          type="button"
+          class="admin-orders__modal-btn"
+          (click)="closeOrderDetail()"
+        >
+          Close
+        </button>
+      </div>
     </div>
   </div>
 </div>

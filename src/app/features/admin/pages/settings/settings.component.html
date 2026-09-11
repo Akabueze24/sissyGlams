@@ -1,7 +1,7 @@
 <div class="admin-settings">
 
   <!-- =====================================================
-       PAGE HEADER
+        PAGE HEADER
   ====================================================== -->
   <div class="admin-settings__header">
 
@@ -21,29 +21,31 @@
 
 
   <!-- =====================================================
-       SETTINGS LAYOUT
+        SETTINGS LAYOUT
   ====================================================== -->
   <div class="admin-settings__layout">
 
     <!-- ===================================================
-         SETTINGS NAVIGATION
+          SETTINGS NAVIGATION
     ==================================================== -->
     <aside class="admin-settings__navigation">
 
-      <button
-        type="button"
-        class="admin-settings__nav-item admin-settings__nav-item--active"
+      <a
+        [routerLink]="['.']"
+        fragment="store-information"
+        class="admin-settings__nav-item"
       >
         <i class="fa-solid fa-store"></i>
 
         <span>
           Store Information
         </span>
-      </button>
+      </a>
 
 
-      <button
-        type="button"
+      <a
+        [routerLink]="['.']"
+        fragment="store-preferences"
         class="admin-settings__nav-item"
       >
         <i class="fa-solid fa-sliders"></i>
@@ -51,11 +53,12 @@
         <span>
           Store Preferences
         </span>
-      </button>
+      </a>
 
 
-      <button
-        type="button"
+      <a
+        [routerLink]="['.']"
+        fragment="currency-payments"
         class="admin-settings__nav-item"
       >
         <i class="fa-solid fa-credit-card"></i>
@@ -63,11 +66,12 @@
         <span>
           Currency & Payments
         </span>
-      </button>
+      </a>
 
 
-      <button
-        type="button"
+      <a
+        [routerLink]="['.']"
+        fragment="shipping"
         class="admin-settings__nav-item"
       >
         <i class="fa-solid fa-truck"></i>
@@ -75,11 +79,12 @@
         <span>
           Shipping
         </span>
-      </button>
+      </a>
 
 
-      <button
-        type="button"
+      <a
+        [routerLink]="['.']"
+        fragment="notifications"
         class="admin-settings__nav-item"
       >
         <i class="fa-solid fa-bell"></i>
@@ -87,11 +92,12 @@
         <span>
           Notifications
         </span>
-      </button>
+      </a>
 
 
-      <button
-        type="button"
+      <a
+        [routerLink]="['.']"
+        fragment="security"
         class="admin-settings__nav-item"
       >
         <i class="fa-solid fa-shield-halved"></i>
@@ -99,20 +105,20 @@
         <span>
           Security
         </span>
-      </button>
+      </a>
 
     </aside>
 
 
     <!-- ===================================================
-         SETTINGS CONTENT
+          SETTINGS CONTENT
     ==================================================== -->
     <main class="admin-settings__content">
 
       <!-- =================================================
-           STORE INFORMATION
+            STORE INFORMATION
       ================================================== -->
-      <section class="admin-settings__section">
+      <section id="store-information" class="admin-settings__section">
 
         <div class="admin-settings__section-header">
 
@@ -247,9 +253,9 @@
 
 
       <!-- =================================================
-           STORE PREFERENCES
+            STORE PREFERENCES
       ================================================== -->
-      <section class="admin-settings__section">
+      <section id="store-preferences" class="admin-settings__section">
 
         <div class="admin-settings__section-header">
 
@@ -383,9 +389,9 @@
 
 
       <!-- =================================================
-           CURRENCY & PAYMENTS
+            CURRENCY & PAYMENTS
       ================================================== -->
-      <section class="admin-settings__section">
+      <section id="currency-payments" class="admin-settings__section">
 
         <div class="admin-settings__section-header">
 
@@ -473,9 +479,9 @@
 
 
       <!-- =================================================
-           SHIPPING
+            SHIPPING
       ================================================== -->
-      <section class="admin-settings__section">
+      <section id="shipping" class="admin-settings__section">
 
         <div class="admin-settings__section-header">
 
@@ -542,9 +548,9 @@
 
 
       <!-- =================================================
-           NOTIFICATIONS
+            NOTIFICATIONS
       ================================================== -->
-      <section class="admin-settings__section">
+      <section id="notifications" class="admin-settings__section">
 
         <div class="admin-settings__section-header">
 
@@ -646,9 +652,9 @@
 
 
       <!-- =================================================
-           SECURITY
+            SECURITY
       ================================================== -->
-      <section class="admin-settings__section">
+      <section id="security" class="admin-settings__section">
 
         <div class="admin-settings__section-header">
 

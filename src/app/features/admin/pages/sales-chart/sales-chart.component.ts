@@ -10,7 +10,7 @@ import {
 
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 
-import { SalesDataPoint } from '../../sales point Model/sales-point.model';
+import { SalesDataPoint } from '../../../../core/models/admin-model/sales-point.model';
 
 Chart.register(...registerables);
 

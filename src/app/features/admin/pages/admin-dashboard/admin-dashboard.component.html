@@ -1,7 +1,8 @@
 <div class="dashboard">
-
   <!-- Summary stat cards -->
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 g-lg-4 dashboard__stats">
+  <div
+    class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 g-lg-4 dashboard__stats"
+  >
     <div class="col" *ngFor="let stat of stats">
       <div class="dashboard__stat-card">
         <span class="dashboard__stat-icon">
@@ -14,6 +15,7 @@
             class="dashboard__stat-trend"
             [class.text-success]="stat.trendDirection === 'up'"
             [class.text-danger]="stat.trendDirection === 'down'"
+            [class.text-muted]="stat.trendDirection === 'neutral'"
           >
             {{ stat.trend }}
           </p>
@@ -22,27 +24,34 @@
     </div>
   </div>
 
-  <!-- Sales chart — isolated future integration point -->
-  <section class="dashboard__card dashboard__chart" aria-labelledby="salesOverviewHeading">
+  <!-- Sales chart -->
+  <section
+    class="dashboard__card dashboard__chart"
+    aria-labelledby="salesOverviewHeading"
+  >
     <div class="dashboard__card-header">
-      <h3 class="dashboard__card-title" id="salesOverviewHeading">Sales Overview</h3>
-      <select class="dashboard__filter" aria-label="Sales overview period">
-        <option>Last 12 Months</option>
-        <option>Last 6 Months</option>
-        <option>Last 30 Days</option>
-      </select>
+      <h3 class="dashboard__card-title" id="salesOverviewHeading">
+        Sales Overview
+      </h3>
+      <p class="dashboard__card-hint text-muted mb-0 small">
+        Totals from stored orders (by month)
+      </p>
     </div>
 
     <app-sales-chart [data]="salesData"></app-sales-chart>
   </section>
 
-  <!-- Recent orders + best selling products -->
+  <!-- Recent orders + best selling -->
   <div class="row g-3 g-lg-4 dashboard__lower">
-
     <div class="col-12 col-xl-7">
-      <section class="dashboard__card dashboard__orders" aria-labelledby="recentOrdersHeading">
+      <section
+        class="dashboard__card dashboard__orders"
+        aria-labelledby="recentOrdersHeading"
+      >
         <div class="dashboard__card-header">
-          <h3 class="dashboard__card-title" id="recentOrdersHeading">Recent Orders</h3>
+          <h3 class="dashboard__card-title" id="recentOrdersHeading">
+            Recent Orders
+          </h3>
         </div>
 
         <div class="dashboard__table-wrap table-responsive">
@@ -63,7 +72,18 @@
                 <td>{{ order.date }}</td>
                 <td class="dashboard__table-amount">{{ order.amount }}</td>
                 <td>
-                  <span class="dashboard__status" [ngClass]="statusClass(order.status)">{{ order.status }}</span>
+                  <span
+                    class="dashboard__status"
+                    [ngClass]="statusClass(order.status)"
+                  >
+                    {{ order.status }}
+                  </span>
+                </td>
+              </tr>
+
+              <tr *ngIf="!recentOrders.length">
+                <td colspan="5" class="text-muted">
+                  No orders yet. Place a checkout to see data here.
                 </td>
               </tr>
             </tbody>
@@ -73,27 +93,43 @@
     </div>
 
     <div class="col-12 col-xl-5">
-      <section class="dashboard__card dashboard__products" aria-labelledby="bestSellingHeading">
+      <section
+        class="dashboard__card dashboard__products"
+        aria-labelledby="bestSellingHeading"
+      >
         <div class="dashboard__card-header">
-          <h3 class="dashboard__card-title" id="bestSellingHeading">Best Selling Products</h3>
+          <h3 class="dashboard__card-title" id="bestSellingHeading">
+            Best Selling Products
+          </h3>
         </div>
 
-        <ul class="dashboard__product-list">
-          <li class="dashboard__product-row" *ngFor="let product of bestSellingProducts">
-            <img class="dashboard__product-img" [src]="product.imageUrl" [alt]="product.name" />
+        <ul class="dashboard__product-list" *ngIf="bestSellingProducts.length">
+          <li
+            class="dashboard__product-row"
+            *ngFor="let product of bestSellingProducts"
+          >
+            <img
+              class="dashboard__product-img"
+              [src]="product.imageUrl"
+              [alt]="product.name"
+            />
             <div class="dashboard__product-info">
               <p class="dashboard__product-name">{{ product.name }}</p>
               <p class="dashboard__product-category">{{ product.category }}</p>
             </div>
             <div class="dashboard__product-stats">
-              <p class="dashboard__product-sold">{{ product.unitsSold }} sold</p>
+              <p class="dashboard__product-sold">
+                {{ product.unitsSold }} sold
+              </p>
               <p class="dashboard__product-price">{{ product.price }}</p>
             </div>
           </li>
         </ul>
+
+        <p class="text-muted mb-0" *ngIf="!bestSellingProducts.length">
+          No sales data yet.
+        </p>
       </section>
     </div>
-
   </div>
-
 </div>
