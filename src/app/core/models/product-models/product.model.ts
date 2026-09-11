@@ -1,10 +1,10 @@
 import { Category } from './category.model';
 import { ProductSize } from './size.model';
-import { Collection } from './collection.model';
 import { ProductColor } from './product-color.model';
 import { ProductLength } from './product-length.model';
 import { ColorGallery } from './color-gallery.model';
 import { ProductDetails } from './product-details.model';
+import { StoreCollection } from './store-collection.model';
 
 export interface Product {
   // ========================================
@@ -79,7 +79,7 @@ export interface Product {
   // COLLECTIONS
   // ========================================
 
-  collections?: Collection[];
+  collections?: StoreCollection[];
 
   // ========================================
   // STORE STATUS
