@@ -3,7 +3,7 @@
   class="ebooks__swiper"
   slides-per-view="2"
   space-between="16"
-  loop="true"
+  [attr.loop]="products.length >= 10 ? 'true' : 'false'"
   navigation="true"
   autoplay="true"
   breakpoints='{"576": {"slidesPerView": 3}, "768": {"slidesPerView": 4}, "992": {"slidesPerView": 5}}'

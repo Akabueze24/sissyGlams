@@ -1,0 +1,509 @@
+<div class="admin-collections">
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+  <div class="admin-collections__header">
+    <div class="admin-collections__heading">
+      <h1 class="admin-collections__title">Collections</h1>
+      <p class="admin-collections__subtitle">
+        Create and manage curated product collections. Assign products on the
+        Products page.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="admin-collections__add-btn"
+      (click)="openAddForm()"
+    >
+      <i class="fa-solid fa-plus" aria-hidden="true"></i>
+      <span>Add Collection</span>
+    </button>
+  </div>
+
+  <!-- =====================================================
+       ADD COLLECTION FORM
+  ====================================================== -->
+  <section class="admin-collections__form" *ngIf="showAddForm">
+    <div class="admin-collections__form-header">
+      <div>
+        <h2 class="admin-collections__form-title">Add Collection</h2>
+        <p class="admin-collections__form-subtitle">
+          Name only — the slug is created automatically and stays fixed.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="admin-collections__close-btn"
+        (click)="closeAddForm()"
+        aria-label="Close add form"
+      >
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="admin-collections__form-body">
+      <div class="admin-collections__field">
+        <label for="collectionName">Collection name</label>
+        <input
+          id="collectionName"
+          type="text"
+          class="admin-collections__input"
+          name="newCollectionName"
+          [(ngModel)]="newCollectionName"
+          placeholder="e.g. New Arrivals"
+          autocomplete="off"
+        />
+        <small class="admin-collections__hint" *ngIf="newCollectionName.trim()">
+          Slug will be:
+          <code>{{ previewSlug }}</code>
+        </small>
+      </div>
+
+      <div class="admin-collections__error" *ngIf="addError" role="alert">
+        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+        <span>{{ addError }}</span>
+      </div>
+    </div>
+
+    <div class="admin-collections__form-footer">
+      <button
+        type="button"
+        class="admin-collections__secondary-btn"
+        (click)="closeAddForm()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="admin-collections__primary-btn"
+        (click)="submitAddCollection()"
+      >
+        Add Collection
+      </button>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       SUMMARY
+  ====================================================== -->
+  <div class="row g-4 admin-collections__summary">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="admin-collections__summary-card">
+        <div class="admin-collections__summary-icon">
+          <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+        </div>
+        <div class="admin-collections__summary-info">
+          <span class="admin-collections__summary-label">Total Collections</span>
+          <strong class="admin-collections__summary-value">
+            {{ totalCollections }}
+          </strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="admin-collections__summary-card">
+        <div class="admin-collections__summary-icon">
+          <i class="fa-solid fa-box-open" aria-hidden="true"></i>
+        </div>
+        <div class="admin-collections__summary-info">
+          <span class="admin-collections__summary-label">With products</span>
+          <strong class="admin-collections__summary-value">
+            {{ withProductsCount }}
+          </strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="admin-collections__summary-card">
+        <div class="admin-collections__summary-icon">
+          <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+        </div>
+        <div class="admin-collections__summary-info">
+          <span class="admin-collections__summary-label">Empty</span>
+          <strong class="admin-collections__summary-value">
+            {{ emptyCollectionsCount }}
+          </strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="admin-collections__summary-card">
+        <div class="admin-collections__summary-icon">
+          <i class="fa-solid fa-shirt" aria-hidden="true"></i>
+        </div>
+        <div class="admin-collections__summary-info">
+          <span class="admin-collections__summary-label">
+            Products tagged
+          </span>
+          <strong class="admin-collections__summary-value">
+            {{ productsInCollectionsCount }}
+          </strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       LIST
+  ====================================================== -->
+  <section class="admin-collections__content">
+    <div class="admin-collections__content-header">
+      <div>
+        <h2 class="admin-collections__content-title">All Collections</h2>
+        <p class="admin-collections__content-subtitle">
+          Membership is set on each product (Admin → Products).
+        </p>
+      </div>
+    </div>
+
+    <div class="admin-collections__toolbar">
+      <div class="admin-collections__search">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input
+          type="text"
+          class="admin-collections__input"
+          name="searchTerm"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchOrFilterChange()"
+          placeholder="Search collections..."
+        />
+      </div>
+
+      <div class="admin-collections__filter">
+        <label class="visually-hidden" for="collectionStatus">Filter</label>
+        <select
+          id="collectionStatus"
+          class="admin-collections__select"
+          name="statusFilter"
+          [(ngModel)]="statusFilter"
+          (ngModelChange)="onSearchOrFilterChange()"
+        >
+          <option value="">All collections</option>
+          <option value="with-products">With products</option>
+          <option value="empty">Empty</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="admin-collections__table-wrapper">
+      <table class="admin-collections__table">
+        <thead>
+          <tr>
+            <th>Collection</th>
+            <th>Slug</th>
+            <th>Products</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of filteredRows; trackBy: trackBySlug">
+            <td>
+              <div class="admin-collections__collection">
+                <div class="admin-collections__collection-icon">
+                  <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                </div>
+                <div class="admin-collections__collection-info">
+                  <strong>{{ row.name }}</strong>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="admin-collections__slug">{{ row.slug }}</span>
+            </td>
+            <td>
+              <span class="admin-collections__product-count">
+                {{ row.productCount }}
+              </span>
+            </td>
+            <td>
+              <div class="admin-collections__actions">
+                <button
+                  type="button"
+                  class="admin-collections__action-btn"
+                  title="View"
+                  [attr.aria-label]="'View ' + row.name"
+                  (click)="openViewModal(row)"
+                >
+                  <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                </button>
+                <button
+                  type="button"
+                  class="admin-collections__action-btn"
+                  title="Edit"
+                  [attr.aria-label]="'Edit ' + row.name"
+                  (click)="openEditModal(row)"
+                >
+                  <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                </button>
+                <button
+                  type="button"
+                  class="admin-collections__action-btn admin-collections__action-btn--delete"
+                  title="Delete"
+                  [attr.aria-label]="'Delete ' + row.name"
+                  (click)="openDeleteModal(row)"
+                >
+                  <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="!filteredRows.length">
+            <td colspan="4" class="admin-collections__empty">
+              <div class="admin-collections__empty-state">
+                <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                <h3>No collections found</h3>
+                <p>Try another search or filter, or add a collection.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="admin-collections__footer">
+      <span>
+        Showing {{ filteredRows.length }} of {{ totalCollections }} collections
+      </span>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       EDIT MODAL (name only)
+  ====================================================== -->
+  <div
+    class="admin-collections__modal"
+    *ngIf="showEditModal && editingSlug"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="editCollectionTitle"
+  >
+    <div
+      class="admin-collections__modal-backdrop"
+      (click)="closeEditModal()"
+    ></div>
+
+    <div
+      class="admin-collections__modal-dialog"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="admin-collections__modal-header">
+        <div>
+          <h2 id="editCollectionTitle">Edit Collection</h2>
+          <p>Rename the collection. Slug stays the same.</p>
+        </div>
+        <button
+          type="button"
+          class="admin-collections__close-btn"
+          (click)="closeEditModal()"
+          aria-label="Close"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="admin-collections__modal-body">
+        <div class="admin-collections__field">
+          <label for="editCollectionName">Collection name</label>
+          <input
+            id="editCollectionName"
+            type="text"
+            class="admin-collections__input"
+            name="editName"
+            [(ngModel)]="editName"
+          />
+        </div>
+
+        <div class="admin-collections__field">
+          <label>Slug</label>
+          <p class="admin-collections__slug">{{ editingSlug }}</p>
+          <small class="admin-collections__hint">
+            Slug cannot be changed so product links keep working.
+          </small>
+        </div>
+
+        <div class="admin-collections__error" *ngIf="editError" role="alert">
+          <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+          <span>{{ editError }}</span>
+        </div>
+      </div>
+
+      <div class="admin-collections__modal-footer">
+        <button
+          type="button"
+          class="admin-collections__secondary-btn"
+          (click)="closeEditModal()"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="admin-collections__primary-btn"
+          (click)="submitEditCollection()"
+        >
+          Save changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       VIEW MODAL
+  ====================================================== -->
+  <div
+    class="admin-collections__modal"
+    *ngIf="showViewModal && selectedRow"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="viewCollectionTitle"
+  >
+    <div
+      class="admin-collections__modal-backdrop"
+      (click)="closeViewModal()"
+    ></div>
+
+    <div
+      class="admin-collections__modal-dialog"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="admin-collections__modal-header">
+        <div>
+          <h2 id="viewCollectionTitle">{{ selectedRow.name }}</h2>
+          <p>
+            <code>{{ selectedRow.slug }}</code>
+            · {{ selectedRow.productCount }} product<span
+              *ngIf="selectedRow.productCount !== 1"
+              >s</span
+            >
+          </p>
+        </div>
+        <button
+          type="button"
+          class="admin-collections__close-btn"
+          (click)="closeViewModal()"
+          aria-label="Close"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="admin-collections__modal-body">
+        <div class="admin-collections__products-header">
+          <h3>Products in this collection</h3>
+        </div>
+
+        <ul
+          class="admin-collections__product-list"
+          *ngIf="viewProducts.length"
+        >
+          <li *ngFor="let product of viewProducts">
+            <span>{{ product.name }}</span>
+            <span>{{ product.brand }}</span>
+          </li>
+        </ul>
+
+        <div class="admin-collections__products-empty" *ngIf="!viewProducts.length">
+          <i class="fa-solid fa-box-open" aria-hidden="true"></i>
+          <p>No products in this collection yet. Tag them under Products.</p>
+        </div>
+      </div>
+
+      <div class="admin-collections__modal-footer">
+        <button
+          type="button"
+          class="admin-collections__secondary-btn"
+          (click)="closeViewModal()"
+        >
+          Close
+        </button>
+        <button
+          type="button"
+          class="admin-collections__primary-btn"
+          (click)="openEditModal(selectedRow)"
+        >
+          <i class="fa-solid fa-pen" aria-hidden="true"></i>
+          Edit name
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       DELETE MODAL
+  ====================================================== -->
+  <div
+    class="admin-collections__modal"
+    *ngIf="showDeleteModal && rowToDelete"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deleteCollectionTitle"
+  >
+    <div
+      class="admin-collections__modal-backdrop"
+      (click)="closeDeleteModal()"
+    ></div>
+
+    <div
+      class="admin-collections__modal-dialog admin-collections__modal-dialog--small"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="admin-collections__modal-header">
+        <div>
+          <h2 id="deleteCollectionTitle">Delete collection?</h2>
+          <p>This cannot be undone.</p>
+        </div>
+        <button
+          type="button"
+          class="admin-collections__close-btn"
+          (click)="closeDeleteModal()"
+          aria-label="Close"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="admin-collections__modal-body">
+        <p>
+          Delete
+          <strong>{{ rowToDelete.name }}</strong>
+          (<code>({{ rowToDelete.slug }})</code>?
+        </p>
+        <p *ngIf="rowToDelete.productCount > 0" class="admin-collections__error">
+          Cannot delete — {{ rowToDelete.productCount }} product(s) still use
+          this collection. Remove it from those products first.
+        </p>
+        <p *ngIf="rowToDelete.productCount === 0">
+          Products are not deleted; only this collection label is removed.
+        </p>
+
+        <div class="admin-collections__error" *ngIf="deleteError" role="alert">
+          <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+          <span>{{ deleteError }}</span>
+        </div>
+      </div>
+
+      <div class="admin-collections__modal-footer">
+        <button
+          type="button"
+          class="admin-collections__secondary-btn"
+          (click)="closeDeleteModal()"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="admin-collections__danger-btn"
+          (click)="confirmDeleteCollection()"
+          [disabled]="rowToDelete.productCount > 0"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

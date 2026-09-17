@@ -145,6 +145,44 @@
         </p>
       </div>
 
+      <div class="admin-products__form-group">
+        <label for="productRating">Rating (0–5)</label>
+        <input
+          id="productRating"
+          type="number"
+          min="0"
+          max="5"
+          step="0.1"
+          class="admin-products__input"
+          [class.admin-products__input--error]="addErrors.rating"
+          name="rating"
+          [(ngModel)]="addForm.rating"
+        />
+        <p class="admin-products__field-error" *ngIf="addErrors.rating">
+          {{ addErrors.rating }}
+        </p>
+        <small class="admin-products__help-text">
+          Shown on product cards. Not customer-written reviews.
+        </small>
+      </div>
+
+      <div class="admin-products__form-group">
+        <label for="productReviewCount">Review count</label>
+        <input
+          id="productReviewCount"
+          type="number"
+          min="0"
+          step="1"
+          class="admin-products__input"
+          [class.admin-products__input--error]="addErrors.reviewCount"
+          name="reviewCount"
+          [(ngModel)]="addForm.reviewCount"
+        />
+        <p class="admin-products__field-error" *ngIf="addErrors.reviewCount">
+          {{ addErrors.reviewCount }}
+        </p>
+      </div>
+
       <div class="admin-products__form-group admin-products__form-group--full">
         <label for="productImage">Product Image URL *</label>
         <input
@@ -416,6 +454,47 @@
             />
             <p class="admin-products__field-error" *ngIf="editErrors.stock">
               {{ editErrors.stock }}
+            </p>
+          </div>
+
+          <div class="admin-products__form-group">
+            <label for="editRating">Rating (0–5)</label>
+            <input
+              id="editRating"
+              type="number"
+              min="0"
+              max="5"
+              step="0.1"
+              class="admin-products__input"
+              [class.admin-products__input--error]="editErrors.rating"
+              name="editRating"
+              [(ngModel)]="editForm.rating"
+            />
+            <p class="admin-products__field-error" *ngIf="editErrors.rating">
+              {{ editErrors.rating }}
+            </p>
+            <small class="admin-products__help-text">
+              Shown on product cards. Not customer-written reviews.
+            </small>
+          </div>
+
+          <div class="admin-products__form-group">
+            <label for="editReviewCount">Review count</label>
+            <input
+              id="editReviewCount"
+              type="number"
+              min="0"
+              step="1"
+              class="admin-products__input"
+              [class.admin-products__input--error]="editErrors.reviewCount"
+              name="editReviewCount"
+              [(ngModel)]="editForm.reviewCount"
+            />
+            <p
+              class="admin-products__field-error"
+              *ngIf="editErrors.reviewCount"
+            >
+              {{ editErrors.reviewCount }}
             </p>
           </div>
 
@@ -1021,7 +1100,7 @@ Model wears size S"
                     {{ product.name }}
                   </span>
                   <span class="admin-products__product-id">
-                    #{{ product.id }}
+                    {{ product.id }}
                   </span>
                 </div>
               </div>

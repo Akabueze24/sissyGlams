@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@import "../../../styles/variables";
 
 // ============================================================
 // Page shell
@@ -225,7 +225,7 @@
       display: inline;
 
       &:not(:last-child)::after {
-        content: '\2022';
+        content: "\2022";
         margin: 0 0.4rem;
         color: $color-border;
       }
@@ -262,7 +262,9 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
 
     &:hover {
       background-color: $brand-pink-light;
@@ -429,7 +431,9 @@
     text-transform: uppercase;
     padding: 0.9rem 1rem;
     cursor: pointer;
-    transition: background-color 0.15s ease, transform 0.15s ease;
+    transition:
+      background-color 0.15s ease,
+      transform 0.15s ease;
 
     &:hover {
       background-color: $brand-pink-dark;
@@ -448,6 +452,16 @@
     color: $color-text-muted;
     text-align: center;
   }
+}
+
+.cart-summary__block-message {
+  margin: 0 0 0.75rem;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: $brand-pink;
+  background: #f8d7da;
+  border-radius: 0.5rem;
 }
 
 // ============================================================
@@ -515,7 +529,9 @@
   text-decoration: none;
   border-bottom: 1px solid transparent;
   padding-bottom: 2px;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
 
   &:hover {
     color: $brand-pink-dark;

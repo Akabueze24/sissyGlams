@@ -190,17 +190,26 @@
           <span> ${{ getCartTotal() | number: "1.2-2" }} </span>
         </div>
 
+        <!-- On-page block message (store closed, etc.) -->
+        <p
+          class="cart-summary__block-message"
+          *ngIf="checkoutBlockMessage"
+          role="alert"
+        >
+          {{ checkoutBlockMessage }}
+        </p>
+
         <!-- Checkout -->
         <button
           class="cart-summary__checkout"
           type="button"
-          routerLink="/checkout"
+          (click)="proceedToCheckout()"
         >
           Proceed to Checkout
         </button>
 
         <p class="cart-summary__shipping-note">
-          Free shipping on orders over $50.
+          Worldwide Shipping..Shipping rates are calculated based on your location 
         </p>
       </aside>
 

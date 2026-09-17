@@ -13,6 +13,7 @@ import { CheckoutService } from 'src/app/core/services/checkout-service/checkout
 import { OrderService } from 'src/app/core/services/order-service/order.service';
 import { AuthService } from 'src/app/core/services/auth-service/auth.service';
 import { ProductService } from 'src/app/core/services/product-service/product.service';
+import { SettingsService } from 'src/app/core/services/store-settings/store-settings.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast.service';
 
 @Component({
@@ -21,41 +22,18 @@ import { ToastService } from 'src/app/core/services/toast-service/toast.service'
   styleUrls: ['./checkout.component.scss'],
 })
 export class CheckoutComponent implements OnInit {
-  // ============================================================
-  // FORM
-  // ============================================================
-
   checkoutForm!: FormGroup;
-
-  // ============================================================
-  // COUNTRIES
-  // ============================================================
-
   countries: Country[] = COUNTRIES;
-
-  // ============================================================
-  // CART
-  // ============================================================
 
   cartItems: CartItem[] = [];
   subtotal = 0;
 
-  // ============================================================
-  // SHIPPING
-  // ============================================================
-
   shippingQuote: ShippingQuote | null = null;
   shippingCost: number | null = null;
-
-  // ============================================================
-  // TOTAL
-  // ============================================================
-
   total: number | null = null;
 
-  // ============================================================
-  // CONSTRUCTOR
-  // ============================================================
+  /** On-page message when store is closed */
+  pageBlockMessage = '';
 
   constructor(
     private fb: FormBuilder,
@@ -64,6 +42,7 @@ export class CheckoutComponent implements OnInit {
     private orderService: OrderService,
     private productService: ProductService,
     private authService: AuthService,
+    private settingsService: SettingsService,
     private toastService: ToastService,
     private router: Router
   ) {}
@@ -73,10 +52,26 @@ export class CheckoutComponent implements OnInit {
   // ============================================================
 
   ngOnInit(): void {
+    const settings = this.settingsService.getSettings();
+
+    if (!settings.storeActive) {
+      this.pageBlockMessage =
+        'Checkout is unavailable right now. The store is temporarily closed.';
+    }
+
+    // Guest rule is independent of store-active (not else-if)
+    if (
+      settings.guestCheckout !== true &&
+      !this.authService.isAuthenticated()
+    ) {
+      this.authService.openAuthModal('login', '/checkout');
+      this.router.navigate(['/cart']);
+      return;
+    }
+
     this.createCheckoutForm();
     this.prefillFromUser();
 
-    // Align cart with stock before checkout UI
     this.cartService.syncQuantitiesWithStock();
 
     this.loadCart();
@@ -95,7 +90,6 @@ export class CheckoutComponent implements OnInit {
 
     this.checkoutForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-
       firstName: [
         '',
         [
@@ -104,7 +98,6 @@ export class CheckoutComponent implements OnInit {
           Validators.pattern(/^[A-Za-z\s'-]+$/),
         ],
       ],
-
       lastName: [
         '',
         [
@@ -113,16 +106,12 @@ export class CheckoutComponent implements OnInit {
           Validators.pattern(/^[A-Za-z\s'-]+$/),
         ],
       ],
-
       phone: [
         '',
         [Validators.required, Validators.pattern(/^\+?[0-9\s()-]{10,20}$/)],
       ],
-
       address: ['', [Validators.required, Validators.minLength(5)]],
-
       apartment: [''],
-
       city: [
         '',
         [
@@ -131,7 +120,6 @@ export class CheckoutComponent implements OnInit {
           Validators.pattern(/^[A-Za-z\s'-]+$/),
         ],
       ],
-
       state: [
         '',
         [
@@ -140,21 +128,16 @@ export class CheckoutComponent implements OnInit {
           Validators.pattern(/^[A-Za-z\s'-]+$/),
         ],
       ],
-
       country: [savedPreferences?.country || '', Validators.required],
-
       postalCode: [
         '',
         [Validators.required, Validators.pattern(/^[A-Za-z0-9\s-]{3,10}$/)],
       ],
-
       deliveryLocation: ['', [Validators.required, Validators.minLength(2)]],
-
       shippingMethod: [
         savedPreferences?.shippingMethod || '',
         Validators.required,
       ],
-
       paymentMethod: [
         savedPreferences?.paymentMethod || 'card',
         Validators.required,
@@ -267,16 +250,24 @@ export class CheckoutComponent implements OnInit {
     return this.checkoutForm.value as CheckoutData;
   }
 
-  /**
-   * Place order flow:
-   * 1. Validate form + shipping/total
-   * 2. Sync cart to live stock
-   * 3. Final stock check
-   * 4. Create + save order
-   * 5. Reduce stock per line
-   * 6. Clear cart → confirmation
-   */
   submitCheckout(): void {
+    const settings = this.settingsService.getSettings();
+
+    if (!settings.storeActive) {
+      this.toastService.info(
+        'The store is temporarily closed. Your order was not placed.'
+      );
+      return;
+    }
+
+    if (
+      settings.guestCheckout !== true &&
+      !this.authService.isAuthenticated()
+    ) {
+      this.authService.openAuthModal('login', '/checkout');
+      return;
+    }
+
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
       return;
@@ -287,7 +278,6 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
-    // Align quantities with current catalog stock
     this.cartService.syncQuantitiesWithStock();
 
     const items = this.cartService.getCartItems();
@@ -298,7 +288,6 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
-    // Final stock check — abort if anything is short
     for (const item of items) {
       const product = this.productService.getProductById(item.product.id);
       const available = product
@@ -327,10 +316,8 @@ export class CheckoutComponent implements OnInit {
       total
     );
 
-    // Persist order first
     this.orderService.saveOrder(order);
 
-    // Then reduce inventory
     for (const item of items) {
       this.productService.reduceStock(item.product.id, item.quantity);
     }

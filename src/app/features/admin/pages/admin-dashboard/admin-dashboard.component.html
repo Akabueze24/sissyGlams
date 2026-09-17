@@ -33,9 +33,19 @@
       <h3 class="dashboard__card-title" id="salesOverviewHeading">
         Sales Overview
       </h3>
-      <p class="dashboard__card-hint text-muted mb-0 small">
-        Totals from stored orders (by month)
-      </p>
+      <select
+        class="dashboard__filter"
+        name="salesPeriod"
+        [(ngModel)]="salesPeriod"
+        (ngModelChange)="onSalesPeriodChange()"
+        aria-label="Sales overview period"
+      >
+        <option value="30d">Last 30 Days</option>
+        <option value="6m">Last 6 Months</option>
+        <option value="12m">Last 12 Months</option>
+        
+        
+      </select>
     </div>
 
     <app-sales-chart [data]="salesData"></app-sales-chart>

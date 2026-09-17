@@ -6,6 +6,7 @@ import { CartService } from 'src/app/core/services/cart-service/cart.service';
 import { WishlistService } from 'src/app/core/services/wishlist-service/wishlist.service';
 import { AuthService } from 'src/app/core/services/auth-service/auth.service';
 import { ProductService } from 'src/app/core/services/product-service/product.service';
+import { SettingsService } from 'src/app/core/services/store-settings/store-settings.service';
 
 import { User } from 'src/app/core/models/auth-models/user.model';
 import { Product } from 'src/app/core/models/product-models/product.model';
@@ -44,7 +45,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   // ============================================================
 
   currentUser: User | null = null;
-  private userSubscription!: Subscription;
+
+  // ============================================================
+  // SETTINGS (announcement bar)
+  // ============================================================
+
+  announcementBar = '';
+  storeDescription = '';
+  storeName = '';
 
   // ============================================================
   // NAV
@@ -52,6 +60,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   categoryNav: CategoryNavItem[] = [];
   storeCollections: StoreCollection[] = [];
+
+  // ============================================================
+  // SUBSCRIPTIONS
+  // ============================================================
+
+  private userSubscription!: Subscription;
+  private settingsSubscription!: Subscription;
 
   // ============================================================
   // CONSTRUCTOR
@@ -62,6 +77,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private wishlistService: WishlistService,
     private authService: AuthService,
     private productService: ProductService,
+    private settingsService: SettingsService,
     private router: Router,
   ) {}
 
@@ -86,19 +102,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.currentUser = user;
     });
 
+    this.settingsSubscription = this.settingsService.settings$.subscribe(
+      (settings) => {
+        this.announcementBar = settings.announcementBar?.trim() || '';
+        this.storeDescription = settings.storeDescription?.trim() || '';
+        this.storeName = settings.storeName?.trim() || '';
+      },
+    );
+
     this.categoryNav = this.productService.getCategoryNav();
     this.storeCollections = this.productService.getStoreCollections();
   }
 
   ngOnDestroy(): void {
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
+    this.userSubscription?.unsubscribe();
+    this.settingsSubscription?.unsubscribe();
   }
 
-  // ============================================================
-  // SEARCH
-  // ============================================================
   // ============================================================
   // SEARCH
   // ============================================================
@@ -113,7 +133,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     this.suggestions = this.productService.searchSuggestions(term);
-
     this.showSuggestions = this.suggestions.length > 0;
   }
 
@@ -143,6 +162,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.showSuggestions = false;
     }, 150);
   }
+
   // ============================================================
   // AUTH
   // ============================================================

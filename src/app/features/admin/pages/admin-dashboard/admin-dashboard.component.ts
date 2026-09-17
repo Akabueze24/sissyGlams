@@ -49,13 +49,16 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   recentOrders: RecentOrderRow[] = [];
   bestSellingProducts: BestSellingRow[] = [];
 
+  /** Chart range: driven by the dashboard select */
+  salesPeriod: '30d' | '6m' | '12m' = '30d';
+
   private orders: Order[] = [];
   private products: Product[] = [];
   private sub!: Subscription;
 
   constructor(
     private orderService: OrderService,
-    private productService: ProductService
+    private productService: ProductService,
   ) {}
 
   ngOnInit(): void {
@@ -73,11 +76,16 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
+  /** Called when the period dropdown changes */
+  onSalesPeriodChange(): void {
+    this.salesData = this.buildSalesData();
+  }
+
   private rebuild(): void {
     this.stats = this.buildStats();
     this.recentOrders = this.buildRecentOrders(8);
     this.bestSellingProducts = this.buildBestSellers(4);
-    this.salesData = this.buildSalesByMonth();
+    this.salesData = this.buildSalesData();
   }
 
   // ============================================================
@@ -86,7 +94,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   private buildStats(): DashboardStat[] {
     const activeOrders = this.orders.filter(
-      (o) => o.orderStatus !== 'cancelled'
+      (o) => o.orderStatus !== 'cancelled',
     );
 
     const revenue = activeOrders.reduce((sum, o) => sum + (o.total || 0), 0);
@@ -94,11 +102,11 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     const uniqueCustomers = new Set(
       this.orders
         .map((o) => o.customer?.email?.trim().toLowerCase())
-        .filter((e): e is string => !!e)
+        .filter((e): e is string => !!e),
     ).size;
 
     const lowStock = this.products.filter(
-      (p) => p.stock > 0 && p.stock <= 5
+      (p) => p.stock > 0 && p.stock <= 5,
     ).length;
 
     return [
@@ -112,7 +120,9 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       {
         label: 'Total Orders',
         value: String(this.orders.length),
-        trend: `${this.countByStatus('pending') + this.countByStatus('processing')} open`,
+        trend: `${
+          this.countByStatus('pending') + this.countByStatus('processing')
+        } open`,
         trendDirection: 'up',
         icon: 'fa-solid fa-receipt',
       },
@@ -126,10 +136,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       {
         label: 'Total Products',
         value: String(this.products.length),
-        trend:
-          lowStock > 0
-            ? `${lowStock} low in stock`
-            : 'Stock levels OK',
+        trend: lowStock > 0 ? `${lowStock} low in stock` : 'Stock levels OK',
         trendDirection: lowStock > 0 ? 'down' : 'up',
         icon: 'fa-solid fa-shirt',
       },
@@ -145,7 +152,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   // ============================================================
 
   private buildRecentOrders(limit: number): RecentOrderRow[] {
-    // orders$ is already newest-first in your OrderService
     return this.orders.slice(0, limit).map((order) => ({
       id: order.id,
       customer:
@@ -184,7 +190,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   // ============================================================
-  // BEST SELLERS (from order line items)
+  // BEST SELLERS
   // ============================================================
 
   private buildBestSellers(limit: number): BestSellingRow[] {
@@ -217,9 +223,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         const p = row.product;
         return {
           name: p?.name || row.name,
-          category: p?.category
-            ? this.formatCategory(p.category)
-            : '—',
+          category: p?.category ? this.formatCategory(p.category) : '—',
           unitsSold: row.units,
           price: this.formatMoney(p?.price ?? 0),
           imageUrl: p?.images?.[0] || 'https://placehold.co/80x80?text=Product',
@@ -228,30 +232,134 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   // ============================================================
-  // SALES BY MONTH (for chart)
+  // SALES CHART (period-aware)
   // ============================================================
 
-  private buildSalesByMonth(): SalesDataPoint[] {
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-    ];
-    const totals = new Array(12).fill(0);
+  /**
+   * 12m / 6m → monthly points
+   * 30d → daily points
+   * Cancelled orders excluded.
+   */
+  private buildSalesData(): SalesDataPoint[] {
+    const now = new Date();
+    const start = this.getPeriodStart(now);
 
-    for (const order of this.orders) {
-      if (order.orderStatus === 'cancelled') continue;
-      if (!order.createdAt) continue;
-
+    const active = this.orders.filter((order) => {
+      if (order.orderStatus === 'cancelled') return false;
+      if (!order.createdAt) return false;
       const d = new Date(order.createdAt);
-      if (Number.isNaN(d.getTime())) continue;
+      if (Number.isNaN(d.getTime())) return false;
+      return d >= start && d <= now;
+    });
 
-      totals[d.getMonth()] += order.total || 0;
+    if (this.salesPeriod === '30d') {
+      return this.bucketByDay(active, start, now);
     }
 
-    return months.map((label, i) => ({
-      label,
-      value: totals[i],
-    }));
+    const monthCount = this.salesPeriod === '6m' ? 6 : 12;
+    return this.bucketByMonth(active, monthCount, now);
+  }
+
+  private getPeriodStart(now: Date): Date {
+    const start = new Date(now);
+
+    if (this.salesPeriod === '30d') {
+      start.setDate(start.getDate() - 29);
+      start.setHours(0, 0, 0, 0);
+      return start;
+    }
+
+    if (this.salesPeriod === '6m') {
+      start.setMonth(start.getMonth() - 5, 1);
+      start.setHours(0, 0, 0, 0);
+      return start;
+    }
+
+    // 12m
+    start.setMonth(start.getMonth() - 11, 1);
+    start.setHours(0, 0, 0, 0);
+    return start;
+  }
+
+  private bucketByMonth(
+    orders: Order[],
+    monthCount: number,
+    now: Date,
+  ): SalesDataPoint[] {
+    const monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    const points: SalesDataPoint[] = [];
+    const indexByKey = new Map<string, number>();
+
+    for (let i = monthCount - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      indexByKey.set(key, points.length);
+      points.push({
+        label: `${monthNames[d.getMonth()]} ${String(d.getFullYear()).slice(2)}`,
+        value: 0,
+      });
+    }
+
+    for (const order of orders) {
+      const d = new Date(order.createdAt!);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      const idx = indexByKey.get(key);
+      if (idx != null) {
+        points[idx].value += order.total || 0;
+      }
+    }
+
+    return points;
+  }
+
+  private bucketByDay(
+    orders: Order[],
+    start: Date,
+    now: Date,
+  ): SalesDataPoint[] {
+    const points: SalesDataPoint[] = [];
+    const map = new Map<string, number>();
+
+    const cursor = new Date(start);
+    cursor.setHours(0, 0, 0, 0);
+
+    const end = new Date(now);
+    end.setHours(0, 0, 0, 0);
+
+    while (cursor <= end) {
+      const key = `${cursor.getFullYear()}-${cursor.getMonth()}-${cursor.getDate()}`;
+      map.set(key, points.length);
+      points.push({
+        label: `${cursor.getDate()}/${cursor.getMonth() + 1}`,
+        value: 0,
+      });
+      cursor.setDate(cursor.getDate() + 1);
+    }
+
+    for (const order of orders) {
+      const d = new Date(order.createdAt!);
+      const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+      const idx = map.get(key);
+      if (idx != null) {
+        points[idx].value += order.total || 0;
+      }
+    }
+
+    return points;
   }
 
   // ============================================================

@@ -32,8 +32,7 @@ export class SalesChartComponent implements AfterViewInit, OnChanges {
   }
 
   private createChart(): void {
-    console.log('Sales data:', this.data);
-    console.log('Canvas:', this.salesChart.nativeElement);
+
 
     const configuration: ChartConfiguration<'line'> = {
       type: 'line',

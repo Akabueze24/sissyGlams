@@ -9,6 +9,7 @@ import { PRODUCTS } from '../../data/product';
 import { StoreCollection } from '../../models/product-models/store-collection.model';
 import { STORE_COLLECTIONS } from '../../models/product-models/store-collections';
 import { CategoryService } from '../category-service/category.service';
+import { CollectionService } from '../collection-service/collection.service';
 
 @Injectable({
   providedIn: 'root',
@@ -47,7 +48,10 @@ export class ProductService {
   // CONSTRUCTOR
   // ============================================================
 
-  constructor(private categoryService: CategoryService) {}
+  constructor(
+    private categoryService: CategoryService,
+    private collectionService: CollectionService,
+  ) {}
 
   // ============================================================
   // FILTER STATE
@@ -78,7 +82,7 @@ export class ProductService {
 
   setProductActive(productId: string, active: boolean): void {
     const products = this.productsSource.value.map((product) =>
-      product.id === productId ? { ...product, active } : product
+      product.id === productId ? { ...product, active } : product,
     );
     this.setProducts(products);
   }
@@ -100,11 +104,13 @@ export class ProductService {
     description: string;
     active?: boolean;
     stock?: number;
+    rating?: number;
+    reviewCount?: number;
   }): Product {
     const name = input.name.trim();
     const subcategory = this.normalizeSubcategory(
       input.category,
-      input.subcategory
+      input.subcategory,
     );
 
     const product: Product = {
@@ -123,8 +129,8 @@ export class ProductService {
         shipping: 'Ships within 2–5 business days.',
         returns: 'Eligible for return according to store policy.',
       },
-      rating: 0,
-      reviewCount: 0,
+      rating: input.rating ?? 0,
+      reviewCount: input.reviewCount ?? 0,  
       active: input.active ?? true,
       stock: input.stock ?? 0,
       createdAt: new Date().toISOString(),
@@ -170,7 +176,7 @@ export class ProductService {
     };
 
     this.setProducts(
-      this.productsSource.value.map((p) => (p.id === productId ? updated : p))
+      this.productsSource.value.map((p) => (p.id === productId ? updated : p)),
     );
 
     return updated;
@@ -181,7 +187,7 @@ export class ProductService {
     if (!exists) return false;
 
     this.setProducts(
-      this.productsSource.value.filter((p) => p.id !== productId)
+      this.productsSource.value.filter((p) => p.id !== productId),
     );
     return true;
   }
@@ -200,9 +206,7 @@ export class ProductService {
 
   getProductsByCollection(collectionSlug: string): Product[] {
     return this.productsSource.value.filter(
-      (p) =>
-        p.active &&
-        p.collections?.some((c) => c.slug === collectionSlug)
+      (p) => p.active && p.collections?.some((c) => c.slug === collectionSlug),
     );
   }
 
@@ -212,10 +216,7 @@ export class ProductService {
 
   getOnSaleProducts(limit: number = 8): Product[] {
     return this.productsSource.value
-      .filter(
-        (p) =>
-          p.active && p.oldPrice != null && p.oldPrice > p.price
-      )
+      .filter((p) => p.active && p.oldPrice != null && p.oldPrice > p.price)
       .slice(0, limit);
   }
 
@@ -224,22 +225,21 @@ export class ProductService {
       (item) =>
         item.active &&
         item.id !== product.id &&
-        item.category === product.category
+        item.category === product.category,
     );
 
     const sameSubcategory = sameCategory.filter(
-      (item) => item.subcategory === product.subcategory
+      (item) => item.subcategory === product.subcategory,
     );
 
-    let pool =
-      sameSubcategory.length >= limit ? sameSubcategory : sameCategory;
+    let pool = sameSubcategory.length >= limit ? sameSubcategory : sameCategory;
 
     if (pool.length < limit) {
       const others = this.productsSource.value.filter(
         (item) =>
           item.active &&
           item.id !== product.id &&
-          !pool.some((p) => p.id === item.id)
+          !pool.some((p) => p.id === item.id),
       );
       pool = [...pool, ...others];
     }
@@ -249,13 +249,13 @@ export class ProductService {
 
   getProductsByCategory(category: Category): Product[] {
     return this.productsSource.value.filter(
-      (p) => p.active && p.category === category
+      (p) => p.active && p.category === category,
     );
   }
 
   getProductsBySubcategory(subcategory: string): Product[] {
     return this.productsSource.value.filter(
-      (p) => p.active && p.subcategory === subcategory
+      (p) => p.active && p.subcategory === subcategory,
     );
   }
 
@@ -284,8 +284,8 @@ export class ProductService {
 
     this.setProducts(
       this.productsSource.value.map((p) =>
-        p.id === productId ? { ...p, stock: p.stock - quantity } : p
-      )
+        p.id === productId ? { ...p, stock: p.stock - quantity } : p,
+      ),
     );
     return true;
   }
@@ -298,8 +298,8 @@ export class ProductService {
 
     this.setProducts(
       this.productsSource.value.map((p) =>
-        p.id === productId ? { ...p, stock: p.stock + quantity } : p
-      )
+        p.id === productId ? { ...p, stock: p.stock + quantity } : p,
+      ),
     );
     return true;
   }
@@ -334,7 +334,7 @@ export class ProductService {
   }
 
   getStoreCollections(): StoreCollection[] {
-    return STORE_COLLECTIONS;
+    return this.collectionService.getCollections();
   }
 
   // ============================================================
@@ -381,7 +381,7 @@ export class ProductService {
    */
   private normalizeSubcategory(
     category: Category,
-    subcategory?: string | null
+    subcategory?: string | null,
   ): string | undefined {
     const slug = subcategory?.trim();
     if (!slug) return undefined;
@@ -403,7 +403,7 @@ export class ProductService {
 
   private applyFilters(
     products: Product[],
-    filters: ProductFilters
+    filters: ProductFilters,
   ): Product[] {
     let result = products.filter((p) => p.active);
 
@@ -422,7 +422,7 @@ export class ProductService {
 
     if (filters.brand) {
       result = result.filter(
-        (p) => p.brand.toLowerCase() === filters.brand!.toLowerCase()
+        (p) => p.brand.toLowerCase() === filters.brand!.toLowerCase(),
       );
     }
 
@@ -432,7 +432,7 @@ export class ProductService {
 
     if (filters.collection) {
       result = result.filter((p) =>
-        p.collections?.some((c) => c.slug === filters.collection)
+        p.collections?.some((c) => c.slug === filters.collection),
       );
     }
 
@@ -502,7 +502,7 @@ export class ProductService {
     const inCollections = !!product.collections?.some(
       (c) =>
         c.name.toLowerCase().includes(term) ||
-        c.slug.toLowerCase().includes(term)
+        c.slug.toLowerCase().includes(term),
     );
 
     return (

@@ -27,6 +27,7 @@ import { AdminProductsComponent } from './features/admin/pages/admin-products/ad
 import { SettingsComponent } from './features/admin/pages/settings/settings.component';
 import { AdminCategoriesComponent } from './features/admin/pages/admin-categories/admin-categories.component';
 import { StoreLayoutComponent } from './features/store-layout/store-layout.component';
+import { AdminCollectionComponent } from './features/admin/pages/admin-collection/admin-collection.component';
 
 const routes: Routes = [
   {
@@ -46,7 +47,7 @@ const routes: Routes = [
 
       { path: 'cart', component: CartComponent },
 
-      { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard] },
+      { path: 'checkout', component: CheckoutComponent },
 
       {
         path: 'order-confirmation',
@@ -116,6 +117,7 @@ const routes: Routes = [
       { path: 'orders', component: AdminOrdersComponent },
       { path: 'products', component: AdminProductsComponent },
       { path: 'categories', component: AdminCategoriesComponent },
+      { path: 'collections', component: AdminCollectionComponent },
       { path: 'settings', component: SettingsComponent },
     ],
   },

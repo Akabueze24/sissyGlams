@@ -45,6 +45,7 @@ import { SalesChartComponent } from './features/admin/pages/sales-chart/sales-ch
 import { QuillModule } from 'ngx-quill';
 import { StoreLayoutComponent } from './features/store-layout/store-layout.component';
 import { RouterModule } from '@angular/router';
+import { AdminCollectionComponent } from './features/admin/pages/admin-collection/admin-collection.component';
 
 
 register();
@@ -90,6 +91,7 @@ register();
     SettingsComponent,
     SalesChartComponent,
     StoreLayoutComponent,
+    AdminCollectionComponent,
   
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

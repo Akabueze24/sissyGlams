@@ -66,8 +66,6 @@ export class AuthService {
     mode: AuthMode = 'login',
     redirectUrl: string = '/account',
   ): void {
-    console.log('2. AuthService: openAuthModal called');
-
     this.authModalRequestSubject.next({
       mode,
       redirectUrl,

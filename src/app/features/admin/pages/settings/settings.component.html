@@ -1,733 +1,260 @@
-<div class="admin-settings">
-
+<div class="admin-settings" *ngIf="form">
   <!-- =====================================================
         PAGE HEADER
   ====================================================== -->
   <div class="admin-settings__header">
-
     <div class="admin-settings__heading">
-
-      <h1 class="admin-settings__title">
-        Settings
-      </h1>
-
+      <h1 class="admin-settings__title">Settings</h1>
       <p class="admin-settings__subtitle">
-        Manage your store preferences and administration settings.
+        Manage your store profile and preferences. Product prices are stored in
+        USD; the header currency switcher is for display conversion later.
       </p>
-
     </div>
-
   </div>
 
-
   <!-- =====================================================
-        SETTINGS LAYOUT
+        SETTINGS CONTENT (scroll — no side nav)
   ====================================================== -->
   <div class="admin-settings__layout">
-
-    <!-- ===================================================
-          SETTINGS NAVIGATION
-    ==================================================== -->
-    <aside class="admin-settings__navigation">
-
-      <a
-        [routerLink]="['.']"
-        fragment="store-information"
-        class="admin-settings__nav-item"
-      >
-        <i class="fa-solid fa-store"></i>
-
-        <span>
-          Store Information
-        </span>
-      </a>
-
-
-      <a
-        [routerLink]="['.']"
-        fragment="store-preferences"
-        class="admin-settings__nav-item"
-      >
-        <i class="fa-solid fa-sliders"></i>
-
-        <span>
-          Store Preferences
-        </span>
-      </a>
-
-
-      <a
-        [routerLink]="['.']"
-        fragment="currency-payments"
-        class="admin-settings__nav-item"
-      >
-        <i class="fa-solid fa-credit-card"></i>
-
-        <span>
-          Currency & Payments
-        </span>
-      </a>
-
-
-      <a
-        [routerLink]="['.']"
-        fragment="shipping"
-        class="admin-settings__nav-item"
-      >
-        <i class="fa-solid fa-truck"></i>
-
-        <span>
-          Shipping
-        </span>
-      </a>
-
-
-      <a
-        [routerLink]="['.']"
-        fragment="notifications"
-        class="admin-settings__nav-item"
-      >
-        <i class="fa-solid fa-bell"></i>
-
-        <span>
-          Notifications
-        </span>
-      </a>
-
-
-      <a
-        [routerLink]="['.']"
-        fragment="security"
-        class="admin-settings__nav-item"
-      >
-        <i class="fa-solid fa-shield-halved"></i>
-
-        <span>
-          Security
-        </span>
-      </a>
-
-    </aside>
-
-
-    <!-- ===================================================
-          SETTINGS CONTENT
-    ==================================================== -->
     <main class="admin-settings__content">
-
       <!-- =================================================
             STORE INFORMATION
       ================================================== -->
       <section id="store-information" class="admin-settings__section">
-
         <div class="admin-settings__section-header">
-
           <div>
-
-            <h2 class="admin-settings__section-title">
-              Store Information
-            </h2>
-
+            <h2 class="admin-settings__section-title">Store Information</h2>
             <p class="admin-settings__section-description">
-              Basic information about your Sissy Glams store.
+              Basic information about your store.
             </p>
-
           </div>
-
         </div>
 
-
-        <!-- Store Name -->
         <div class="admin-settings__form-group">
-
-          <label
-            for="storeName"
-            class="admin-settings__label"
-          >
-            Store Name
-          </label>
-
+          <label for="storeName" class="admin-settings__label">Store Name</label>
           <input
             id="storeName"
             type="text"
             class="admin-settings__input"
-            value="Sissy Glams"
+            name="storeName"
+            [(ngModel)]="form.storeName"
+            placeholder="Sissy Glams"
           />
-
         </div>
 
-
-        <!-- Store Email -->
         <div class="admin-settings__form-group">
-
-          <label
-            for="storeEmail"
-            class="admin-settings__label"
-          >
-            Store Email
-          </label>
-
+          <label for="storeEmail" class="admin-settings__label">Store Email</label>
           <input
             id="storeEmail"
             type="email"
             class="admin-settings__input"
-            value="hello@sissyglams.com"
+            name="storeEmail"
+            [(ngModel)]="form.storeEmail"
+            placeholder="hello@sissyglams.com"
           />
-
         </div>
 
-
-        <!-- Phone -->
         <div class="admin-settings__form-group">
-
-          <label
-            for="storePhone"
-            class="admin-settings__label"
-          >
-            Phone Number
-          </label>
-
+          <label for="storePhone" class="admin-settings__label">Phone Number</label>
           <input
             id="storePhone"
             type="tel"
             class="admin-settings__input"
+            name="storePhone"
+            [(ngModel)]="form.storePhone"
             placeholder="+234 800 000 0000"
           />
-
         </div>
 
-
-        <!-- Store Description -->
         <div class="admin-settings__form-group">
-
-          <label
-            for="storeDescription"
-            class="admin-settings__label"
-          >
+          <label for="storeDescription" class="admin-settings__label">
             Store Description
           </label>
-
           <textarea
             id="storeDescription"
             class="admin-settings__textarea"
+            name="storeDescription"
             rows="4"
+            [(ngModel)]="form.storeDescription"
             placeholder="Enter a short description about your store..."
           ></textarea>
-
         </div>
 
-
-        <!-- Store Address -->
         <div class="admin-settings__form-group">
-
-          <label
-            for="storeAddress"
-            class="admin-settings__label"
-          >
+          <label for="storeAddress" class="admin-settings__label">
             Store Address
           </label>
-
           <textarea
             id="storeAddress"
             class="admin-settings__textarea"
+            name="storeAddress"
             rows="3"
+            [(ngModel)]="form.storeAddress"
             placeholder="Enter your store address..."
           ></textarea>
-
         </div>
 
+        <div class="admin-settings__form-group">
+          <label for="announcementBar" class="admin-settings__label">
+            Announcement bar
+          </label>
+          <input
+            id="announcementBar"
+            type="text"
+            class="admin-settings__input"
+            name="announcementBar"
+            [(ngModel)]="form.announcementBar"
+            placeholder="🎀 Free Worldwide Shipping US$50+ 🎀"
+          />
+        </div>
 
-        <!-- Save -->
+        <div class="admin-settings__form-group">
+          <label class="admin-settings__label">Catalog currency</label>
+          <input
+            type="text"
+            class="admin-settings__input"
+            value="USD — US Dollar (base)"
+            disabled
+          />
+          <p class="admin-settings__section-description">
+            All product prices are stored in USD.
+          </p>
+        </div>
+
         <div class="admin-settings__actions">
-
           <button
             type="button"
             class="admin-settings__save-btn"
+            (click)="saveSettings()"
           >
             Save Changes
           </button>
-
         </div>
-
       </section>
-
 
       <!-- =================================================
             STORE PREFERENCES
       ================================================== -->
       <section id="store-preferences" class="admin-settings__section">
-
         <div class="admin-settings__section-header">
-
-          <h2 class="admin-settings__section-title">
-            Store Preferences
-          </h2>
-
+          <h2 class="admin-settings__section-title">Store Preferences</h2>
           <p class="admin-settings__section-description">
-            Control how your store behaves and displays information.
+            Optional behaviour flags for later wiring.
           </p>
-
         </div>
 
-
-        <!-- Enable Store -->
         <div class="admin-settings__toggle-row">
-
           <div class="admin-settings__toggle-content">
-
-            <span class="admin-settings__toggle-title">
-              Store Active
-            </span>
-
+            <span class="admin-settings__toggle-title">Store Active</span>
             <span class="admin-settings__toggle-description">
               Allow customers to browse and purchase products.
             </span>
-
           </div>
-
           <label class="admin-settings__switch">
-
             <input
               type="checkbox"
-              checked
+              name="storeActive"
+              [(ngModel)]="form.storeActive"
             />
-
             <span class="admin-settings__switch-slider"></span>
-
           </label>
-
         </div>
 
-
-        <!-- Guest Checkout -->
         <div class="admin-settings__toggle-row">
-
           <div class="admin-settings__toggle-content">
-
-            <span class="admin-settings__toggle-title">
-              Guest Checkout
-            </span>
-
+            <span class="admin-settings__toggle-title">Guest Checkout</span>
             <span class="admin-settings__toggle-description">
               Allow customers to checkout without creating an account.
             </span>
-
           </div>
-
           <label class="admin-settings__switch">
-
             <input
               type="checkbox"
-              checked
+              name="guestCheckout"
+              [(ngModel)]="form.guestCheckout"
             />
-
             <span class="admin-settings__switch-slider"></span>
-
           </label>
-
         </div>
 
-
-        <!-- Product Reviews -->
-        <div class="admin-settings__toggle-row">
-
-          <div class="admin-settings__toggle-content">
-
-            <span class="admin-settings__toggle-title">
-              Product Reviews
-            </span>
-
-            <span class="admin-settings__toggle-description">
-              Allow customers to leave reviews on products.
-            </span>
-
-          </div>
-
-          <label class="admin-settings__switch">
-
-            <input
-              type="checkbox"
-              checked
-            />
-
-            <span class="admin-settings__switch-slider"></span>
-
-          </label>
-
+        <div class="admin-settings__actions">
+          <button
+            type="button"
+            class="admin-settings__save-btn"
+            (click)="saveSettings()"
+          >
+            Save Changes
+          </button>
         </div>
-
-
-        <!-- Inventory Tracking -->
-        <div class="admin-settings__toggle-row">
-
-          <div class="admin-settings__toggle-content">
-
-            <span class="admin-settings__toggle-title">
-              Inventory Tracking
-            </span>
-
-            <span class="admin-settings__toggle-description">
-              Automatically track product stock levels.
-            </span>
-
-          </div>
-
-          <label class="admin-settings__switch">
-
-            <input
-              type="checkbox"
-              checked
-            />
-
-            <span class="admin-settings__switch-slider"></span>
-
-          </label>
-
-        </div>
-
       </section>
-
-
-      <!-- =================================================
-            CURRENCY & PAYMENTS
-      ================================================== -->
-      <section id="currency-payments" class="admin-settings__section">
-
-        <div class="admin-settings__section-header">
-
-          <h2 class="admin-settings__section-title">
-            Currency & Payments
-          </h2>
-
-          <p class="admin-settings__section-description">
-            Configure your store currency and payment preferences.
-          </p>
-
-        </div>
-
-
-        <div class="admin-settings__form-row">
-
-          <!-- Currency -->
-          <div class="admin-settings__form-group">
-
-            <label
-              for="currency"
-              class="admin-settings__label"
-            >
-              Default Currency
-            </label>
-
-            <select
-              id="currency"
-              class="admin-settings__select"
-            >
-              <option selected>
-                USD — US Dollar
-              </option>
-
-              <option>
-                NGN — Nigerian Naira
-              </option>
-
-              <option>
-                GBP — British Pound
-              </option>
-
-              <option>
-                EUR — Euro
-              </option>
-            </select>
-
-          </div>
-
-
-          <!-- Payment -->
-          <div class="admin-settings__form-group">
-
-            <label
-              for="payment"
-              class="admin-settings__label"
-            >
-              Payment Method
-            </label>
-
-            <select
-              id="payment"
-              class="admin-settings__select"
-            >
-
-              <option selected>
-                Online Payment
-              </option>
-
-              <option>
-                Bank Transfer
-              </option>
-
-              <option>
-                Cash on Delivery
-              </option>
-
-            </select>
-
-          </div>
-
-        </div>
-
-      </section>
-
 
       <!-- =================================================
             SHIPPING
       ================================================== -->
       <section id="shipping" class="admin-settings__section">
-
         <div class="admin-settings__section-header">
-
-          <h2 class="admin-settings__section-title">
-            Shipping
-          </h2>
-
+          <h2 class="admin-settings__section-title">Shipping</h2>
           <p class="admin-settings__section-description">
-            Configure your store shipping preferences.
+            Optional notice for customers. Rates still come from your shipping
+            data.
           </p>
-
         </div>
 
-
-        <!-- Shipping Enabled -->
-        <div class="admin-settings__toggle-row">
-
-          <div class="admin-settings__toggle-content">
-
-            <span class="admin-settings__toggle-title">
-              Shipping Enabled
-            </span>
-
-            <span class="admin-settings__toggle-description">
-              Allow customers to select shipping during checkout.
-            </span>
-
-          </div>
-
-          <label class="admin-settings__switch">
-
-            <input
-              type="checkbox"
-              checked
-            />
-
-            <span class="admin-settings__switch-slider"></span>
-
-          </label>
-
-        </div>
-
-
-        <!-- Shipping Notice -->
         <div class="admin-settings__form-group">
-
-          <label
-            for="shippingNotice"
-            class="admin-settings__label"
-          >
+          <label for="shippingNotice" class="admin-settings__label">
             Shipping Notice
           </label>
-
           <textarea
             id="shippingNotice"
             class="admin-settings__textarea"
+            name="shippingNotice"
             rows="3"
+            [(ngModel)]="form.shippingNotice"
             placeholder="Enter shipping information..."
           ></textarea>
-
         </div>
 
+        <div class="admin-settings__actions">
+          <button
+            type="button"
+            class="admin-settings__save-btn"
+            (click)="saveSettings()"
+          >
+            Save Changes
+          </button>
+        </div>
       </section>
-
-
-      <!-- =================================================
-            NOTIFICATIONS
-      ================================================== -->
-      <section id="notifications" class="admin-settings__section">
-
-        <div class="admin-settings__section-header">
-
-          <h2 class="admin-settings__section-title">
-            Notifications
-          </h2>
-
-          <p class="admin-settings__section-description">
-            Choose which store notifications you want to receive.
-          </p>
-
-        </div>
-
-
-        <div class="admin-settings__toggle-row">
-
-          <div class="admin-settings__toggle-content">
-
-            <span class="admin-settings__toggle-title">
-              New Order Notifications
-            </span>
-
-            <span class="admin-settings__toggle-description">
-              Receive a notification whenever a new order is placed.
-            </span>
-
-          </div>
-
-          <label class="admin-settings__switch">
-
-            <input
-              type="checkbox"
-              checked
-            />
-
-            <span class="admin-settings__switch-slider"></span>
-
-          </label>
-
-        </div>
-
-
-        <div class="admin-settings__toggle-row">
-
-          <div class="admin-settings__toggle-content">
-
-            <span class="admin-settings__toggle-title">
-              Low Stock Notifications
-            </span>
-
-            <span class="admin-settings__toggle-description">
-              Get notified when products reach the low-stock threshold.
-            </span>
-
-          </div>
-
-          <label class="admin-settings__switch">
-
-            <input
-              type="checkbox"
-              checked
-            />
-
-            <span class="admin-settings__switch-slider"></span>
-
-          </label>
-
-        </div>
-
-
-        <div class="admin-settings__toggle-row">
-
-          <div class="admin-settings__toggle-content">
-
-            <span class="admin-settings__toggle-title">
-              Customer Notifications
-            </span>
-
-            <span class="admin-settings__toggle-description">
-              Receive important customer-related notifications.
-            </span>
-
-          </div>
-
-          <label class="admin-settings__switch">
-
-            <input
-              type="checkbox"
-              checked
-            />
-
-            <span class="admin-settings__switch-slider"></span>
-
-          </label>
-
-        </div>
-
-      </section>
-
 
       <!-- =================================================
             SECURITY
       ================================================== -->
       <section id="security" class="admin-settings__section">
-
         <div class="admin-settings__section-header">
-
-          <h2 class="admin-settings__section-title">
-            Security
-          </h2>
-
+          <h2 class="admin-settings__section-title">Security</h2>
           <p class="admin-settings__section-description">
-            Manage your administrator account security.
+            Session controls for this device.
           </p>
-
         </div>
 
-
         <div class="admin-settings__security-row">
-
-          <div class="admin-settings__security-icon">
-            <i class="fa-solid fa-lock"></i>
-          </div>
-
-          <div class="admin-settings__security-content">
-
-            <h3 class="admin-settings__security-title">
-              Administrator Password
-            </h3>
-
-            <p class="admin-settings__security-description">
-              Change the password used to access the admin dashboard.
-            </p>
-
-          </div>
-
-          <button
-            type="button"
-            class="admin-settings__secondary-btn"
-          >
-            Change Password
-          </button>
-
-        </div>
-
-
-        <div class="admin-settings__security-row">
-
           <div class="admin-settings__security-icon">
             <i class="fa-solid fa-right-from-bracket"></i>
           </div>
-
           <div class="admin-settings__security-content">
-
-            <h3 class="admin-settings__security-title">
-              Sign Out
-            </h3>
-
+            <h3 class="admin-settings__security-title">Sign Out</h3>
             <p class="admin-settings__security-description">
-              Sign out from your administrator account on this device.
+              Sign out from your account on this device.
             </p>
-
           </div>
-
           <button
             type="button"
             class="admin-settings__secondary-btn admin-settings__secondary-btn--danger"
+            (click)="signOut()"
           >
             Sign Out
           </button>
-
         </div>
-
       </section>
-
     </main>
-
   </div>
-
 </div>

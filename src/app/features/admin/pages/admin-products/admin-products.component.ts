@@ -57,6 +57,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     collectionSlugs: [] as string[],
     price: 0,
     stock: 0,
+    rating: 0,
+    reviewCount: 0,
     imageUrl: '',
     description: '',
     active: true,
@@ -68,6 +70,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     category?: string;
     price?: string;
     stock?: string;
+    rating?: string;
+    reviewCount?: string;
     imageUrl?: string;
     description?: string;
   } = {};
@@ -88,6 +92,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     price: 0,
     oldPrice: null as number | null,
     stock: 0,
+    rating: 0,
+    reviewCount: 0,
     imageUrlsText: '',
     description: '',
     detailsText: '',
@@ -105,6 +111,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     category?: string;
     price?: string;
     stock?: string;
+    rating?: string;
+    reviewCount?: string;
     images?: string;
   } = {};
 
@@ -167,7 +175,6 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     return this.products.filter((p) => !p.active).length;
   }
 
-  /** Products with stock between 1 and threshold (not zero) */
   get lowStockCount(): number {
     return this.products.filter(
       (p) => p.stock > 0 && p.stock <= LOW_STOCK_THRESHOLD
@@ -208,8 +215,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     return (
       this.productService
         .getCategoryNav()
-        .find((item) => item.category === this.categoryFilter)
-        ?.subcategories ?? []
+        .find((item) => item.category === this.categoryFilter)?.subcategories ??
+      []
     );
   }
 
@@ -218,7 +225,9 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     const term = this.normalizeSearch(this.searchTerm);
 
     if (term) {
-      result = result.filter((product) => this.matchesAdminSearch(product, term));
+      result = result.filter((product) =>
+        this.matchesAdminSearch(product, term)
+      );
     }
 
     if (this.categoryFilter) {
@@ -347,6 +356,22 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       errors.stock = 'Stock cannot be negative.';
     }
 
+    if (
+      this.addForm.rating == null ||
+      this.addForm.rating < 0 ||
+      this.addForm.rating > 5
+    ) {
+      errors.rating = 'Rating must be between 0 and 5.';
+    }
+
+    if (
+      this.addForm.reviewCount == null ||
+      this.addForm.reviewCount < 0 ||
+      !Number.isInteger(Number(this.addForm.reviewCount))
+    ) {
+      errors.reviewCount = 'Review count must be a whole number (0 or more).';
+    }
+
     if (!this.addForm.imageUrl.trim()) {
       errors.imageUrl = 'Product image URL is required.';
     }
@@ -382,6 +407,22 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       errors.stock = 'Stock cannot be negative.';
     }
 
+    if (
+      this.editForm.rating == null ||
+      this.editForm.rating < 0 ||
+      this.editForm.rating > 5
+    ) {
+      errors.rating = 'Rating must be between 0 and 5.';
+    }
+
+    if (
+      this.editForm.reviewCount == null ||
+      this.editForm.reviewCount < 0 ||
+      !Number.isInteger(Number(this.editForm.reviewCount))
+    ) {
+      errors.reviewCount = 'Review count must be a whole number (0 or more).';
+    }
+
     const images = this.previewUrlsFromText(this.editForm.imageUrlsText);
 
     if (!images.length) {
@@ -414,9 +455,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const collections = this.collectionsFromSlugs(
-      this.addForm.collectionSlugs
-    );
+    const collections = this.collectionsFromSlugs(this.addForm.collectionSlugs);
 
     this.productService.addProduct({
       name: this.addForm.name,
@@ -426,6 +465,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       collections: collections.length ? collections : undefined,
       price: Number(this.addForm.price),
       stock: Number(this.addForm.stock),
+      rating: Number(this.addForm.rating) || 0,
+      reviewCount: Number(this.addForm.reviewCount) || 0,
       imageUrl: this.addForm.imageUrl,
       description: this.addForm.description,
       active: this.addForm.active,
@@ -443,6 +484,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       collectionSlugs: [],
       price: 0,
       stock: 0,
+      rating: 0,
+      reviewCount: 0,
       imageUrl: '',
       description: '',
       active: true,
@@ -481,6 +524,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       price: product.price,
       oldPrice: product.oldPrice ?? null,
       stock: product.stock ?? 0,
+      rating: product.rating ?? 0,
+      reviewCount: product.reviewCount ?? 0,
       imageUrlsText: (product.images ?? []).join('\n'),
       description: product.productDetails?.description ?? '',
       detailsText: (product.productDetails?.details ?? []).join('\n'),
@@ -578,6 +623,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
           ? Number(this.editForm.oldPrice)
           : undefined,
       stock: Number(this.editForm.stock),
+      rating: Number(this.editForm.rating) || 0,
+      reviewCount: Number(this.editForm.reviewCount) || 0,
       images,
       active: this.editForm.active,
       productDetails: {

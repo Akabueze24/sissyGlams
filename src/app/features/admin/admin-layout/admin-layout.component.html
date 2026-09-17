@@ -11,7 +11,7 @@
     <!-- Mobile sidebar header -->
     <div class="offcanvas-header admin-sidebar__offcanvas-header">
       <span class="admin-sidebar__brand" id="adminSidebarLabel">
-        Sissy<span class="admin-sidebar__brand-accent">Dream</span>
+        {{ storeName }}
       </span>
 
       <button
@@ -27,10 +27,7 @@
     <div class="offcanvas-body admin-sidebar__body">
       <!-- Desktop brand -->
       <div class="admin-sidebar__brand-desktop">
-        <span>
-          Sissy<span class="admin-sidebar__brand-accent">Dream</span>
-        </span>
-
+        <span>{{ storeName }}</span>
         <span class="admin-sidebar__brand-tag"> Admin </span>
       </div>
 
@@ -39,7 +36,6 @@
       ========================================================= -->
       <nav class="admin-nav" aria-label="Admin navigation">
         <ul class="admin-nav__list">
-          <!-- Dashboard -->
           <li>
             <a
               class="admin-nav__link"
@@ -48,12 +44,10 @@
               [routerLinkActiveOptions]="{ exact: true }"
             >
               <i class="fa-solid fa-gauge" aria-hidden="true"></i>
-
               <span>Dashboard</span>
             </a>
           </li>
 
-          <!-- Products -->
           <li>
             <a
               class="admin-nav__link"
@@ -62,12 +56,10 @@
               [routerLinkActiveOptions]="{ exact: true }"
             >
               <i class="fa-solid fa-shirt" aria-hidden="true"></i>
-
               <span>Products</span>
             </a>
           </li>
 
-          <!-- Orders -->
           <li>
             <a
               class="admin-nav__link"
@@ -76,12 +68,10 @@
               [routerLinkActiveOptions]="{ exact: true }"
             >
               <i class="fa-solid fa-receipt" aria-hidden="true"></i>
-
               <span>Orders</span>
             </a>
           </li>
 
-          <!-- Customers -->
           <li>
             <a
               class="admin-nav__link"
@@ -90,12 +80,10 @@
               [routerLinkActiveOptions]="{ exact: true }"
             >
               <i class="fa-solid fa-users" aria-hidden="true"></i>
-
               <span>Customers</span>
             </a>
           </li>
 
-          <!-- Categories -->
           <li>
             <a
               class="admin-nav__link"
@@ -104,12 +92,22 @@
               [routerLinkActiveOptions]="{ exact: true }"
             >
               <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
-
               <span>Categories</span>
             </a>
           </li>
 
-          <!-- Inventory -->
+          <li>
+            <a
+              class="admin-nav__link"
+              routerLink="/admin/collections"
+              routerLinkActive="admin-nav__link--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-solid fa-object-group" aria-hidden="true"></i>
+              <span>Collections</span>
+            </a>
+          </li>
+
           <li>
             <a
               class="admin-nav__link"
@@ -118,12 +116,10 @@
               [routerLinkActiveOptions]="{ exact: true }"
             >
               <i class="fa-solid fa-warehouse" aria-hidden="true"></i>
-
               <span>Inventory</span>
             </a>
           </li>
 
-          <!-- Settings -->
           <li>
             <a
               class="admin-nav__link"
@@ -132,7 +128,6 @@
               [routerLinkActiveOptions]="{ exact: true }"
             >
               <i class="fa-solid fa-gear" aria-hidden="true"></i>
-
               <span>Settings</span>
             </a>
           </li>
@@ -148,15 +143,17 @@
         </span>
 
         <div class="admin-sidebar__profile-text">
-          <p class="admin-sidebar__profile-name">Jin Park</p>
-
-          <p class="admin-sidebar__profile-email">admin&#64;sissydream.com</p>
+          <p class="admin-sidebar__profile-name">{{ adminFirstName }}</p>
+          <p class="admin-sidebar__profile-email">
+            {{ currentUser?.email || 'admin@sissydream.com' }}
+          </p>
         </div>
 
         <button
           class="admin-sidebar__logout"
           type="button"
           aria-label="Log out"
+          (click)="logout()"
         >
           <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
         </button>
@@ -174,7 +171,6 @@
     <div
       class="admin-mobile-header d-flex d-lg-none align-items-center justify-content-between"
     >
-      <!-- Sidebar toggle -->
       <button
         class="admin-mobile-header__toggle"
         type="button"
@@ -186,13 +182,11 @@
         <i class="fa-solid fa-bars" aria-hidden="true"></i>
       </button>
 
-      <!-- Mobile brand -->
       <span class="admin-mobile-header__brand">
-        Sissy<span class="admin-mobile-header__brand-accent">Dream</span>
+        {{ storeName }}
         Admin
       </span>
 
-      <!-- Notifications -->
       <button
         class="admin-mobile-header__icon-btn"
         type="button"
@@ -206,7 +200,6 @@
          DESKTOP ADMIN HEADER
     =========================================================== -->
     <header class="admin-header">
-      <!-- Page title / breadcrumb -->
       <div class="admin-header__titles">
         <h1 class="admin-header__title">Dashboard</h1>
 
@@ -217,11 +210,7 @@
         </nav>
       </div>
 
-      <!-- ========================================================
-           HEADER ACTIONS
-      ========================================================= -->
       <div class="admin-header__actions d-none d-lg-flex">
-        <!-- Notifications -->
         <button
           class="admin-header__icon-btn"
           type="button"
@@ -230,30 +219,28 @@
           <i class="fa-regular fa-bell" aria-hidden="true"></i>
         </button>
 
-        <!-- Divider -->
         <span class="admin-header__divider" aria-hidden="true"></span>
 
-        <!-- Admin profile -->
         <div class="admin-header__profile">
           <span class="admin-header__avatar">
             <i class="fa-solid fa-user" aria-hidden="true"></i>
           </span>
 
-          <span class="admin-header__profile-name"> Jin Park </span>
+          <span class="admin-header__profile-name">{{ adminFirstName }}</span>
         </div>
 
-        <!-- Logout -->
-        <button class="admin-header__logout" type="button" aria-label="Log out">
+        <button
+          class="admin-header__logout"
+          type="button"
+          aria-label="Log out"
+          (click)="logout()"
+        >
           <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
-
           <span>Log out</span>
         </button>
       </div>
     </header>
 
-    <!-- ==========================================================
-         ADMIN PAGE CONTENT
-    =========================================================== -->
     <main class="admin-content">
       <router-outlet></router-outlet>
     </main>

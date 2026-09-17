@@ -9,9 +9,10 @@
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 1040;
+  z-index: 1080; // raised so dropdowns paint above sticky page content (hero, etc.)
   background-color: $color-white;
   box-shadow: 0 4px 16px rgba($color-black, 0.08);
+  overflow: visible; // never clip dropdown menus
 }
 
 // ============================================================
@@ -99,6 +100,8 @@
 }
 
 .currency-dropdown {
+  z-index: 1090; // stay above the sticky page content
+
   .btn {
     font-size: $header-topbar-font-size;
     color: $color-text-muted;
@@ -112,8 +115,40 @@
   }
 
   .dropdown-menu {
+    z-index: 1100;
     min-width: 6rem;
     font-size: $header-topbar-font-size;
+  }
+}
+
+// Mobile currency row inside the hamburger drawer
+.mobile-currency-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.5rem 0.75rem;
+  border-bottom: 1px solid rgba($color-white, 0.2);
+
+  .mobile-currency-label {
+    font-family: $font-body;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $color-white;
+  }
+
+  .currency-dropdown .btn {
+    color: $color-white;
+    font-size: 0.8rem;
+    background: rgba($color-white, 0.12);
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+  }
+
+  .currency-dropdown .dropdown-menu {
+    min-width: 6rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -492,10 +527,6 @@
   // Sharp custom chevron (replaces Bootstrap's blurry default caret)
   .dropdown-toggle {
     &::after {
-      display: none;
-    }
-
-    &::before {
       content: "";
       display: inline-block;
       width: 7px;
@@ -511,8 +542,8 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    &[aria-expanded="true"]::before,
-    &.show::before {
+    &[aria-expanded="true"]::after,
+    &.show::after {
       transform: rotate(225deg) translate(-1px, -1px);
     }
   }
@@ -540,8 +571,23 @@
 
   @media (max-width: 991.98px) {
     .navbar-collapse {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 18rem;
+      max-width: 85vw;
+      z-index: 1110;
       background-color: $brand-pink;
-      padding: 0.5rem 1rem 1rem;
+      padding: 1rem;
+      overflow-y: auto;
+      height: 100% !important;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+
+    .navbar-collapse.show {
+      transform: translateX(0);
     }
 
     &__list {
@@ -570,6 +616,54 @@
       }
     }
   }
+}
+
+// ============================================================
+// Mobile drawer (hamburger) — slide-in panel + backdrop
+// ============================================================
+.nav-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba($color-white, 0.2);
+}
+
+.nav-drawer-title {
+  font-family: $font-heading;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: $color-white;
+}
+
+.nav-drawer-close {
+  border: none;
+  background: transparent;
+  color: $color-white;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0.25rem 0.4rem;
+
+  &:hover {
+    color: rgba($color-white, 0.8);
+  }
+}
+
+.nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background-color: rgba($color-black, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+// Show backdrop only while the drawer is open (sibling selector)
+.navbar-collapse.show ~ .nav-backdrop {
+  opacity: 1;
+  visibility: visible;
 }
 
 // ============================================================

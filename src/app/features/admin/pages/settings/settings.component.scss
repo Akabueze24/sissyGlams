@@ -50,7 +50,7 @@ html {
 
   &__layout {
     display: grid;
-    grid-template-columns: 240px minmax(0, 1fr);
+    grid-template-columns: 240px minmax( 1fr);
     align-items: start;
     gap: 1.5rem;
   }

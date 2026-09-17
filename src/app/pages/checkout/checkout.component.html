@@ -1,3 +1,11 @@
+<div
+  class="checkout-page__block-message"
+  *ngIf="pageBlockMessage"
+  role="alert"
+>
+  {{ pageBlockMessage }}
+</div>
+
 <main class="checkout container-fluid">
   <header class="checkout__header">
     <h1 class="checkout__title">Checkout</h1>
@@ -655,7 +663,7 @@
           </p>
 
           <!-- PAYMENT BUTTON -->
-          <button class="checkout__submit" type="submit" [disabled]="!cartItems.length || checkoutForm.invalid">
+          <button class="checkout__submit" type="submit" [disabled]="!cartItems.length">
             Pay
             {{ total !== null ? "$" + (total | number: "1.2-2") : "" }}
           </button>

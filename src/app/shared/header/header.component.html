@@ -1,8 +1,7 @@
 <!-- 1. Announcement bar (scrolls away) -->
-<div class="announcement-bar text-center">
+<div class="announcement-bar text-center" *ngIf="announcementBar">
   <span>
-    🎀 Worldwide Shipping Shipping rates calculated based on your location Shop
-    Now 🎀
+    {{announcementBar}}
   </span>
 </div>
 
@@ -94,7 +93,7 @@
 
         <a class="logo logo--mobile" href="/home">
           <span class="logo__word">
-            Sissy<span class="logo__word--accent">Glams</span>
+            {{storeName}}
           </span>
         </a>
 
@@ -129,9 +128,9 @@
         <span class="logo__mark"><i class="fa-solid fa-face-smile"></i></span>
         <span class="logo__text">
           <span class="logo__word">
-            Sissy<span class="logo__word--accent">Glams</span>
+           {{storeName}}
           </span>
-          <span class="logo__tagline">Sissy Maker Store</span>
+          <span class="logo__tagline">{{storeDescription}}</span>
         </span>
       </a>
 
@@ -273,6 +272,30 @@
   <nav class="category-nav navbar navbar-expand-lg">
     <div class="category-nav__inner container-fluid">
       <div class="collapse navbar-collapse" id="categoryNavCollapse">
+        <!-- Mobile-only currency selector -->
+        <div class="mobile-currency-row d-lg-none">
+          <span class="mobile-currency-label">Currency</span>
+          <div class="dropdown currency-dropdown">
+            <button
+              class="btn dropdown-toggle"
+              type="button"
+              id="mobileCurrencyDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              USD
+            </button>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="mobileCurrencyDropdown"
+            >
+              <li><button class="dropdown-item" type="button">USD</button></li>
+              <li><button class="dropdown-item" type="button">EUR</button></li>
+              <li><button class="dropdown-item" type="button">GBP</button></li>
+            </ul>
+          </div>
+        </div>
+
         <ul class="navbar-nav category-nav__list">
           <!-- Fixed: New -->
           <li class="nav-item">
