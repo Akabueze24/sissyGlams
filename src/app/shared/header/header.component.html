@@ -1,42 +1,75 @@
-<!-- 1. Announcement bar (scrolls away) -->
+<!-- ============================================================
+     1. ANNOUNCEMENT BAR
+============================================================ -->
 <div class="announcement-bar text-center" *ngIf="announcementBar">
   <span>
-    {{announcementBar}}
+    {{ announcementBar }}
   </span>
 </div>
 
-<!-- 2. Top info bar (desktop / tablet only — scrolls away) -->
+
+<!-- ============================================================
+     2. TOP INFO BAR
+============================================================ -->
 <div class="topbar d-none d-lg-flex align-items-center justify-content-between">
+
   <div class="topbar__left d-flex align-items-center">
+
     <ul class="social-list list-unstyled d-flex align-items-center mb-0">
       <li>
-        <a href="#" aria-label="Facebook"
-          ><i class="fa-brands fa-facebook-f"></i
-        ></a>
+        <a href="#" aria-label="Facebook">
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
       </li>
+
       <li>
-        <a href="#" aria-label="Instagram"
-          ><i class="fa-brands fa-instagram"></i
-        ></a>
+        <a href="#" aria-label="Instagram">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
       </li>
+
       <li>
-        <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" aria-label="X">
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
       </li>
     </ul>
 
-    <span class="topbar__divider" aria-hidden="true"></span>
+    <span
+      class="topbar__divider"
+      aria-hidden="true"
+    ></span>
 
     <ul class="info-links list-unstyled d-flex align-items-center mb-0">
-      <li><a href="/blog">Blog</a></li>
-      <li><a href="/shipping">Shipping</a></li>
-      <li><a href="/returns">Returns</a></li>
-      <li><a href="/contact">Contact</a></li>
-      <li><a href="/faq">FAQ</a></li>
+      <li>
+        <a href="/blog">Blog</a>
+      </li>
+
+      <li>
+        <a href="/shipping">Shipping</a>
+      </li>
+
+      <li>
+        <a href="/returns">Returns</a>
+      </li>
+
+      <li>
+        <a href="/contact">Contact</a>
+      </li>
+
+      <li>
+        <a href="/faq">FAQ</a>
+      </li>
     </ul>
+
   </div>
 
+
   <div class="topbar__right d-flex align-items-center">
+
+    <!-- Currency -->
     <div class="dropdown currency-dropdown">
+
       <button
         class="btn dropdown-toggle"
         type="button"
@@ -46,101 +79,199 @@
       >
         USD
       </button>
+
       <ul
         class="dropdown-menu dropdown-menu-end"
         aria-labelledby="currencyDropdown"
       >
-        <li><button class="dropdown-item" type="button">USD</button></li>
-        <li><button class="dropdown-item" type="button">EUR</button></li>
-        <li><button class="dropdown-item" type="button">GBP</button></li>
+        <li>
+          <button
+            class="dropdown-item"
+            type="button"
+          >
+            USD
+          </button>
+        </li>
+
+        <li>
+          <button
+            class="dropdown-item"
+            type="button"
+          >
+            EUR
+          </button>
+        </li>
+
+        <li>
+          <button
+            class="dropdown-item"
+            type="button"
+          >
+            GBP
+          </button>
+        </li>
       </ul>
+
     </div>
 
-    <a class="topbar__contact" href="mailto:support@sissydream.com">
+
+    <!-- Email -->
+    <a
+      class="topbar__contact"
+      href="mailto:support@sissydream.com"
+    >
       <i class="fa-regular fa-envelope"></i>
-      <span>SUPPORT&#64;SISSYDREAM.COM</span>
+      <span>{{ storeEmail }}</span>
     </a>
 
-    <a class="topbar__contact" href="tel:+13616663162">
+
+    <!-- Phone -->
+    <a
+      class="topbar__contact"
+      href="tel:+13616663162"
+    >
       <i class="fa-solid fa-phone"></i>
-      <span>+1&nbsp;361&nbsp;666&nbsp;3162</span>
+      <span>{{ storePhone }}</span>
     </a>
+
   </div>
+
 </div>
 
-<!-- 3 & 4. Sticky header: main header + category nav (sticks for the whole page) -->
+
+<!-- ============================================================
+     3. STICKY HEADER
+============================================================ -->
 <header class="site-header">
-  <!-- 3. Main header -->
+
+
+  <!-- ==========================================================
+       MAIN HEADER
+  =========================================================== -->
   <div class="main-header">
+
     <div
       class="main-header__inner d-flex align-items-center justify-content-between"
     >
-      <!-- Mobile-only: hamburger + logo + actions -->
+
+
+      <!-- ======================================================
+           MOBILE HEADER
+      ======================================================= -->
       <div
         class="mobile-row d-flex d-lg-none align-items-center justify-content-between w-100"
       >
+
+        <!-- Hamburger -->
         <button
           class="hamburger-btn"
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#categoryNavCollapse"
-          aria-controls="categoryNavCollapse"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#categoryNavOffcanvas"
+          aria-controls="categoryNavOffcanvas"
+          aria-label="Open navigation"
         >
           <i class="fa-solid fa-bars"></i>
         </button>
 
-        <a class="logo logo--mobile" href="/home">
+
+        <!-- Mobile Logo -->
+        <a
+          class="logo logo--mobile"
+          href="/home"
+        >
           <span class="logo__word">
-            {{storeName}}
+            {{ storeName }}
           </span>
         </a>
 
+
+        <!-- Wishlist -->
         <a
           class="mobile-wishlist-btn"
           routerLink="/account/wishlist"
           aria-label="Wishlist"
         >
           <i class="fa-regular fa-heart"></i>
-          <span class="wishlist-badge">{{ wishlistCount }}</span>
+
+          <span class="wishlist-badge">
+            {{ wishlistCount }}
+          </span>
         </a>
 
+
+        <!-- Account -->
         <a
           class="mobile-account-btn"
           aria-label="Account"
           (click)="onAccountClick()"
         >
           <i class="fa-regular fa-user"></i>
-          <span>{{
-            currentUser ? currentUser.firstName || "My Account" : "Account"
-          }}</span>
+
+          <span>
+            {{
+              currentUser
+                ? currentUser.firstName || "My Account"
+                : "Account"
+            }}
+          </span>
         </a>
 
-        <a class="cart-icon-btn" routerLink="/cart" aria-label="Cart">
+
+        <!-- Cart -->
+        <a
+          class="cart-icon-btn"
+          routerLink="/cart"
+          aria-label="Cart"
+        >
           <i class="fa-solid fa-cart-shopping"></i>
-          <span class="cart-badge">{{ cartCount }}</span>
+
+          <span class="cart-badge">
+            {{ cartCount }}
+          </span>
         </a>
+
       </div>
 
-      <!-- Desktop: logo -->
-      <a class="logo d-none d-lg-flex align-items-center" href="/home">
-        <span class="logo__mark"><i class="fa-solid fa-face-smile"></i></span>
-        <span class="logo__text">
-          <span class="logo__word">
-           {{storeName}}
-          </span>
-          <span class="logo__tagline">{{storeDescription}}</span>
+
+      <!-- ======================================================
+           DESKTOP LOGO
+      ======================================================= -->
+      <a
+        class="logo d-none d-lg-flex align-items-center"
+        href="/home"
+      >
+
+        <span class="logo__mark">
+          <i class="fa-solid fa-face-smile"></i>
         </span>
+
+        <span class="logo__text">
+
+          <span class="logo__word">
+            {{ storeName }}
+          </span>
+
+          <span class="logo__tagline">
+            {{ storeDescription }}
+          </span>
+
+        </span>
+
       </a>
 
-      <!-- Desktop: search + suggestions -->
+
+      <!-- ======================================================
+           DESKTOP SEARCH
+      ======================================================= -->
       <div class="search-form-wrap d-none d-lg-block">
+
         <form
           class="search-form d-flex"
           role="search"
           (ngSubmit)="onSearch($event)"
         >
+
           <input
             class="search-form__input"
             type="search"
@@ -153,81 +284,159 @@
             (focus)="onSearchInput()"
             (blur)="closeSuggestions()"
           />
-          <button class="search-form__btn" type="submit" aria-label="Search">
+
+          <button
+            class="search-form__btn"
+            type="submit"
+            aria-label="Search"
+          >
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
+
         </form>
 
-        <ul class="search-suggestions" *ngIf="showSuggestions">
+
+        <!-- Suggestions -->
+        <ul
+          class="search-suggestions"
+          *ngIf="showSuggestions"
+        >
+
           <li
             class="search-suggestions__item"
             *ngFor="let product of suggestions"
             (mousedown)="goToProduct(product)"
           >
+
             <img
               class="search-suggestions__img"
               [src]="product.images[0]"
               [alt]="product.name"
             />
+
             <div class="search-suggestions__info">
-              <span class="search-suggestions__name">{{ product.name }}</span>
-              <span class="search-suggestions__brand">{{ product.brand }}</span>
+
+              <span class="search-suggestions__name">
+                {{ product.name }}
+              </span>
+
+              <span class="search-suggestions__brand">
+                {{ product.brand }}
+              </span>
+
             </div>
-            <span class="search-suggestions__price"
-              >${{ product.price | number: "1.2-2" }}</span
-            >
+
+            <span class="search-suggestions__price">
+              ${{ product.price | number: "1.2-2" }}
+            </span>
+
           </li>
+
         </ul>
+
       </div>
 
-      <!-- Desktop: actions -->
+
+      <!-- ======================================================
+           DESKTOP ACTIONS
+      ======================================================= -->
       <div class="header-actions d-none d-lg-flex align-items-center">
+
+        <!-- Wishlist -->
         <a
           class="header-actions__item"
           routerLink="/account/wishlist"
           aria-label="Wishlist"
         >
+
           <span class="wishlist-icon-wrap">
+
             <i class="fa-regular fa-heart"></i>
-            <span class="wishlist-badge">{{ wishlistCount }}</span>
+
+            <span class="wishlist-badge">
+              {{ wishlistCount }}
+            </span>
+
           </span>
-          <span>WISHLIST</span>
+
+          <span>
+            WISHLIST
+          </span>
+
         </a>
 
-        <span class="header-actions__divider" aria-hidden="true"></span>
 
+        <span
+          class="header-actions__divider"
+          aria-hidden="true"
+        ></span>
+
+
+        <!-- Account -->
         <a
           class="header-actions__item header-actions__item--login"
           (click)="onAccountClick()"
         >
+
           <i class="fa-regular fa-user"></i>
-          <span>{{
-            currentUser ? currentUser.firstName || "My Account" : "Account"
-          }}</span>
+
+          <span>
+            {{
+              currentUser
+                ? currentUser.firstName || "My Account"
+                : "Account"
+            }}
+          </span>
+
         </a>
 
-        <span class="header-actions__divider" aria-hidden="true"></span>
 
+        <span
+          class="header-actions__divider"
+          aria-hidden="true"
+        ></span>
+
+
+        <!-- Cart -->
         <a
           class="header-actions__item header-actions__item--cart"
           routerLink="/cart"
         >
+
           <span class="cart-icon-wrap">
+
             <i class="fa-solid fa-bag-shopping"></i>
-            <span class="cart-badge">{{ cartCount }}</span>
+
+            <span class="cart-badge">
+              {{ cartCount }}
+            </span>
+
           </span>
-          <span>${{ cartTotal | number: "1.2-2" }}</span>
+
+          <span>
+            ${{ cartTotal | number: "1.2-2" }}
+          </span>
+
         </a>
+
       </div>
+
     </div>
 
-    <!-- Mobile-only: full-width search -->
-    <div class="search-form-wrap search-form-wrap--mobile d-lg-none">
+
+    <!-- ========================================================
+         MOBILE SEARCH
+    ========================================================= -->
+    <div
+      class="search-form-wrap search-form-wrap--mobile d-lg-none"
+    >
+
       <form
         class="search-form search-form--mobile d-flex"
         role="search"
         (ngSubmit)="onSearch($event)"
       >
+
         <input
           class="search-form__input"
           type="search"
@@ -240,73 +449,353 @@
           (focus)="onSearchInput()"
           (blur)="closeSuggestions()"
         />
-        <button class="search-form__btn" type="submit" aria-label="Search">
+
+        <button
+          class="search-form__btn"
+          type="submit"
+          aria-label="Search"
+        >
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
+
       </form>
 
-      <ul class="search-suggestions" *ngIf="showSuggestions">
+
+      <ul
+        class="search-suggestions"
+        *ngIf="showSuggestions"
+      >
+
         <li
           class="search-suggestions__item"
           *ngFor="let product of suggestions"
           (mousedown)="goToProduct(product)"
         >
+
           <img
             class="search-suggestions__img"
             [src]="product.images[0]"
             [alt]="product.name"
           />
+
           <div class="search-suggestions__info">
-            <span class="search-suggestions__name">{{ product.name }}</span>
-            <span class="search-suggestions__brand">{{ product.brand }}</span>
+
+            <span class="search-suggestions__name">
+              {{ product.name }}
+            </span>
+
+            <span class="search-suggestions__brand">
+              {{ product.brand }}
+            </span>
+
           </div>
-          <span class="search-suggestions__price"
-            >${{ product.price | number: "1.2-2" }}</span
-          >
+
+          <span class="search-suggestions__price">
+            ${{ product.price | number: "1.2-2" }}
+          </span>
+
         </li>
+
       </ul>
+
     </div>
+
   </div>
 
-  <!-- 4. Pink category navigation -->
+
+  <!-- ==========================================================
+       CATEGORY NAVIGATION
+  =========================================================== -->
   <nav class="category-nav navbar navbar-expand-lg">
+
     <div class="category-nav__inner container-fluid">
-      <div class="collapse navbar-collapse" id="categoryNavCollapse">
-        <!-- Mobile-only currency selector -->
-        <div class="mobile-currency-row d-lg-none">
-          <span class="mobile-currency-label">Currency</span>
-          <div class="dropdown currency-dropdown">
-            <button
-              class="btn dropdown-toggle"
-              type="button"
-              id="mobileCurrencyDropdown"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
+
+
+      <!-- ======================================================
+           MOBILE OFFCANVAS DRAWER
+      ======================================================= -->
+      <div
+        class="offcanvas offcanvas-start category-nav__offcanvas"
+        tabindex="-1"
+        id="categoryNavOffcanvas"
+        aria-labelledby="categoryNavLabel"
+      >
+
+
+        <!-- Drawer Header -->
+        <div class="offcanvas-header">
+
+          <div class="nav-drawer-title-wrap">
+
+            <span
+              class="nav-drawer-title"
+              id="categoryNavLabel"
             >
-              USD
-            </button>
-            <ul
-              class="dropdown-menu dropdown-menu-end"
-              aria-labelledby="mobileCurrencyDropdown"
-            >
-              <li><button class="dropdown-item" type="button">USD</button></li>
-              <li><button class="dropdown-item" type="button">EUR</button></li>
-              <li><button class="dropdown-item" type="button">GBP</button></li>
-            </ul>
+              {{ storeName }}
+            </span>
+
+            <small>
+              Menu
+            </small>
+
           </div>
+
+
+          <button
+            type="button"
+            class="nav-drawer-close"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close navigation"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+
         </div>
 
+
+        <!-- Drawer Body -->
+        <div class="offcanvas-body">
+
+
+          <!-- Mobile Currency -->
+          <div class="mobile-currency-row d-lg-none">
+
+            <span class="mobile-currency-label">
+              Currency
+            </span>
+
+            <div class="dropdown currency-dropdown">
+
+              <button
+                class="btn dropdown-toggle"
+                type="button"
+                id="mobileCurrencyDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                USD
+              </button>
+
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="mobileCurrencyDropdown"
+              >
+
+                <li>
+                  <button
+                    class="dropdown-item"
+                    type="button"
+                  >
+                    USD
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    class="dropdown-item"
+                    type="button"
+                  >
+                    EUR
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    class="dropdown-item"
+                    type="button"
+                  >
+                    GBP
+                  </button>
+                </li>
+
+              </ul>
+
+            </div>
+
+          </div>
+
+
+          <!-- Categories -->
+          <ul class="navbar-nav category-nav__list">
+
+
+            <!-- New -->
+            <li class="nav-item">
+
+              <a
+                class="nav-link"
+                routerLink="/shop"
+                [queryParams]="{
+                  collection: 'new-arrivals'
+                }"
+                data-bs-dismiss="offcanvas"
+              >
+                New
+              </a>
+
+            </li>
+
+
+            <!-- Dynamic Categories -->
+            <li
+              class="nav-item"
+              *ngFor="let item of categoryNav"
+              [class.dropdown]="item.subcategories.length"
+            >
+
+
+              <!-- Category with subcategories -->
+              <ng-container
+                *ngIf="item.subcategories.length; else simpleLink"
+              >
+
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  {{ item.label }}
+                </a>
+
+
+                <ul class="dropdown-menu">
+
+
+                  <!-- All products -->
+                  <li>
+
+                    <a
+                      class="dropdown-item"
+                      routerLink="/shop"
+                      [queryParams]="{
+                        category: item.category
+                      }"
+                      data-bs-dismiss="offcanvas"
+                    >
+                      All {{ item.label }}
+                    </a>
+
+                  </li>
+
+
+                  <!-- Subcategories -->
+                  <li
+                    *ngFor="let sub of item.subcategories"
+                  >
+
+                    <a
+                      class="dropdown-item"
+                      routerLink="/shop"
+                      [queryParams]="{
+                        category: item.category,
+                        subcategory: sub.slug
+                      }"
+                      data-bs-dismiss="offcanvas"
+                    >
+                      {{ sub.name }}
+                    </a>
+
+                  </li>
+
+                </ul>
+
+              </ng-container>
+
+
+              <!-- Category without subcategories -->
+              <ng-template #simpleLink>
+
+                <a
+                  class="nav-link"
+                  routerLink="/shop"
+                  [queryParams]="{
+                    category: item.category
+                  }"
+                  data-bs-dismiss="offcanvas"
+                >
+                  {{ item.label }}
+                </a>
+
+              </ng-template>
+
+            </li>
+
+
+            <!-- Collections -->
+            <li
+              class="nav-item dropdown"
+              *ngIf="storeCollections.length"
+            >
+
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Collections
+              </a>
+
+
+              <ul class="dropdown-menu">
+
+                <li
+                  *ngFor="let collection of storeCollections"
+                >
+
+                  <a
+                    class="dropdown-item"
+                    routerLink="/shop"
+                    [queryParams]="{
+                      collection: collection.slug
+                    }"
+                    data-bs-dismiss="offcanvas"
+                  >
+                    {{ collection.name }}
+                  </a>
+
+                </li>
+
+              </ul>
+
+            </li>
+
+          </ul>
+
+        </div>
+
+      </div>
+
+
+      <!-- ======================================================
+           DESKTOP NAVIGATION
+      ======================================================= -->
+      <div
+        class="collapse navbar-collapse desktop-category-nav"
+        id="desktopCategoryNav"
+      >
+
         <ul class="navbar-nav category-nav__list">
-          <!-- Fixed: New -->
+
+
+          <!-- New -->
           <li class="nav-item">
+
             <a
               class="nav-link"
               routerLink="/shop"
-              [queryParams]="{ collection: 'new-arrivals' }"
+              [queryParams]="{
+                collection: 'new-arrivals'
+              }"
             >
               New
             </a>
+
           </li>
+
 
           <!-- Dynamic categories -->
           <li
@@ -314,7 +803,11 @@
             *ngFor="let item of categoryNav"
             [class.dropdown]="item.subcategories.length"
           >
-            <ng-container *ngIf="item.subcategories.length; else simpleLink">
+
+            <ng-container
+              *ngIf="item.subcategories.length; else desktopSimpleLink"
+            >
+
               <a
                 class="nav-link dropdown-toggle"
                 href="#"
@@ -326,43 +819,66 @@
               </a>
 
               <ul class="dropdown-menu">
+
                 <li>
+
                   <a
                     class="dropdown-item"
                     routerLink="/shop"
-                    [queryParams]="{ category: item.category }"
+                    [queryParams]="{
+                      category: item.category
+                    }"
                   >
                     All {{ item.label }}
                   </a>
+
                 </li>
-                <li *ngFor="let sub of item.subcategories">
+
+                <li
+                  *ngFor="let sub of item.subcategories"
+                >
+
                   <a
                     class="dropdown-item"
                     routerLink="/shop"
                     [queryParams]="{
                       category: item.category,
-                      subcategory: sub.slug,
+                      subcategory: sub.slug
                     }"
                   >
                     {{ sub.name }}
                   </a>
+
                 </li>
+
               </ul>
+
             </ng-container>
 
-            <ng-template #simpleLink>
+
+            <ng-template #desktopSimpleLink>
+
               <a
                 class="nav-link"
                 routerLink="/shop"
-                [queryParams]="{ category: item.category }"
+                [queryParams]="{
+                  category: item.category
+                }"
               >
                 {{ item.label }}
               </a>
+
             </ng-template>
+
           </li>
 
-          <!-- Fixed: Collections -->
-          <li class="nav-item dropdown" *ngIf="storeCollections.length">
+
+          <!-- Collections -->
+          <li
+            class="nav-item dropdown"
+            *ngIf="storeCollections.length"
+          >
+
             <a
               class="nav-link dropdown-toggle"
               href="#"
@@ -372,20 +888,35 @@
             >
               Collections
             </a>
+
             <ul class="dropdown-menu">
-              <li *ngFor="let collection of storeCollections">
+
+              <li
+                *ngFor="let collection of storeCollections"
+              >
+
                 <a
                   class="dropdown-item"
                   routerLink="/shop"
-                  [queryParams]="{ collection: collection.slug }"
+                  [queryParams]="{
+                    collection: collection.slug
+                  }"
                 >
                   {{ collection.name }}
                 </a>
+
               </li>
+
             </ul>
+
           </li>
+
         </ul>
+
       </div>
+
     </div>
+
   </nav>
+
 </header>

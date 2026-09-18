@@ -1,19 +1,17 @@
 @import "../../../styles/variables";
 
 // ============================================================
-// Sticky header wrapper (replaces .sticky-header-group)
-// Main header + category nav stick together for the whole page.
-// Announcement bar + topbar now live ABOVE <header>, so they
-// scroll away while .site-header stays pinned.
+// Sticky header wrapper
 // ============================================================
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 1080; // raised so dropdowns paint above sticky page content (hero, etc.)
+  z-index: 1080;
   background-color: $color-white;
   box-shadow: 0 4px 16px rgba($color-black, 0.08);
-  overflow: visible; // never clip dropdown menus
+  overflow: visible;
 }
+
 
 // ============================================================
 // 1. Announcement bar
@@ -27,6 +25,7 @@
   letter-spacing: 0.02em;
   padding: 0.55rem 1rem;
 }
+
 
 // ============================================================
 // 2. Top info bar
@@ -73,6 +72,7 @@
   }
 }
 
+
 .social-list {
   gap: 0.9rem;
 
@@ -83,6 +83,7 @@
     font-size: 0.85rem;
   }
 }
+
 
 .info-links {
   gap: 0.75rem;
@@ -99,8 +100,12 @@
   }
 }
 
+
+// ============================================================
+// Currency
+// ============================================================
 .currency-dropdown {
-  z-index: 1090; // stay above the sticky page content
+  z-index: 1090;
 
   .btn {
     font-size: $header-topbar-font-size;
@@ -121,12 +126,16 @@
   }
 }
 
-// Mobile currency row inside the hamburger drawer
+
+// ============================================================
+// Mobile currency
+// ============================================================
 .mobile-currency-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
   border-bottom: 1px solid rgba($color-white, 0.2);
 
   .mobile-currency-label {
@@ -152,6 +161,7 @@
   }
 }
 
+
 // ============================================================
 // 3. Main header
 // ============================================================
@@ -163,6 +173,7 @@
     gap: 1.5rem;
   }
 }
+
 
 // ============================================================
 // Logo
@@ -216,6 +227,7 @@
   }
 }
 
+
 // ============================================================
 // Search
 // ============================================================
@@ -229,6 +241,7 @@
     width: 100%;
   }
 }
+
 
 .search-form {
   flex: 1 1 auto;
@@ -274,6 +287,10 @@
   }
 }
 
+
+// ============================================================
+// Search suggestions
+// ============================================================
 .search-suggestions {
   position: absolute;
   top: calc(100% + 0.4rem);
@@ -343,6 +360,7 @@
   }
 }
 
+
 // ============================================================
 // Desktop actions
 // ============================================================
@@ -382,6 +400,7 @@
   }
 }
 
+
 // ============================================================
 // Cart badge
 // ============================================================
@@ -389,6 +408,7 @@
   position: relative;
   display: inline-flex;
 }
+
 
 .cart-badge {
   position: absolute;
@@ -408,12 +428,14 @@
   line-height: 1;
 }
 
+
 .wishlist-icon-wrap {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
+
 
 .wishlist-badge {
   position: absolute;
@@ -433,6 +455,7 @@
   color: $color-white;
 }
 
+
 // ============================================================
 // Mobile row
 // ============================================================
@@ -448,52 +471,45 @@
   }
 }
 
-.mobile-wishlist-btn {
+
+.mobile-wishlist-btn,
+.mobile-account-btn,
+.cart-icon-btn {
   color: $color-text-dark;
-  font-size: 1.1rem;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transition: color 0.15s ease;
-  position: relative;
-
-  &:hover {
-    color: $brand-pink;
-  }
 }
+
+
+.mobile-wishlist-btn {
+  font-size: 1.1rem;
+  position: relative;
+}
+
 
 .mobile-account-btn {
-  color: $color-text-dark;
   font-size: 1.1rem;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.15s ease;
-
-  &:hover {
-    color: $brand-pink;
-  }
 }
+
 
 .cart-icon-btn {
   position: relative;
-  color: $color-text-dark;
   font-size: 1.15rem;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.15s ease;
-
-  &:hover {
-    color: $brand-pink;
-  }
 }
 
+
+.mobile-wishlist-btn:hover,
+.mobile-account-btn:hover,
+.cart-icon-btn:hover {
+  color: $brand-pink;
+}
+
+
 // ============================================================
-// 4. Pink category navigation
+// 4. CATEGORY NAVIGATION
 // ============================================================
 .category-nav {
   background-color: $brand-pink;
@@ -524,7 +540,8 @@
     }
   }
 
-  // Sharp custom chevron (replaces Bootstrap's blurry default caret)
+
+  // Custom dropdown chevron
   .dropdown-toggle {
     &::after {
       content: "";
@@ -548,13 +565,16 @@
     }
   }
 
+
+  // Desktop dropdown
   .dropdown-menu {
     border: none;
     border-radius: 0.4rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 20px rgba($color-black, 0.12);
     padding: 0.4rem 0;
     margin-top: 0;
   }
+
 
   .dropdown-item {
     font-family: $font-body;
@@ -568,126 +588,215 @@
       color: $brand-pink-dark;
     }
   }
-
-  @media (max-width: 991.98px) {
-    .navbar-collapse {
-      position: fixed;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      width: 18rem;
-      max-width: 85vw;
-      z-index: 1110;
-      background-color: $brand-pink;
-      padding: 1rem;
-      overflow-y: auto;
-      height: 100% !important;
-      transform: translateX(-100%);
-      transition: transform 0.3s ease;
-    }
-
-    .navbar-collapse.show {
-      transform: translateX(0);
-    }
-
-    &__list {
-      gap: 0;
-    }
-
-    .nav-link {
-      padding: 0.55rem 0.5rem;
-      border-bottom: 1px solid rgba($color-white, 0.15);
-    }
-
-    .dropdown-menu {
-      position: static;
-      float: none;
-      box-shadow: none;
-      background-color: rgba($color-white, 0.08);
-    }
-
-    .dropdown-item {
-      color: $color-white;
-
-      &:hover,
-      &:focus {
-        background-color: rgba($color-white, 0.15);
-        color: $color-white;
-      }
-    }
-  }
 }
 
-// ============================================================
-// Mobile drawer (hamburger) — slide-in panel + backdrop
-// ============================================================
-.nav-drawer-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 0.75rem;
-  margin-bottom: 0.5rem;
-  border-bottom: 1px solid rgba($color-white, 0.2);
-}
 
-.nav-drawer-title {
-  font-family: $font-heading;
-  font-weight: 700;
-  font-size: 1.1rem;
+// ============================================================
+// MOBILE OFFCANVAS
+// ============================================================
+.category-nav__offcanvas {
+
+  background-color: $brand-pink;
   color: $color-white;
-}
 
-.nav-drawer-close {
+  width: 18rem;
+  max-width: 85vw;
+
   border: none;
-  background: transparent;
-  color: $color-white;
-  font-size: 1.25rem;
-  line-height: 1;
-  padding: 0.25rem 0.4rem;
 
-  &:hover {
-    color: rgba($color-white, 0.8);
+  // Must sit above the sticky header
+  z-index: 1120;
+
+
+  // ----------------------------------------------------------
+  // Header
+  // ----------------------------------------------------------
+  .offcanvas-header {
+    padding: 1rem 1rem 0.75rem;
+    border-bottom: 1px solid rgba($color-white, 0.2);
+  }
+
+
+  // ----------------------------------------------------------
+  // Body
+  // ----------------------------------------------------------
+  .offcanvas-body {
+    padding: 0.75rem 1rem 1.5rem;
+    overflow-y: auto;
+  }
+
+
+  // ----------------------------------------------------------
+  // Drawer title
+  // ----------------------------------------------------------
+  .nav-drawer-title-wrap {
+    display: flex;
+    flex-direction: column;
+  }
+
+
+  .nav-drawer-title {
+    font-family: $font-heading;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: $color-white;
+  }
+
+
+  .nav-drawer-title-wrap small {
+    margin-top: 0.1rem;
+    font-family: $font-body;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba($color-white, 0.7);
+  }
+
+
+  // ----------------------------------------------------------
+  // Close button
+  // ----------------------------------------------------------
+  .nav-drawer-close {
+    border: none;
+    background: transparent;
+    color: $color-white;
+    font-size: 1.35rem;
+    line-height: 1;
+    padding: 0.25rem;
+
+    &:hover {
+      color: rgba($color-white, 0.75);
+    }
+  }
+
+
+  // ----------------------------------------------------------
+  // Navigation list
+  // ----------------------------------------------------------
+  .category-nav__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+
+  .nav-item {
+    width: 100%;
+  }
+
+
+  // ----------------------------------------------------------
+  // Navigation links
+  // ----------------------------------------------------------
+  .nav-link {
+    width: 100%;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid rgba($color-white, 0.15);
+
+    color: $color-white;
+
+    &:hover,
+    &:focus {
+      background-color: rgba($color-white, 0.1);
+      color: $color-white;
+    }
+  }
+
+
+  // ----------------------------------------------------------
+  // Dropdown menus
+  // ----------------------------------------------------------
+  .dropdown-menu {
+    position: static;
+    float: none;
+
+    width: 100%;
+
+    margin: 0;
+
+    padding: 0.25rem 0;
+
+    border: none;
+    border-radius: 0;
+
+    box-shadow: none;
+
+    background-color: rgba($color-white, 0.08);
+  }
+
+
+  .dropdown-item {
+    color: $color-white;
+    padding: 0.6rem 1rem;
+    font-family: $font-body;
+    font-size: 0.82rem;
+
+    &:hover,
+    &:focus {
+      background-color: rgba($color-white, 0.15);
+      color: $color-white;
+    }
   }
 }
 
-.nav-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1100;
-  background-color: rgba($color-black, 0.45);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-// Show backdrop only while the drawer is open (sibling selector)
-.navbar-collapse.show ~ .nav-backdrop {
-  opacity: 1;
-  visibility: visible;
-}
 
 // ============================================================
-// Responsive tweaks
+// Offcanvas backdrop
+// ============================================================
+// Bootstrap creates this backdrop automatically.
+// We only need to make sure it sits below the drawer but
+// above the sticky header.
+.offcanvas-backdrop {
+  z-index: 1110;
+}
+
+
+// ============================================================
+// Desktop navigation
+// ============================================================
+.desktop-category-nav {
+  display: flex !important;
+}
+
+
+// ============================================================
+// Responsive
 // ============================================================
 @media (max-width: 991.98px) {
+
   .topbar,
   .main-header {
     padding-left: 1rem;
     padding-right: 1rem;
   }
 
+
   .category-nav__inner {
     padding: 0 1rem;
   }
+
+
+  // Hide desktop navigation completely on mobile
+  .desktop-category-nav {
+    display: none !important;
+  }
 }
 
+
 @media (max-width: 400px) {
+
   .mobile-account-btn,
   .cart-icon-btn {
     font-size: 1.05rem;
   }
 
+
   .logo--mobile .logo__word {
     font-size: 1.05rem;
+  }
+
+
+  .category-nav__offcanvas {
+    width: 17rem;
   }
 }
