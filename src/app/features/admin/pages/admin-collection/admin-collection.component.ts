@@ -6,6 +6,7 @@ import { StoreCollection } from 'src/app/core/models/product-models/store-collec
 import { CollectionService } from 'src/app/core/services/collection-service/collection.service';
 import { ProductService } from 'src/app/core/services/product-service/product.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast.service';
+import { PaginationService } from 'src/app/core/services/pagination-service/pagination.service';
 
 /** Table / modal row: catalog collection + live product count */
 export interface CollectionRow {
@@ -35,6 +36,13 @@ export class AdminCollectionComponent implements OnInit, OnDestroy {
   emptyCollectionsCount = 0;
   /** Distinct products that have at least one collection */
   productsInCollectionsCount = 0;
+
+  // ============================================================
+  // PAGINATION (Option A — local state + shared helpers)
+  // ============================================================
+
+  currentPage = 1;
+  pageSize = 10;
 
   // ============================================================
   // ADD
@@ -75,7 +83,8 @@ export class AdminCollectionComponent implements OnInit, OnDestroy {
   constructor(
     private collectionService: CollectionService,
     private productService: ProductService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private pagination: PaginationService
   ) {}
 
   // ============================================================
@@ -126,7 +135,6 @@ export class AdminCollectionComponent implements OnInit, OnDestroy {
 
     this.applyFilters();
 
-    // Keep open modals in sync
     if (this.selectedRow) {
       const updated = this.rows.find((r) => r.slug === this.selectedRow!.slug);
       if (updated) {
@@ -158,6 +166,7 @@ export class AdminCollectionComponent implements OnInit, OnDestroy {
   // ============================================================
 
   onSearchOrFilterChange(): void {
+    this.currentPage = 1;
     this.applyFilters();
   }
 
@@ -180,6 +189,44 @@ export class AdminCollectionComponent implements OnInit, OnDestroy {
     }
 
     this.filteredRows = list;
+
+    this.currentPage = this.pagination.clampPage(
+      this.currentPage,
+      this.filteredRows.length,
+      this.pageSize
+    );
+  }
+
+  // ============================================================
+  // PAGINATION
+  // ============================================================
+
+  get pagedRows(): CollectionRow[] {
+    return this.pagination.slicePage(
+      this.filteredRows,
+      this.currentPage,
+      this.pageSize
+    );
+  }
+
+  get pageRangeStart(): number {
+    return this.pagination.rangeStart(
+      this.currentPage,
+      this.pageSize,
+      this.filteredRows.length
+    );
+  }
+
+  get pageRangeEnd(): number {
+    return this.pagination.rangeEnd(
+      this.currentPage,
+      this.pageSize,
+      this.filteredRows.length
+    );
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
   }
 
   trackBySlug(_index: number, row: CollectionRow): string {

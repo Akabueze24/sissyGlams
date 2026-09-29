@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 
 import { Order } from 'src/app/core/models/order-models/order.model';
 import { OrderService } from 'src/app/core/services/order-service/order.service';
+import { PaginationService } from 'src/app/core/services/pagination-service/pagination.service';
 
 /** One row in the admin customers table */
 export interface CustomerRow {
@@ -43,6 +44,13 @@ export class AdminCustomersComponent implements OnInit, OnDestroy {
   blockedCustomers = 0;
 
   // ============================================================
+  // PAGINATION (Option A — local state + shared helpers)
+  // ============================================================
+
+  currentPage = 1;
+  pageSize = 10;
+
+  // ============================================================
   // VIEW CUSTOMER
   // ============================================================
 
@@ -55,7 +63,10 @@ export class AdminCustomersComponent implements OnInit, OnDestroy {
 
   private ordersSub!: Subscription;
 
-  constructor(private orderService: OrderService) {}
+  constructor(
+    private orderService: OrderService,
+    private pagination: PaginationService
+  ) {}
 
   // ============================================================
   // LIFECYCLE
@@ -68,7 +79,6 @@ export class AdminCustomersComponent implements OnInit, OnDestroy {
       this.updateSummary();
       this.applyFilters();
 
-      // Keep view modal in sync if it is open
       if (this.selectedCustomer) {
         this.selectedCustomerOrders = this.getOrdersForEmail(
           this.selectedCustomer.email
@@ -214,6 +224,7 @@ export class AdminCustomersComponent implements OnInit, OnDestroy {
   // ============================================================
 
   onSearchOrFilterChange(): void {
+    this.currentPage = 1;
     this.applyFilters();
   }
 
@@ -234,6 +245,44 @@ export class AdminCustomersComponent implements OnInit, OnDestroy {
     }
 
     this.filteredCustomers = list;
+
+    this.currentPage = this.pagination.clampPage(
+      this.currentPage,
+      this.filteredCustomers.length,
+      this.pageSize
+    );
+  }
+
+  // ============================================================
+  // PAGINATION
+  // ============================================================
+
+  get pagedCustomers(): CustomerRow[] {
+    return this.pagination.slicePage(
+      this.filteredCustomers,
+      this.currentPage,
+      this.pageSize
+    );
+  }
+
+  get pageRangeStart(): number {
+    return this.pagination.rangeStart(
+      this.currentPage,
+      this.pageSize,
+      this.filteredCustomers.length
+    );
+  }
+
+  get pageRangeEnd(): number {
+    return this.pagination.rangeEnd(
+      this.currentPage,
+      this.pageSize,
+      this.filteredCustomers.length
+    );
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
   }
 
   trackByCustomer(_index: number, row: CustomerRow): string {

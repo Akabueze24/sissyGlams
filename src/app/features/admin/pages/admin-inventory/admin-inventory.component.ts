@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 
 import { Product } from 'src/app/core/models/product-models/product.model';
 import { ProductService } from 'src/app/core/services/product-service/product.service';
+import { PaginationService } from 'src/app/core/services/pagination-service/pagination.service';
 
 /** Stock buckets for filters and badges */
 export type StockFilter = '' | 'in-stock' | 'low' | 'out';
@@ -18,6 +19,13 @@ export class AdminInventoryComponent implements OnInit, OnDestroy {
   searchTerm = '';
   stockFilter: StockFilter = '';
 
+  // ============================================================
+  // PAGINATION (Option A — local state + shared helpers)
+  // ============================================================
+
+  currentPage = 1;
+  pageSize = 10;
+
   /** Inline edit: which product is being updated */
   editingId: string | null = null;
   editStock = 0;
@@ -27,12 +35,20 @@ export class AdminInventoryComponent implements OnInit, OnDestroy {
   /** Low stock = 1..threshold (not zero) */
   readonly lowStockThreshold = 5;
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private pagination: PaginationService
+  ) {}
 
   ngOnInit(): void {
     this.productsSubscription = this.productService.adminProducts$.subscribe(
       (products) => {
         this.products = products;
+        this.currentPage = this.pagination.clampPage(
+          this.currentPage,
+          this.filteredProducts.length,
+          this.pageSize
+        );
       }
     );
   }
@@ -91,6 +107,42 @@ export class AdminInventoryComponent implements OnInit, OnDestroy {
     }
 
     return result;
+  }
+
+  // ============================================================
+  // PAGINATION
+  // ============================================================
+
+  get pagedProducts(): Product[] {
+    return this.pagination.slicePage(
+      this.filteredProducts,
+      this.currentPage,
+      this.pageSize
+    );
+  }
+
+  get pageRangeStart(): number {
+    return this.pagination.rangeStart(
+      this.currentPage,
+      this.pageSize,
+      this.filteredProducts.length
+    );
+  }
+
+  get pageRangeEnd(): number {
+    return this.pagination.rangeEnd(
+      this.currentPage,
+      this.pageSize,
+      this.filteredProducts.length
+    );
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+  }
+
+  onSearchOrFilterChange(): void {
+    this.currentPage = 1;
   }
 
   // ============================================================

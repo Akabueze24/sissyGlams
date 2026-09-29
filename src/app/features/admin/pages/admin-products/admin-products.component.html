@@ -498,7 +498,6 @@
             </p>
           </div>
 
-          <!-- Default gallery -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
@@ -546,7 +545,6 @@ https://example.com/back.jpg"
             </div>
           </div>
 
-          <!-- Description -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
@@ -561,7 +559,6 @@ https://example.com/back.jpg"
             ></quill-editor>
           </div>
 
-          <!-- Details -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
@@ -585,22 +582,21 @@ Model wears size S"
             </small>
           </div>
 
-          <!-- Shipping -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
             <label for="editShipping">Shipping info</label>
-            <textarea
+            <quill-editor
               id="editShipping"
-              class="admin-products__textarea"
-              rows="3"
+              class="admin-products__quill"
+              theme="snow"
+              [modules]="quillModules"
               name="editShipping"
               [(ngModel)]="editForm.shipping"
               placeholder="Ships within 2–5 business days."
-            ></textarea>
+            ></quill-editor>
           </div>
 
-          <!-- Returns -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
@@ -615,7 +611,6 @@ Model wears size S"
             ></textarea>
           </div>
 
-          <!-- Colors -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
@@ -738,7 +733,6 @@ Model wears size S"
             </button>
           </div>
 
-          <!-- Sizes -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
@@ -795,7 +789,6 @@ Model wears size S"
             </button>
           </div>
 
-          <!-- Lengths -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
@@ -854,7 +847,6 @@ Model wears size S"
             </button>
           </div>
 
-          <!-- Active -->
           <div
             class="admin-products__form-group admin-products__form-group--full"
           >
@@ -1013,6 +1005,7 @@ Model wears size S"
           class="admin-products__search-input"
           placeholder="Search products..."
           [(ngModel)]="searchTerm"
+          (ngModelChange)="currentPage = 1"
         />
       </div>
 
@@ -1031,6 +1024,7 @@ Model wears size S"
         <select
           class="admin-products__select"
           [(ngModel)]="subcategoryFilter"
+          (ngModelChange)="currentPage = 1"
           [disabled]="!categoryFilter || !subcategoriesForFilter.length"
         >
           <option value="">All Subcategories</option>
@@ -1039,14 +1033,22 @@ Model wears size S"
           </option>
         </select>
 
-        <select class="admin-products__select" [(ngModel)]="collectionFilter">
+        <select
+          class="admin-products__select"
+          [(ngModel)]="collectionFilter"
+          (ngModelChange)="currentPage = 1"
+        >
           <option value="">All Collections</option>
           <option *ngFor="let col of storeCollections" [value]="col.slug">
             {{ col.name }}
           </option>
         </select>
 
-        <select class="admin-products__select" [(ngModel)]="statusFilter">
+        <select
+          class="admin-products__select"
+          [(ngModel)]="statusFilter"
+          (ngModelChange)="currentPage = 1"
+        >
           <option value="">All Status</option>
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>
@@ -1083,8 +1085,7 @@ Model wears size S"
             <td colspan="7" class="text-center py-4">No products found.</td>
           </tr>
 
-          <tr *ngFor="let product of filteredProducts">
-            <!-- PRODUCT -->
+          <tr *ngFor="let product of pagedProducts">
             <td>
               <div class="admin-products__product">
                 <div class="admin-products__image">
@@ -1106,10 +1107,8 @@ Model wears size S"
               </div>
             </td>
 
-            <!-- BRAND -->
             <td>{{ product.brand }}</td>
 
-            <!-- CATEGORY (+ subcategory + collections under it) -->
             <td>
               <div class="admin-products__catalog">
                 <span class="admin-products__catalog-category">
@@ -1137,7 +1136,6 @@ Model wears size S"
               </div>
             </td>
 
-            <!-- PRICE -->
             <td>${{ product.price | number: "1.2-2" }}</td>
 
             <td
@@ -1147,7 +1145,6 @@ Model wears size S"
               {{ product.stock }}
             </td>
 
-            <!-- STATUS -->
             <td>
               <button
                 type="button"
@@ -1160,7 +1157,6 @@ Model wears size S"
               </button>
             </td>
 
-            <!-- ACTIONS -->
             <td>
               <div class="admin-products__actions">
                 <button
@@ -1187,10 +1183,19 @@ Model wears size S"
       </table>
     </div>
 
-    <div class="admin-products__footer" *ngIf="products.length">
+    <div class="admin-products__footer" *ngIf="filteredProducts.length">
       <p class="admin-products__results">
-        Showing {{ filteredProducts.length }} of {{ products.length }} products
+        Showing {{ pageRangeStart }}–{{ pageRangeEnd }}
+        of {{ filteredProducts.length }}
+        product<span *ngIf="filteredProducts.length !== 1">s</span>
       </p>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [pageSize]="pageSize"
+        [totalItems]="filteredProducts.length"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
     </div>
   </section>
 </div>

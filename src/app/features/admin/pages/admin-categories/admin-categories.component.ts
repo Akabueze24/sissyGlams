@@ -6,6 +6,7 @@ import { Product } from 'src/app/core/models/product-models/product.model';
 import { ProductService } from 'src/app/core/services/product-service/product.service';
 import { CategoryService } from 'src/app/core/services/category-service/category.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast.service';
+import { PaginationService } from 'src/app/core/services/pagination-service/pagination.service';
 
 export interface CategoryRow {
   category: string;
@@ -24,7 +25,7 @@ export interface CategoryRow {
 })
 export class AdminCategoriesComponent implements OnInit, OnDestroy {
   // ============================================================
-  // CACHED LIST (avoid getters that rebuild on every CD cycle)
+  // CACHED LIST
   // ============================================================
 
   products: Product[] = [];
@@ -38,6 +39,13 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
   totalSubcategories = 0;
   categorizedProducts = 0;
   emptyCategories = 0;
+
+  // ============================================================
+  // PAGINATION (Option A — local state + shared helpers)
+  // ============================================================
+
+  currentPage = 1;
+  pageSize = 10;
 
   // ============================================================
   // ADD CATEGORY
@@ -103,7 +111,8 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private pagination: PaginationService
   ) {}
 
   // ============================================================
@@ -141,7 +150,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
   }
 
   // ============================================================
-  // BUILD / FILTER (only when data or filters change)
+  // BUILD / FILTER
   // ============================================================
 
   private rebuildRows(): void {
@@ -182,6 +191,12 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
     }
 
     this.filteredRows = list;
+
+    this.currentPage = this.pagination.clampPage(
+      this.currentPage,
+      this.filteredRows.length,
+      this.pageSize
+    );
   }
 
   private updateSummary(): void {
@@ -196,9 +211,41 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
       .length;
   }
 
-  /** Call from template when search or status filter changes */
   onSearchOrFilterChange(): void {
+    this.currentPage = 1;
     this.applyLocalFilters();
+  }
+
+  // ============================================================
+  // PAGINATION
+  // ============================================================
+
+  get pagedRows(): CategoryRow[] {
+    return this.pagination.slicePage(
+      this.filteredRows,
+      this.currentPage,
+      this.pageSize
+    );
+  }
+
+  get pageRangeStart(): number {
+    return this.pagination.rangeStart(
+      this.currentPage,
+      this.pageSize,
+      this.filteredRows.length
+    );
+  }
+
+  get pageRangeEnd(): number {
+    return this.pagination.rangeEnd(
+      this.currentPage,
+      this.pageSize,
+      this.filteredRows.length
+    );
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
   }
 
   trackByCategory(_index: number, row: CategoryRow): string {
@@ -286,7 +333,6 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
       this.categoryService.addSubcategory(created.slug, name);
     }
 
-    // subscriptions will rebuildRows via categories$/subcategories$
     this.closeAddForm();
     this.toastService.success(
       `Category "${created.label}" created successfully.`
@@ -399,7 +445,6 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
     this.toastService.success(
       `Subcategory "${created.name}" added successfully.`
     );
-    // rebuild + refreshViewRow via subcategories$ subscription
   }
 
   // ============================================================
@@ -545,7 +590,9 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const next = this.rows.find((row) => row.category === this.viewRow!.category);
+    const next = this.rows.find(
+      (row) => row.category === this.viewRow!.category
+    );
 
     if (!next) {
       this.closeViewModal();

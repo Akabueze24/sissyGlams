@@ -136,7 +136,9 @@
             <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
           </div>
           <div class="admin-categories__summary-content">
-            <span class="admin-categories__summary-label">Total Categories</span>
+            <span class="admin-categories__summary-label"
+              >Total Categories</span
+            >
             <h3 class="admin-categories__summary-value">
               {{ totalCategories }}
             </h3>
@@ -182,7 +184,9 @@
             <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
           </div>
           <div class="admin-categories__summary-content">
-            <span class="admin-categories__summary-label">Empty Categories</span>
+            <span class="admin-categories__summary-label"
+              >Empty Categories</span
+            >
             <h3 class="admin-categories__summary-value">
               {{ emptyCategories }}
             </h3>
@@ -256,7 +260,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let row of filteredRows; trackBy: trackByCategory">
+          <tr *ngFor="let row of pagedRows; trackBy: trackByCategory">
             <td>
               <div class="admin-categories__category">
                 <div class="admin-categories__category-info">
@@ -265,9 +269,7 @@
                   </span>
                   <span class="admin-categories__category-count">
                     {{ row.subcategories.length }}
-                    subcategor{{
-                      row.subcategories.length === 1 ? "y" : "ies"
-                    }}
+                    subcategor{{ row.subcategories.length === 1 ? "y" : "ies" }}
                   </span>
                 </div>
               </div>
@@ -350,10 +352,18 @@
       </table>
     </div>
 
-    <div class="admin-categories__footer">
+    <div class="admin-categories__footer" *ngIf="filteredRows.length">
       <p class="admin-categories__results">
-        Showing {{ filteredRows.length }} of {{ totalCategories }} categories
+        Showing {{ pageRangeStart }}–{{ pageRangeEnd }} of
+        {{ filteredRows.length }} categories
       </p>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [pageSize]="pageSize"
+        [totalItems]="filteredRows.length"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
     </div>
   </section>
 
@@ -468,8 +478,8 @@
             {{ viewRow.label }}
           </h2>
           <p class="admin-categories__modal-subtitle">
-            Slug: <code>{{ viewRow.category }}</code>
-            · {{ viewRow.productCount }} product{{
+            Slug: <code>{{ viewRow.category }}</code> ·
+            {{ viewRow.productCount }} product{{
               viewRow.productCount === 1 ? "" : "s"
             }}
           </p>
@@ -557,7 +567,10 @@
 
         <div class="admin-categories__sub-form">
           <div class="admin-categories__form-group">
-            <label class="admin-categories__form-label" for="newSubcategoryName">
+            <label
+              class="admin-categories__form-label"
+              for="newSubcategoryName"
+            >
               Add subcategory
             </label>
             <input
@@ -623,7 +636,8 @@
         <p>
           You are about to delete
           <strong>{{ subToDelete.name }}</strong>
-          (<code>{{ subToDelete.slug }}</code>). This cannot be undone.
+          (<code>{{ subToDelete.slug }}</code
+          >). This cannot be undone.
         </p>
         <div
           class="admin-categories__modal-error"
@@ -692,8 +706,9 @@
         <p>
           You are about to delete
           <strong>{{ categoryToDelete.label }}</strong>
-          (<code>{{ categoryToDelete.category }}</code>). Any subcategories under
-          it will be removed too. This cannot be undone.
+          (<code>{{ categoryToDelete.category }}</code
+          >). Any subcategories under it will be removed too. This cannot be
+          undone.
         </p>
         <div
           class="admin-categories__modal-error"

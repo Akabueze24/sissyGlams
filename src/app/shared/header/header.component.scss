@@ -754,8 +754,9 @@
 // ============================================================
 // Desktop navigation
 // ============================================================
+// Hidden by default; shown only at Bootstrap's lg breakpoint.
 .desktop-category-nav {
-  display: flex !important;
+  display: none;
 }
 
 
@@ -778,6 +779,19 @@
 
   // Hide desktop navigation completely on mobile
   .desktop-category-nav {
+    display: none !important;
+  }
+}
+
+
+@media (min-width: 992px) {
+  // Show the normal desktop navigation only on desktop.
+  .desktop-category-nav {
+    display: flex !important;
+  }
+
+  // The mobile offcanvas must never appear on desktop.
+  .category-nav__offcanvas {
     display: none !important;
   }
 }

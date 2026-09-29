@@ -1,60 +1,60 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
 
-export interface PaginationState {
-  currentPage: number;
-  pageSize: number;
-  totalItems: number;
-}
-
+/**
+ * Pure pagination helpers.
+ * Each page keeps its own currentPage / pageSize.
+ * This service only does math + slicing — no global BehaviorSubjects.
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class PaginationService {
-  // 1. Fully private state
-  private currentPageSubject = new BehaviorSubject<number>(1);
-  private pageSizeSubject = new BehaviorSubject<number>(12);
-  private totalItemsSubject = new BehaviorSubject<number>(0);
-
-  // 2. Public read-only Observables for components
-  currentPage$: Observable<number> = this.currentPageSubject.asObservable();
-  pageSize$: Observable<number> = this.pageSizeSubject.asObservable();
-  totalItems$: Observable<number> = this.totalItemsSubject.asObservable();
-
-  // 3. Getters for snapshot reads
-  get currentPage(): number {
-    return this.currentPageSubject.value;
+  /**
+   * Items for the current page.
+   */
+  slicePage<T>(items: T[], page: number, pageSize: number): T[] {
+    const start = (page - 1) * pageSize;
+    return items.slice(start, start + pageSize);
   }
 
-  get pageSize(): number {
-    return this.pageSizeSubject.value;
+  /**
+   * How many pages exist for this list size.
+   */
+  totalPages(totalItems: number, pageSize: number): number {
+    return Math.ceil(totalItems / pageSize) || 1;
   }
 
-  get totalItems(): number {
-    return this.totalItemsSubject.value;
-  }
-
-  get totalPages(): number {
-    return Math.ceil(this.totalItems / this.pageSize) || 1;
-  }
-
-  // 4. Public methods to safely update private state
-  setPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPageSubject.next(page);
+  /**
+   * First item index shown in the footer (1-based), or 0 if empty.
+   */
+  rangeStart(page: number, pageSize: number, totalItems: number): number {
+    if (!totalItems) {
+      return 0;
     }
+    return (page - 1) * pageSize + 1;
   }
 
-  setPageSize(size: number): void {
-    this.pageSizeSubject.next(size);
-    this.currentPageSubject.next(1); // Reset to page 1 on size change
+  /**
+   * Last item index shown in the footer (1-based).
+   */
+  rangeEnd(page: number, pageSize: number, totalItems: number): number {
+    return Math.min(page * pageSize, totalItems);
   }
 
-  setTotalItems(total: number): void {
-    this.totalItemsSubject.next(total);
-  }
+  /**
+   * Keep page in range after filters shrink the list.
+   */
+  clampPage(page: number, totalItems: number, pageSize: number): number {
+    const max = this.totalPages(totalItems, pageSize);
 
-  reset(): void {
-    this.currentPageSubject.next(1);
+    if (page > max) {
+      return max;
+    }
+
+    if (page < 1) {
+      return 1;
+    }
+
+    return page;
   }
 }

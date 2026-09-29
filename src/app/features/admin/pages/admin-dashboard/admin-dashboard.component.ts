@@ -58,7 +58,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private orderService: OrderService,
-    private productService: ProductService,
+    private productService: ProductService
   ) {}
 
   ngOnInit(): void {
@@ -89,38 +89,48 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   // ============================================================
+  // CANCELLED CHECK (normalize so casing/spaces never break revenue)
+  // ============================================================
+
+  private isCancelled(order: Order): boolean {
+    return (
+      String(order.orderStatus ?? '')
+        .trim()
+        .toLowerCase() === 'cancelled'
+    );
+  }
+
+  // ============================================================
   // STATS
   // ============================================================
 
   private buildStats(): DashboardStat[] {
-    const activeOrders = this.orders.filter(
-      (o) => o.orderStatus !== 'cancelled',
-    );
-
-    const revenue = activeOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+    // Revenue only from non-cancelled orders
+    const revenueOrders = this.orders.filter((o) => !this.isCancelled(o));
+    const revenue = revenueOrders.reduce((sum, o) => sum + (o.total || 0), 0);
 
     const uniqueCustomers = new Set(
       this.orders
         .map((o) => o.customer?.email?.trim().toLowerCase())
-        .filter((e): e is string => !!e),
+        .filter((e): e is string => !!e)
     ).size;
 
     const lowStock = this.products.filter(
-      (p) => p.stock > 0 && p.stock <= 5,
+      (p) => p.stock > 0 && p.stock <= 5
     ).length;
 
     return [
       {
         label: 'Total Revenue',
         value: this.formatMoney(revenue),
-        trend: `${activeOrders.length} paid/active orders`,
+        trend: `${revenueOrders.length} non-cancelled orders`,
         trendDirection: 'neutral',
         icon: 'fa-solid fa-sack-dollar',
       },
       {
         label: 'Total Orders',
         value: String(this.orders.length),
-        trend: `${
+        trend: `${this.countByStatus('cancelled')} cancelled · ${
           this.countByStatus('pending') + this.countByStatus('processing')
         } open`,
         trendDirection: 'up',
@@ -144,11 +154,16 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   private countByStatus(status: Order['orderStatus']): number {
-    return this.orders.filter((o) => o.orderStatus === status).length;
+    return this.orders.filter(
+      (o) =>
+        String(o.orderStatus ?? '')
+          .trim()
+          .toLowerCase() === String(status).toLowerCase()
+    ).length;
   }
 
   // ============================================================
-  // RECENT ORDERS
+  // RECENT ORDERS (includes cancelled — history)
   // ============================================================
 
   private buildRecentOrders(limit: number): RecentOrderRow[] {
@@ -173,7 +188,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   private toStatusLabel(status: Order['orderStatus']): OrderStatusLabel {
-    switch (status) {
+    switch (String(status ?? '').trim().toLowerCase()) {
       case 'pending':
         return 'Pending';
       case 'processing':
@@ -190,7 +205,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   // ============================================================
-  // BEST SELLERS
+  // BEST SELLERS (cancelled excluded)
   // ============================================================
 
   private buildBestSellers(limit: number): BestSellingRow[] {
@@ -200,7 +215,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     >();
 
     for (const order of this.orders) {
-      if (order.orderStatus === 'cancelled') continue;
+      if (this.isCancelled(order)) continue;
 
       for (const item of order.items || []) {
         const id = item.productId;
@@ -232,20 +247,15 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   // ============================================================
-  // SALES CHART (period-aware)
+  // SALES CHART (period-aware, cancelled excluded)
   // ============================================================
 
-  /**
-   * 12m / 6m → monthly points
-   * 30d → daily points
-   * Cancelled orders excluded.
-   */
   private buildSalesData(): SalesDataPoint[] {
     const now = new Date();
     const start = this.getPeriodStart(now);
 
     const active = this.orders.filter((order) => {
-      if (order.orderStatus === 'cancelled') return false;
+      if (this.isCancelled(order)) return false;
       if (!order.createdAt) return false;
       const d = new Date(order.createdAt);
       if (Number.isNaN(d.getTime())) return false;
@@ -275,7 +285,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       return start;
     }
 
-    // 12m
     start.setMonth(start.getMonth() - 11, 1);
     start.setHours(0, 0, 0, 0);
     return start;
@@ -284,7 +293,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   private bucketByMonth(
     orders: Order[],
     monthCount: number,
-    now: Date,
+    now: Date
   ): SalesDataPoint[] {
     const monthNames = [
       'Jan',
@@ -329,7 +338,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   private bucketByDay(
     orders: Order[],
     start: Date,
-    now: Date,
+    now: Date
   ): SalesDataPoint[] {
     const points: SalesDataPoint[] = [];
     const map = new Map<string, number>();

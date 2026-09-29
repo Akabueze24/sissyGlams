@@ -128,7 +128,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let c of filteredCustomers; trackBy: trackByCustomer">
+          <tr *ngFor="let c of pagedCustomers; trackBy: trackByCustomer">
             <td>
               <div class="admin-customers__customer">
                 <div class="admin-customers__avatar">{{ c.initials }}</div>
@@ -165,7 +165,6 @@
                 >
                   <i class="fa-solid fa-eye" aria-hidden="true"></i>
                 </button>
-
               </div>
             </td>
           </tr>
@@ -180,10 +179,19 @@
       </table>
     </div>
 
-    <div class="admin-customers__footer">
+    <div class="admin-customers__footer" *ngIf="filteredCustomers.length">
       <p class="admin-customers__results">
-        Showing {{ filteredCustomers.length }} of {{ totalCustomers }} customers
+        Showing {{ pageRangeStart }}–{{ pageRangeEnd }}
+        of {{ filteredCustomers.length }}
+        customer<span *ngIf="filteredCustomers.length !== 1">s</span>
       </p>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [pageSize]="pageSize"
+        [totalItems]="filteredCustomers.length"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
     </div>
   </section>
 

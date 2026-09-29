@@ -97,7 +97,7 @@
           class="admin-orders__search-input"
           placeholder="Search orders..."
           [(ngModel)]="searchTerm"
-          (ngModelChange)="applyFilters()"
+          (ngModelChange)="onFilterChange()"
         />
       </div>
 
@@ -105,7 +105,7 @@
         <select
           class="admin-orders__select"
           [(ngModel)]="statusFilter"
-          (ngModelChange)="applyFilters()"
+          (ngModelChange)="onFilterChange()"
         >
           <option value="">All Orders</option>
           <option value="pending">Pending</option>
@@ -118,7 +118,7 @@
         <select
           class="admin-orders__select"
           [(ngModel)]="paymentFilter"
-          (ngModelChange)="applyFilters()"
+          (ngModelChange)="onFilterChange()"
         >
           <option value="">All Payments</option>
           <option value="paid">Paid</option>
@@ -145,7 +145,6 @@
         </thead>
 
         <tbody>
-          <!-- Empty state -->
           <tr *ngIf="!filteredOrders.length">
             <td colspan="7" class="text-center py-4">
               {{
@@ -156,14 +155,11 @@
             </td>
           </tr>
 
-          <!-- Orders -->
-          <tr *ngFor="let order of filteredOrders; trackBy: trackByOrderId">
-            <!-- Order ID -->
+          <tr *ngFor="let order of pagedOrders; trackBy: trackByOrderId">
             <td>
               <span class="admin-orders__order-id"> #{{ order.id }} </span>
             </td>
 
-            <!-- Customer -->
             <td>
               <div class="admin-orders__customer">
                 <div class="admin-orders__avatar">
@@ -183,15 +179,12 @@
               </div>
             </td>
 
-            <!-- Date -->
             <td>
               {{ order.createdAt | date: "mediumDate" }}
             </td>
 
-            <!-- Total -->
             <td>${{ order.total | number: "1.2-2" }}</td>
 
-            <!-- Payment -->
             <td>
               <span
                 class="admin-orders__payment"
@@ -201,7 +194,6 @@
               </span>
             </td>
 
-            <!-- Status -->
             <td>
               <span
                 class="admin-orders__status"
@@ -211,7 +203,6 @@
               </span>
             </td>
 
-            <!-- Actions -->
             <td>
               <div class="admin-orders__actions">
                 <button
@@ -230,14 +221,21 @@
     </div>
 
     <!-- Footer -->
-    <div class="admin-orders__footer" *ngIf="orders.length">
+    <div class="admin-orders__footer" *ngIf="filteredOrders.length">
       <p class="admin-orders__results">
-        Showing {{ filteredOrders.length }} of {{ orders.length }} order<span
-          *ngIf="orders.length !== 1"
+        Showing {{ pageRangeStart }}–{{ pageRangeEnd }} of
+        {{ filteredOrders.length }} order<span
+          *ngIf="filteredOrders.length !== 1"
+          >s</span
         >
-          s
-        </span>
       </p>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [pageSize]="pageSize"
+        [totalItems]="filteredOrders.length"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
     </div>
   </section>
 
@@ -249,15 +247,12 @@
     aria-modal="true"
     aria-labelledby="orderDetailTitle"
   >
-    <!-- Backdrop -->
     <div
       class="admin-orders__modal-backdrop"
       (click)="closeOrderDetail()"
     ></div>
 
-    <!-- Modal -->
     <div class="admin-orders__modal-dialog" (click)="$event.stopPropagation()">
-      <!-- Modal Header -->
       <div class="admin-orders__modal-header">
         <div class="admin-orders__modal-heading">
           <span class="admin-orders__modal-eyebrow"> Order details </span>
@@ -281,9 +276,7 @@
         </button>
       </div>
 
-      <!-- Modal Body -->
       <div class="admin-orders__modal-body">
-        <!-- Customer -->
         <section class="admin-orders__detail-section">
           <div class="admin-orders__detail-section-header">
             <h3>Customer</h3>
@@ -311,7 +304,6 @@
           </div>
         </section>
 
-        <!-- Shipping -->
         <section class="admin-orders__detail-section">
           <div class="admin-orders__detail-section-header">
             <h3>Shipping address</h3>
@@ -342,7 +334,6 @@
           </div>
         </section>
 
-        <!-- Items -->
         <section class="admin-orders__detail-section">
           <div class="admin-orders__detail-section-header">
             <h3>
@@ -374,7 +365,6 @@
           </div>
         </section>
 
-        <!-- Totals -->
         <section class="admin-orders__detail-section">
           <div class="admin-orders__totals">
             <div>
@@ -397,7 +387,6 @@
           </div>
         </section>
 
-        <!-- Payment -->
         <section class="admin-orders__detail-section">
           <div class="admin-orders__detail-grid">
             <div>
@@ -421,7 +410,6 @@
           </div>
         </section>
 
-        <!-- Order Status -->
         <section class="admin-orders__detail-section">
           <div class="admin-orders__detail-section-header">
             <h3>Order status</h3>
@@ -444,7 +432,6 @@
         </section>
       </div>
 
-      <!-- Modal Footer -->
       <div class="admin-orders__modal-footer">
         <button
           type="button"

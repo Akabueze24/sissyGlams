@@ -115,6 +115,7 @@
           class="admin-inventory__search-input"
           placeholder="Search products or SKU..."
           [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchOrFilterChange()"
         />
       </div>
 
@@ -123,6 +124,7 @@
         <select
           class="admin-inventory__select"
           [(ngModel)]="stockFilter"
+          (ngModelChange)="onSearchOrFilterChange()"
           aria-label="Filter inventory by stock status"
         >
           <option value="">All Stock</option>
@@ -159,7 +161,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let product of filteredProducts">
+          <tr *ngFor="let product of pagedProducts">
             <td>
               <div class="admin-inventory__product">
                 <div class="admin-inventory__product-image">
@@ -266,10 +268,18 @@
     <!-- =====================================================
          INVENTORY FOOTER
     ====================================================== -->
-    <footer class="admin-inventory__footer">
-      <p class="admin-inventory__results">Showing 1–5 of 128 products</p>
+    <div class="admin-inventory__footer" *ngIf="filteredProducts.length">
+  <p class="admin-inventory__results">
+    Showing {{ pageRangeStart }}–{{ pageRangeEnd }}
+    of {{ filteredProducts.length }} products
+  </p>
 
-      <app-pagination></app-pagination>
-    </footer>
+  <app-pagination
+    [currentPage]="currentPage"
+    [pageSize]="pageSize"
+    [totalItems]="filteredProducts.length"
+    (pageChange)="onPageChange($event)"
+  ></app-pagination>
+</div>
   </section>
 </div>

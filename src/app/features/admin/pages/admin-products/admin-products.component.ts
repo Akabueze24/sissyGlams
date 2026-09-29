@@ -6,6 +6,7 @@ import { Category } from 'src/app/core/models/product-models/category.model';
 import { ProductService } from 'src/app/core/services/product-service/product.service';
 import { StoreCollection } from 'src/app/core/models/product-models/store-collection.model';
 import { Subcategory } from 'src/app/core/models/product-models/subcategory.model';
+import { PaginationService } from 'src/app/core/services/pagination-service/pagination.service';
 
 interface ColorRow {
   name: string;
@@ -42,6 +43,13 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
   categories: Category[] = [];
   storeCollections: StoreCollection[] = [];
+
+  // ============================================================
+  // PAGINATION (Option A — local state + shared helpers)
+  // ============================================================
+
+  currentPage = 1;
+  pageSize = 10;
 
   // ============================================================
   // ADD PRODUCT
@@ -138,7 +146,10 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   // LIFECYCLE
   // ============================================================
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private pagination: PaginationService
+  ) {}
 
   ngOnInit(): void {
     this.categories = this.productService
@@ -150,6 +161,11 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     this.productsSubscription = this.productService.adminProducts$.subscribe(
       (products) => {
         this.products = products;
+        this.currentPage = this.pagination.clampPage(
+          this.currentPage,
+          this.filteredProducts.length,
+          this.pageSize
+        );
       }
     );
   }
@@ -201,10 +217,12 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     this.subcategoryFilter = '';
     this.collectionFilter = '';
     this.statusFilter = '';
+    this.currentPage = 1;
   }
 
   onCategoryFilterChange(): void {
     this.subcategoryFilter = '';
+    this.currentPage = 1;
   }
 
   get subcategoriesForFilter(): Subcategory[] {
@@ -259,6 +277,38 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     }
 
     return result;
+  }
+
+  // ============================================================
+  // PAGINATION
+  // ============================================================
+
+  get pagedProducts(): Product[] {
+    return this.pagination.slicePage(
+      this.filteredProducts,
+      this.currentPage,
+      this.pageSize
+    );
+  }
+
+  get pageRangeStart(): number {
+    return this.pagination.rangeStart(
+      this.currentPage,
+      this.pageSize,
+      this.filteredProducts.length
+    );
+  }
+
+  get pageRangeEnd(): number {
+    return this.pagination.rangeEnd(
+      this.currentPage,
+      this.pageSize,
+      this.filteredProducts.length
+    );
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
   }
 
   // ============================================================

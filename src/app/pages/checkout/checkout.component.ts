@@ -15,6 +15,7 @@ import { AuthService } from 'src/app/core/services/auth-service/auth.service';
 import { ProductService } from 'src/app/core/services/product-service/product.service';
 import { SettingsService } from 'src/app/core/services/store-settings/store-settings.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast.service';
+import { AddressService } from 'src/app/core/services/address-service/address.service';
 
 @Component({
   selector: 'app-checkout',
@@ -44,6 +45,7 @@ export class CheckoutComponent implements OnInit {
     private authService: AuthService,
     private settingsService: SettingsService,
     private toastService: ToastService,
+    private addressService: AddressService,
     private router: Router
   ) {}
 
@@ -146,18 +148,36 @@ export class CheckoutComponent implements OnInit {
   }
 
   private prefillFromUser(): void {
-    const user = this.authService.getCurrentUser();
+  const user = this.authService.getCurrentUser();
 
-    if (!user) {
-      return;
-    }
+  if (!user) {
+    return;
+  }
 
+  // Always prefill account identity
+  this.checkoutForm.patchValue({
+    email: user.email || '',
+    firstName: user.firstName || '',
+    lastName: user.lastName || '',
+  });
+
+  // Then overlay saved shipping address (if any)
+  const shipping = this.addressService.getShipping(user.id);
+
+  if (shipping) {
     this.checkoutForm.patchValue({
-      email: user.email || '',
-      firstName: user.firstName || '',
-      lastName: user.lastName || '',
+      firstName: shipping.firstName,
+      lastName: shipping.lastName,
+      phone: shipping.phone,
+      address: shipping.address,
+      apartment: shipping.apartment || '',
+      city: shipping.city,
+      state: shipping.state,
+      postalCode: shipping.postalCode,
+      country: shipping.country,
     });
   }
+}
 
   // ============================================================
   // CART

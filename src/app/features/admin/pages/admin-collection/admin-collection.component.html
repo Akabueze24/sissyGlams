@@ -95,7 +95,9 @@
           <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
         </div>
         <div class="admin-collections__summary-info">
-          <span class="admin-collections__summary-label">Total Collections</span>
+          <span class="admin-collections__summary-label"
+            >Total Collections</span
+          >
           <strong class="admin-collections__summary-value">
             {{ totalCollections }}
           </strong>
@@ -201,7 +203,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of filteredRows; trackBy: trackBySlug">
+          <tr *ngFor="let row of pagedRows; trackBy: trackBySlug">
             <td>
               <div class="admin-collections__collection">
                 <div class="admin-collections__collection-icon">
@@ -266,10 +268,18 @@
       </table>
     </div>
 
-    <div class="admin-collections__footer">
+    <div class="admin-collections__footer" *ngIf="filteredRows.length">
       <span>
-        Showing {{ filteredRows.length }} of {{ totalCollections }} collections
+        Showing {{ pageRangeStart }}–{{ pageRangeEnd }} of
+        {{ filteredRows.length }} collections
       </span>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [pageSize]="pageSize"
+        [totalItems]="filteredRows.length"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
     </div>
   </section>
 
@@ -397,17 +407,17 @@
           <h3>Products in this collection</h3>
         </div>
 
-        <ul
-          class="admin-collections__product-list"
-          *ngIf="viewProducts.length"
-        >
+        <ul class="admin-collections__product-list" *ngIf="viewProducts.length">
           <li *ngFor="let product of viewProducts">
             <span>{{ product.name }}</span>
             <span>{{ product.brand }}</span>
           </li>
         </ul>
 
-        <div class="admin-collections__products-empty" *ngIf="!viewProducts.length">
+        <div
+          class="admin-collections__products-empty"
+          *ngIf="!viewProducts.length"
+        >
           <i class="fa-solid fa-box-open" aria-hidden="true"></i>
           <p>No products in this collection yet. Tag them under Products.</p>
         </div>
@@ -471,9 +481,12 @@
         <p>
           Delete
           <strong>{{ rowToDelete.name }}</strong>
-          (<code>({{ rowToDelete.slug }})</code>?
+          (<code>({{ rowToDelete.slug }})</code>)
         </p>
-        <p *ngIf="rowToDelete.productCount > 0" class="admin-collections__error">
+        <p
+          *ngIf="rowToDelete.productCount > 0"
+          class="admin-collections__error"
+        >
           Cannot delete — {{ rowToDelete.productCount }} product(s) still use
           this collection. Remove it from those products first.
         </p>

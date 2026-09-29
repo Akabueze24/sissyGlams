@@ -1,5 +1,4 @@
 <div class="billing-address">
-
   <a class="billing-address__back" routerLink="/account/address">
     <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
     <span>Back to Addresses</span>
@@ -7,7 +6,7 @@
 
   <header class="billing-address__header">
     <span class="billing-address__icon">
-      <i class="fa-regular fa-credit-card" aria-hidden="true"></i>
+      <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
     </span>
     <div>
       <h1 class="billing-address__title">Shipping Address</h1>
@@ -17,156 +16,354 @@
     </div>
   </header>
 
-  <form class="billing-form">
-
+  <form
+    class="billing-form"
+    [formGroup]="shippingForm"
+    (ngSubmit)="onSave()"
+  >
     <div class="row g-3">
-
+      <!-- FIRST NAME -->
       <div class="col-12 col-md-6">
         <div class="billing-form__group">
-          <label class="billing-form__label" for="billingFirstName">
-            First Name <span class="billing-form__required" aria-hidden="true">*</span>
+          <label class="billing-form__label" for="shippingFirstName">
+            First Name
+            <span class="billing-form__required" aria-hidden="true">*</span>
           </label>
           <input
-            id="billingFirstName"
+            id="shippingFirstName"
             class="billing-form__input"
             type="text"
+            formControlName="firstName"
             autocomplete="given-name"
+            (keypress)="allowNameChar($event)"
           />
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('firstName')?.touched &&
+              shippingForm.get('firstName')?.hasError('required')
+            "
+          >
+            First name is required.
+          </p>
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('firstName')?.touched &&
+              shippingForm.get('firstName')?.hasError('minlength')
+            "
+          >
+            First name must be at least 2 characters.
+          </p>
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('firstName')?.touched &&
+              shippingForm.get('firstName')?.hasError('pattern')
+            "
+          >
+            Letters only — no numbers or special characters.
+          </p>
         </div>
       </div>
 
+      <!-- LAST NAME -->
       <div class="col-12 col-md-6">
         <div class="billing-form__group">
-          <label class="billing-form__label" for="billingLastName">
-            Last Name <span class="billing-form__required" aria-hidden="true">*</span>
+          <label class="billing-form__label" for="shippingLastName">
+            Last Name
+            <span class="billing-form__required" aria-hidden="true">*</span>
           </label>
           <input
-            id="billingLastName"
+            id="shippingLastName"
             class="billing-form__input"
             type="text"
+            formControlName="lastName"
             autocomplete="family-name"
+            (keypress)="allowNameChar($event)"
           />
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('lastName')?.touched &&
+              shippingForm.get('lastName')?.hasError('required')
+            "
+          >
+            Last name is required.
+          </p>
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('lastName')?.touched &&
+              shippingForm.get('lastName')?.hasError('minlength')
+            "
+          >
+            Last name must be at least 2 characters.
+          </p>
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('lastName')?.touched &&
+              shippingForm.get('lastName')?.hasError('pattern')
+            "
+          >
+            Letters only — no numbers or special characters.
+          </p>
         </div>
       </div>
 
+      <!-- COUNTRY -->
       <div class="col-12">
         <div class="billing-form__group">
-          <label class="billing-form__label" for="billingCompany">Company</label>
-          <input
-            id="billingCompany"
-            class="billing-form__input"
-            type="text"
-            autocomplete="organization"
-          />
-        </div>
-      </div>
-
-      <div class="col-12">
-        <div class="billing-form__group">
-          <label class="billing-form__label" for="billingCountry">
-            Country / Region <span class="billing-form__required" aria-hidden="true">*</span>
+          <label class="billing-form__label" for="shippingCountry">
+            Country / Region
+            <span class="billing-form__required" aria-hidden="true">*</span>
           </label>
-          <select id="billingCountry" class="billing-form__select" autocomplete="country">
-            <option value="NG" selected>Nigeria</option>
+          <select
+            id="shippingCountry"
+            class="billing-form__select"
+            formControlName="country"
+            autocomplete="country"
+          >
+            <option value="NG">Nigeria</option>
             <option value="US">United States</option>
             <option value="GB">United Kingdom</option>
             <option value="CA">Canada</option>
           </select>
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('country')?.touched &&
+              shippingForm.get('country')?.hasError('required')
+            "
+          >
+            Country is required.
+          </p>
         </div>
       </div>
 
+      <!-- STREET -->
       <div class="col-12">
         <div class="billing-form__group">
-          <label class="billing-form__label" for="billingStreet">
-            Street Address <span class="billing-form__required" aria-hidden="true">*</span>
+          <label class="billing-form__label" for="shippingStreet">
+            Street Address
+            <span class="billing-form__required" aria-hidden="true">*</span>
           </label>
           <input
-            id="billingStreet"
+            id="shippingStreet"
             class="billing-form__input"
             type="text"
+            formControlName="address"
             placeholder="House number and street name"
             autocomplete="address-line1"
           />
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('address')?.touched &&
+              shippingForm.get('address')?.hasError('required')
+            "
+          >
+            Street address is required.
+          </p>
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('address')?.touched &&
+              shippingForm.get('address')?.hasError('minlength')
+            "
+          >
+            Street address must be at least 5 characters.
+          </p>
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('address')?.touched &&
+              shippingForm.get('address')?.hasError('pattern')
+            "
+          >
+            Use only letters, numbers, and basic punctuation.
+          </p>
         </div>
       </div>
 
+      <!-- APARTMENT -->
       <div class="col-12">
         <div class="billing-form__group">
-          <label class="billing-form__label" for="billingApartment">Apartment / Suite</label>
+          <label class="billing-form__label" for="shippingApartment">
+            Apartment / Suite
+          </label>
           <input
-            id="billingApartment"
+            id="shippingApartment"
             class="billing-form__input"
             type="text"
+            formControlName="apartment"
             placeholder="Apartment, suite, unit, etc. (optional)"
             autocomplete="address-line2"
           />
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('apartment')?.touched &&
+              shippingForm.get('apartment')?.hasError('pattern')
+            "
+          >
+            Use only letters, numbers, and basic punctuation.
+          </p>
         </div>
       </div>
 
+      <!-- CITY -->
       <div class="col-12 col-md-6">
         <div class="billing-form__group">
-          <label class="billing-form__label" for="billingCity">
-            City <span class="billing-form__required" aria-hidden="true">*</span>
+          <label class="billing-form__label" for="shippingCity">
+            City
+            <span class="billing-form__required" aria-hidden="true">*</span>
           </label>
           <input
-            id="billingCity"
+            id="shippingCity"
             class="billing-form__input"
             type="text"
+            formControlName="city"
             autocomplete="address-level2"
+            (keypress)="allowNameChar($event)"
           />
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('city')?.touched &&
+              shippingForm.get('city')?.hasError('required')
+            "
+          >
+            City is required.
+          </p>
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('city')?.touched &&
+              shippingForm.get('city')?.hasError('pattern')
+            "
+          >
+            Letters only — no numbers.
+          </p>
         </div>
       </div>
 
+      <!-- STATE -->
       <div class="col-12 col-md-6">
         <div class="billing-form__group">
-          <label class="billing-form__label" for="billingState">
-            State / Province <span class="billing-form__required" aria-hidden="true">*</span>
+          <label class="billing-form__label" for="shippingState">
+            State / Province
+            <span class="billing-form__required" aria-hidden="true">*</span>
           </label>
           <input
-            id="billingState"
+            id="shippingState"
             class="billing-form__input"
             type="text"
+            formControlName="state"
             autocomplete="address-level1"
+            (keypress)="allowNameChar($event)"
           />
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('state')?.touched &&
+              shippingForm.get('state')?.hasError('required')
+            "
+          >
+            State is required.
+          </p>
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('state')?.touched &&
+              shippingForm.get('state')?.hasError('pattern')
+            "
+          >
+            Letters only — no numbers.
+          </p>
         </div>
       </div>
 
+      <!-- POSTAL CODE -->
       <div class="col-12 col-md-6">
         <div class="billing-form__group">
-          <label class="billing-form__label" for="billingPostalCode">
-            Postal Code <span class="billing-form__required" aria-hidden="true">*</span>
+          <label class="billing-form__label" for="shippingPostalCode">
+            Postal Code
+            <span class="billing-form__required" aria-hidden="true">*</span>
           </label>
           <input
-            id="billingPostalCode"
+            id="shippingPostalCode"
             class="billing-form__input"
             type="text"
+            formControlName="postalCode"
             autocomplete="postal-code"
+            inputmode="numeric"
+            (keypress)="allowDigitsOnly($event)"
           />
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('postalCode')?.touched &&
+              shippingForm.get('postalCode')?.hasError('required')
+            "
+          >
+            Postal code is required.
+          </p>
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('postalCode')?.touched &&
+              shippingForm.get('postalCode')?.hasError('pattern')
+            "
+          >
+            Postal code must be 4–10 digits only.
+          </p>
         </div>
       </div>
 
+      <!-- PHONE -->
       <div class="col-12 col-md-6">
         <div class="billing-form__group">
-          <label class="billing-form__label" for="billingPhone">
-            Phone <span class="billing-form__required" aria-hidden="true">*</span>
+          <label class="billing-form__label" for="shippingPhone">
+            Phone
+            <span class="billing-form__required" aria-hidden="true">*</span>
           </label>
           <input
-            id="billingPhone"
+            id="shippingPhone"
             class="billing-form__input"
             type="tel"
-            placeholder="+234 800 000 0000"
+            formControlName="phone"
+            placeholder="08012345678"
             autocomplete="tel"
+            inputmode="numeric"
+            (keypress)="allowDigitsOnly($event)"
           />
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('phone')?.touched &&
+              shippingForm.get('phone')?.hasError('required')
+            "
+          >
+            Phone is required.
+          </p>
+          <p
+            class="billing-form__error"
+            *ngIf="
+              shippingForm.get('phone')?.touched &&
+              shippingForm.get('phone')?.hasError('pattern')
+            "
+          >
+            Phone must be 10–15 digits only (no spaces or symbols).
+          </p>
         </div>
       </div>
-
     </div>
 
     <div class="billing-form__actions">
       <button class="billing-form__save" type="submit">Save Address</button>
       <a class="billing-form__cancel" routerLink="/account/address">Cancel</a>
     </div>
-
   </form>
-
 </div>
