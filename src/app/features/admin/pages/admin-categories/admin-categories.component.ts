@@ -5,7 +5,6 @@ import { Product } from 'src/app/core/models/product-models/product.model';
 
 import { ProductService } from 'src/app/core/services/product-service/product.service';
 import { CategoryService } from 'src/app/core/services/category-service/category.service';
-import { ToastService } from 'src/app/core/services/toast-service/toast.service';
 import { PaginationService } from 'src/app/core/services/pagination-service/pagination.service';
 
 export interface CategoryRow {
@@ -41,7 +40,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
   emptyCategories = 0;
 
   // ============================================================
-  // PAGINATION (Option A — local state + shared helpers)
+  // PAGINATION
   // ============================================================
 
   currentPage = 1;
@@ -111,8 +110,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
-    private toastService: ToastService,
-    private pagination: PaginationService
+    private pagination: PaginationService,
   ) {}
 
   // ============================================================
@@ -120,19 +118,20 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
   // ============================================================
 
   ngOnInit(): void {
+    this.categoryService.loadCategoriesFromApi()
     this.productsSubscription = this.productService.adminProducts$.subscribe(
       (products) => {
         this.products = products;
         this.rebuildRows();
         this.refreshViewRow();
-      }
+      },
     );
 
     this.categoriesSubscription = this.categoryService.categories$.subscribe(
       () => {
         this.rebuildRows();
         this.refreshViewRow();
-      }
+      },
     );
 
     this.subcategoriesSubscription =
@@ -179,8 +178,8 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
           row.label.toLowerCase().includes(term) ||
           row.category.toLowerCase().includes(term) ||
           row.subcategories.some((sub) =>
-            sub.name.toLowerCase().includes(term)
-          )
+            sub.name.toLowerCase().includes(term),
+          ),
       );
     }
 
@@ -195,7 +194,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
     this.currentPage = this.pagination.clampPage(
       this.currentPage,
       this.filteredRows.length,
-      this.pageSize
+      this.pageSize,
     );
   }
 
@@ -203,7 +202,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
     this.totalCategories = this.rows.length;
     this.totalSubcategories = this.rows.reduce(
       (sum, row) => sum + row.subcategories.length,
-      0
+      0,
     );
     this.categorizedProducts = this.products.filter((p) => !!p.category)
       .length;
@@ -224,7 +223,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
     return this.pagination.slicePage(
       this.filteredRows,
       this.currentPage,
-      this.pageSize
+      this.pageSize,
     );
   }
 
@@ -232,7 +231,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
     return this.pagination.rangeStart(
       this.currentPage,
       this.pageSize,
-      this.filteredRows.length
+      this.filteredRows.length,
     );
   }
 
@@ -240,7 +239,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
     return this.pagination.rangeEnd(
       this.currentPage,
       this.pageSize,
-      this.filteredRows.length
+      this.filteredRows.length,
     );
   }
 
@@ -300,7 +299,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
     }
 
     const exists = this.pendingSubNames.some(
-      (n) => n.toLowerCase() === name.toLowerCase()
+      (n) => n.toLowerCase() === name.toLowerCase(),
     );
     if (exists) {
       return;
@@ -321,27 +320,17 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
       this.addPendingSubcategory();
     }
 
-    const created = this.categoryService.addCategory(this.newCategoryLabel);
-
-    if (!created) {
-      this.addError =
-        'Could not add category. Check that the name is not empty or already used.';
+    if (!this.newCategoryLabel.trim()) {
+      this.addError = 'Category name is required.';
       return;
     }
 
-    for (const name of this.pendingSubNames) {
-      this.categoryService.addSubcategory(created.slug, name);
-    }
-
-    this.closeAddForm();
-    this.toastService.success(
-      `Category "${created.label}" created successfully.`
+    // API + toast + reload live in CategoryService
+    this.categoryService.addCategory(
+      this.newCategoryLabel,
+      this.pendingSubNames,
     );
-
-    const row = this.rows.find((r) => r.category === created.slug);
-    if (row) {
-      this.openViewModal(row);
-    }
+    this.closeAddForm();
   }
 
   // ============================================================
@@ -376,19 +365,13 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
 
     this.editError = '';
 
-    const ok = this.categoryService.updateCategory(
-      this.editingSlug,
-      this.editLabel
-    );
-
-    if (!ok) {
-      this.editError =
-        'Could not update. Name cannot be empty or already used.';
+    if (!this.editLabel.trim()) {
+      this.editError = 'Name cannot be empty.';
       return;
     }
 
+    this.categoryService.updateCategory(this.editingSlug, this.editLabel);
     this.closeEditModal();
-    this.toastService.success('Category name updated successfully.');
   }
 
   // ============================================================
@@ -430,21 +413,16 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
 
     this.subError = '';
 
-    const created = this.categoryService.addSubcategory(
-      this.viewRow.category,
-      this.newSubcategoryName
-    );
-
-    if (!created) {
-      this.subError =
-        'Could not add subcategory. Check that the name is not empty or already used.';
+    if (!this.newSubcategoryName.trim()) {
+      this.subError = 'Subcategory name is required.';
       return;
     }
 
-    this.newSubcategoryName = '';
-    this.toastService.success(
-      `Subcategory "${created.name}" added successfully.`
+    this.categoryService.addSubcategory(
+      this.viewRow.category,
+      this.newSubcategoryName,
     );
+    this.newSubcategoryName = '';
   }
 
   // ============================================================
@@ -471,20 +449,17 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
 
     this.subEditError = '';
 
-    const ok = this.categoryService.updateSubcategory(
-      this.viewRow.category,
-      this.editingSubSlug,
-      this.editingSubName
-    );
-
-    if (!ok) {
-      this.subEditError =
-        'Could not update subcategory. Check that the name is not empty or already used.';
+    if (!this.editingSubName.trim()) {
+      this.subEditError = 'Name cannot be empty.';
       return;
     }
 
+    this.categoryService.updateSubcategory(
+      this.viewRow.category,
+      this.editingSubSlug,
+      this.editingSubName,
+    );
     this.cancelEditSubcategory();
-    this.toastService.success('Subcategory updated successfully.');
   }
 
   // ============================================================
@@ -522,15 +497,11 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const name = this.subToDelete.name;
-
     this.categoryService.deleteSubcategory(
       this.viewRow.category,
-      this.subToDelete.slug
+      this.subToDelete.slug,
     );
-
     this.closeDeleteSubModal();
-    this.toastService.success(`Subcategory "${name}" deleted successfully.`);
   }
 
   // ============================================================
@@ -564,7 +535,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
     }
 
     const live = this.rows.find(
-      (row) => row.category === this.categoryToDelete!.category
+      (row) => row.category === this.categoryToDelete!.category,
     );
     const count = live?.productCount ?? this.categoryToDelete.productCount;
 
@@ -573,12 +544,8 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const label = this.categoryToDelete.label;
-    const slug = this.categoryToDelete.category;
-
-    this.categoryService.deleteCategory(slug);
+    this.categoryService.deleteCategory(this.categoryToDelete.category);
     this.closeDeleteCategoryModal();
-    this.toastService.success(`Category "${label}" deleted successfully.`);
   }
 
   // ============================================================
@@ -591,7 +558,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
     }
 
     const next = this.rows.find(
-      (row) => row.category === this.viewRow!.category
+      (row) => row.category === this.viewRow!.category,
     );
 
     if (!next) {

@@ -1,57 +1,201 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import {
+  BehaviorSubject,
+  catchError,
+  combineLatest,
+  map,
+  Observable,
+  of,
+  tap,
+} from 'rxjs';
 
 import { Product } from '../../models/product-models/product.model';
 import { ProductFilters } from '../../models/product-models/product-filter.model';
 import { Category } from '../../models/product-models/category.model';
 import { CategoryNavItem } from '../../models/product-models/category-nav-item.model';
-import { PRODUCTS } from '../../data/product';
 import { StoreCollection } from '../../models/product-models/store-collection.model';
-import { STORE_COLLECTIONS } from '../../models/product-models/store-collections';
+import { PRODUCTS } from '../../data/product';
+
 import { CategoryService } from '../category-service/category.service';
 import { CollectionService } from '../collection-service/collection.service';
+import { ToastService } from '../toast-service/toast.service';
+
+import { environment } from 'src/environments/environment';
+
+export interface CreateProductInput {
+  name: string;
+  brand: string;
+  category: Category;
+  subcategory?: string;
+  collections?: StoreCollection[];
+  price: number;
+  imageUrl: string;
+  description: string;
+  active?: boolean;
+  stock?: number;
+  rating?: number;
+  reviewCount?: number;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  // ============================================================
-  // STORAGE
-  // ============================================================
-
   private readonly PRODUCTS_STORAGE_KEY = 'sissy-dream-products';
-
-  // ============================================================
-  // STATE
-  // ============================================================
 
   private productsSource = new BehaviorSubject<Product[]>(this.loadProducts());
   private filtersSource = new BehaviorSubject<ProductFilters>({});
 
-  // ============================================================
-  // PUBLIC OBSERVABLES
-  // ============================================================
-
   products$ = this.productsSource.asObservable();
   filters$ = this.filtersSource.asObservable();
-
-  /** Admin: every product */
   adminProducts$ = this.productsSource.asObservable();
 
-  /** Shop: active + current filters */
   filteredProducts$: Observable<Product[]> = combineLatest([
     this.products$,
     this.filters$,
   ]).pipe(map(([products, filters]) => this.applyFilters(products, filters)));
 
-  // ============================================================
-  // CONSTRUCTOR
-  // ============================================================
-
   constructor(
     private categoryService: CategoryService,
     private collectionService: CollectionService,
-  ) {}
+    private http: HttpClient,
+    private toastService: ToastService,
+  ) {
+    this.loadProductsFromApi();
+  }
+
+  // ============================================================
+  // API — LOAD
+  // ============================================================
+
+  loadProductsFromApi(): void {
+    this.http.get<any[]>(`${environment.apiUrl}/products?all=true`).subscribe({
+      next: (list) => {
+        const mapped = (list ?? []).map((p) => this.mapApiProduct(p));
+        this.productsSource.next(mapped);
+      },
+      error: (err) => {
+        console.error('Failed to load products from API', err);
+      },
+    });
+  }
+
+  getProductBySlugFromApi(slug: string): Observable<Product | null> {
+    return this.http
+      .get<any>(`${environment.apiUrl}/products/${encodeURIComponent(slug)}`)
+      .pipe(
+        map((p) => this.mapApiProduct(p)),
+        catchError((err) => {
+          console.error('Failed to load product by slug', err);
+          return of(null);
+        }),
+      );
+  }
+
+  // ============================================================
+  // API — WRITE (admin)
+  // ============================================================
+
+  createProductOnApi(input: CreateProductInput): Observable<Product | null> {
+    const name = input.name.trim();
+
+    const body = {
+      name,
+      slug: this.slugify(name),
+      brand: input.brand.trim(),
+      category: input.category,
+      subcategory: input.subcategory || undefined,
+      collections: input.collections?.length ? input.collections : [],
+      images: [input.imageUrl.trim()],
+      price: input.price,
+      productDetails: {
+        description: input.description.trim(),
+        details: [] as string[],
+        shipping: 'Ships within 2–5 business days.',
+        returns: 'Eligible for return according to store policy.',
+      },
+      rating: input.rating ?? 0,
+      reviewCount: input.reviewCount ?? 0,
+      active: input.active ?? true,
+      stock: input.stock ?? 0,
+    };
+
+    return this.http.post<any>(`${environment.apiUrl}/products`, body).pipe(
+      map((p) => this.mapApiProduct(p)),
+      tap((product) => {
+        this.productsSource.next([product, ...this.productsSource.value]);
+        this.toastService.success('Product created successfully.');
+      }),
+      catchError((err) => {
+        console.error('Failed to create product', err);
+        this.toastService.error(
+          err?.error?.message || 'Could not create product. Please try again.',
+        );
+        return of(null);
+      }),
+    );
+  }
+
+  updateProductOnApi(
+    productId: string,
+    changes: Partial<Product>,
+  ): Observable<Product | null> {
+    const body: Record<string, unknown> = { ...changes };
+    delete body['id'];
+    delete body['_id'];
+
+    return this.http
+      .put<any>(`${environment.apiUrl}/products/id/${productId}`, body)
+      .pipe(
+        map((p) => this.mapApiProduct(p)),
+        tap((updated) => {
+          this.productsSource.next(
+            this.productsSource.value.map((item) =>
+              item.id === productId ? updated : item,
+            ),
+          );
+          this.toastService.success('Product updated successfully.');
+        }),
+        catchError((err) => {
+          console.error('Failed to update product', err);
+          this.toastService.error(
+            err?.error?.message || 'Could not update product. Please try again.',
+          );
+          return of(null);
+        }),
+      );
+  }
+
+  deleteProductOnApi(productId: string): Observable<boolean> {
+    return this.http
+      .delete(`${environment.apiUrl}/products/id/${productId}`)
+      .pipe(
+        map(() => true),
+        tap(() => {
+          this.productsSource.next(
+            this.productsSource.value.filter((p) => p.id !== productId),
+          );
+          this.toastService.success('Product deleted successfully.');
+        }),
+        catchError((err) => {
+          console.error('Failed to delete product', err);
+          this.toastService.error(
+            err?.error?.message || 'Could not delete product. Please try again.',
+          );
+          return of(false);
+        }),
+      );
+  }
+
+  toggleProductActive(productId: string): void {
+    const product = this.productsSource.value.find((p) => p.id === productId);
+    if (!product) {
+      return;
+    }
+
+    this.updateProductOnApi(productId, { active: !product.active }).subscribe();
+  }
 
   // ============================================================
   // FILTER STATE
@@ -73,128 +217,12 @@ export class ProductService {
   }
 
   // ============================================================
-  // ADMIN — products
+  // LOOKUPS (in-memory — filled from API)
   // ============================================================
 
   getAllProducts(): Product[] {
     return this.productsSource.value;
   }
-
-  setProductActive(productId: string, active: boolean): void {
-    const products = this.productsSource.value.map((product) =>
-      product.id === productId ? { ...product, active } : product,
-    );
-    this.setProducts(products);
-  }
-
-  toggleProductActive(productId: string): void {
-    const product = this.productsSource.value.find((p) => p.id === productId);
-    if (!product) return;
-    this.setProductActive(productId, !product.active);
-  }
-
-  addProduct(input: {
-    name: string;
-    brand: string;
-    category: Category;
-    subcategory?: string;
-    collections?: StoreCollection[];
-    price: number;
-    imageUrl: string;
-    description: string;
-    active?: boolean;
-    stock?: number;
-    rating?: number;
-    reviewCount?: number;
-  }): Product {
-    const name = input.name.trim();
-    const subcategory = this.normalizeSubcategory(
-      input.category,
-      input.subcategory,
-    );
-
-    const product: Product = {
-      id: `SD-${Date.now()}`,
-      name,
-      slug: this.slugify(name),
-      brand: input.brand.trim(),
-      category: input.category,
-      subcategory,
-      collections: input.collections?.length ? input.collections : undefined,
-      images: [input.imageUrl.trim()],
-      price: input.price,
-      productDetails: {
-        description: input.description.trim(),
-        details: [],
-        shipping: 'Ships within 2–5 business days.',
-        returns: 'Eligible for return according to store policy.',
-      },
-      rating: input.rating ?? 0,
-      reviewCount: input.reviewCount ?? 0,  
-      active: input.active ?? true,
-      stock: input.stock ?? 0,
-      createdAt: new Date().toISOString(),
-    };
-
-    this.setProducts([product, ...this.productsSource.value]);
-    return product;
-  }
-
-  updateProduct(productId: string, changes: Partial<Product>): Product | null {
-    const current = this.productsSource.value.find((p) => p.id === productId);
-    if (!current) return null;
-
-    const name = changes.name?.trim() ?? current.name;
-    const category = changes.category ?? current.category;
-
-    const rawSubcategory =
-      changes.subcategory !== undefined
-        ? changes.subcategory
-        : current.subcategory;
-
-    const subcategory = this.normalizeSubcategory(category, rawSubcategory);
-
-    const updated: Product = {
-      ...current,
-      ...changes,
-      id: current.id,
-      name,
-      slug: changes.name ? this.slugify(name) : current.slug,
-      brand: changes.brand?.trim() ?? current.brand,
-      category,
-      subcategory,
-      images:
-        changes.images && changes.images.length
-          ? changes.images
-          : current.images,
-      productDetails: changes.productDetails
-        ? {
-            ...current.productDetails,
-            ...changes.productDetails,
-          }
-        : current.productDetails,
-    };
-
-    this.setProducts(
-      this.productsSource.value.map((p) => (p.id === productId ? updated : p)),
-    );
-
-    return updated;
-  }
-
-  deleteProduct(productId: string): boolean {
-    const exists = this.productsSource.value.some((p) => p.id === productId);
-    if (!exists) return false;
-
-    this.setProducts(
-      this.productsSource.value.filter((p) => p.id !== productId),
-    );
-    return true;
-  }
-
-  // ============================================================
-  // LOOKUPS
-  // ============================================================
 
   getProductById(id: string): Product | undefined {
     return this.productsSource.value.find((p) => p.id === id);
@@ -206,7 +234,8 @@ export class ProductService {
 
   getProductsByCollection(collectionSlug: string): Product[] {
     return this.productsSource.value.filter(
-      (p) => p.active && p.collections?.some((c) => c.slug === collectionSlug),
+      (p) =>
+        p.active && p.collections?.some((c) => c.slug === collectionSlug),
     );
   }
 
@@ -232,7 +261,8 @@ export class ProductService {
       (item) => item.subcategory === product.subcategory,
     );
 
-    let pool = sameSubcategory.length >= limit ? sameSubcategory : sameCategory;
+    let pool =
+      sameSubcategory.length >= limit ? sameSubcategory : sameCategory;
 
     if (pool.length < limit) {
       const others = this.productsSource.value.filter(
@@ -260,7 +290,7 @@ export class ProductService {
   }
 
   // ============================================================
-  // STOCK
+  // STOCK (in-memory until stock is fully owned by the API)
   // ============================================================
 
   isInStock(product: Product): boolean {
@@ -272,17 +302,23 @@ export class ProductService {
   }
 
   clampQuantityToStock(product: Product, quantity: number): number {
-    if (quantity < 1) return 0;
+    if (quantity < 1) {
+      return 0;
+    }
     return Math.min(quantity, this.getAvailableStock(product));
   }
 
   reduceStock(productId: string, quantity: number): boolean {
-    if (quantity < 1) return false;
+    if (quantity < 1) {
+      return false;
+    }
 
     const current = this.productsSource.value.find((p) => p.id === productId);
-    if (!current || current.stock < quantity) return false;
+    if (!current || current.stock < quantity) {
+      return false;
+    }
 
-    this.setProducts(
+    this.patchLocalProducts(
       this.productsSource.value.map((p) =>
         p.id === productId ? { ...p, stock: p.stock - quantity } : p,
       ),
@@ -291,12 +327,16 @@ export class ProductService {
   }
 
   restoreStock(productId: string, quantity: number): boolean {
-    if (quantity < 1) return false;
+    if (quantity < 1) {
+      return false;
+    }
 
     const current = this.productsSource.value.find((p) => p.id === productId);
-    if (!current) return false;
+    if (!current) {
+      return false;
+    }
 
-    this.setProducts(
+    this.patchLocalProducts(
       this.productsSource.value.map((p) =>
         p.id === productId ? { ...p, stock: p.stock + quantity } : p,
       ),
@@ -305,12 +345,14 @@ export class ProductService {
   }
 
   // ============================================================
-  // SEARCH / PRICE / NAV / COLLECTIONS
+  // SEARCH / PRICE / NAV
   // ============================================================
 
   searchSuggestions(term: string, limit: number = 6): Product[] {
     const value = term.trim().toLowerCase();
-    if (value.length < 2) return [];
+    if (value.length < 2) {
+      return [];
+    }
 
     return this.applyFilters(this.productsSource.value, {
       search: value,
@@ -319,7 +361,9 @@ export class ProductService {
 
   getPriceRange(): { min: number; max: number } {
     const products = this.productsSource.value.filter((p) => p.active);
-    if (!products.length) return { min: 0, max: 100 };
+    if (!products.length) {
+      return { min: 0, max: 100 };
+    }
 
     const prices = products.map((p) => p.price);
     return {
@@ -328,7 +372,6 @@ export class ProductService {
     };
   }
 
-  /** Delegates to CategoryService (single source of truth) */
   getCategoryNav(): CategoryNavItem[] {
     return this.categoryService.getCategoryNav();
   }
@@ -338,10 +381,49 @@ export class ProductService {
   }
 
   // ============================================================
-  // PRIVATE — persistence
+  // PRIVATE — API mapping
   // ============================================================
 
-  private setProducts(products: Product[]): void {
+  private mapApiProduct(p: any): Product {
+    return {
+      id: p.id || p._id,
+      name: p.name,
+      slug: p.slug,
+      brand: p.brand ?? '',
+      category: p.category,
+      subcategory: p.subcategory,
+      collections: p.collections ?? [],
+      images: p.images?.length
+        ? p.images
+        : ['https://placehold.co/400x500?text=Product'],
+      price: p.price,
+      oldPrice: p.oldPrice,
+      productDetails: {
+        description: p.productDetails?.description ?? '',
+        details: p.productDetails?.details ?? [],
+        shipping: p.productDetails?.shipping ?? '',
+        returns: p.productDetails?.returns ?? '',
+      },
+      colors: p.colors ?? [],
+      colorGalleries: p.colorGalleries ?? [],
+      sizes: p.sizes ?? [],
+      lengths: p.lengths ?? [],
+      rating: p.rating ?? 0,
+      reviewCount: p.reviewCount ?? 0,
+      stock: typeof p.stock === 'number' ? p.stock : 0,
+      active: p.active !== false,
+      createdAt: p.createdAt
+        ? new Date(p.createdAt).toISOString()
+        : undefined,
+    };
+  }
+
+  // ============================================================
+  // PRIVATE — local list (stock + brief fallback before API loads)
+  // ============================================================
+
+  private patchLocalProducts(products: Product[]): void {
+    this.productsSource.value;
     this.productsSource.next(products);
     this.saveProducts(products);
   }
@@ -373,25 +455,8 @@ export class ProductService {
   }
 
   // ============================================================
-  // PRIVATE HELPERS
+  // PRIVATE — filters / helpers
   // ============================================================
-
-  /**
-   * Subcategory must exist under CategoryService for this category.
-   */
-  private normalizeSubcategory(
-    category: Category,
-    subcategory?: string | null,
-  ): string | undefined {
-    const slug = subcategory?.trim();
-    if (!slug) return undefined;
-
-    const isValid = this.categoryService
-      .getSubcategories()
-      .some((sub) => sub.slug === slug && sub.category === category);
-
-    return isValid ? slug : undefined;
-  }
 
   private slugify(value: string): string {
     return value
@@ -479,7 +544,6 @@ export class ProductService {
   private matchesSearchTerm(product: Product, term: string): boolean {
     const inName = product.name.toLowerCase().includes(term);
     const inBrand = product.brand.toLowerCase().includes(term);
-
     const inDescription = product.productDetails.description
       .toLowerCase()
       .includes(term);

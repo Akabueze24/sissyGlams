@@ -71,6 +71,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   // ============================================================
 
   ngOnInit(): void {
+    this.orderService.refreshOrders().subscribe()
     this.ordersSubscription = this.orderService.orders$.subscribe((orders) => {
       this.orders = orders;
       this.applyFilters();
@@ -170,16 +171,11 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   // ORDER STATUS UPDATE
   // ============================================================
 
-  onStatusChange(order: Order, status: Order['orderStatus']): void {
-    this.orderService.updateOrderStatus(order.id, status);
-
-    if (this.selectedOrder?.id === order.id) {
-      this.selectedOrder = {
-        ...this.selectedOrder,
-        orderStatus: status,
-      };
-    }
-  }
+onStatusChange(order: Order, status: Order['orderStatus']): void {
+  this.orderService.updateOrderStatus(order.id, status);
+  // selectedOrder will lag one tick until orders$ updates —
+  // your current optimistic patch is fine for instant UI
+}
 
   // ============================================================
   // SUMMARY

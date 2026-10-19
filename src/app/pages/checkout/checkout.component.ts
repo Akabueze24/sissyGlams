@@ -46,7 +46,7 @@ export class CheckoutComponent implements OnInit {
     private settingsService: SettingsService,
     private toastService: ToastService,
     private addressService: AddressService,
-    private router: Router
+    private router: Router,
   ) {}
 
   // ============================================================
@@ -148,36 +148,36 @@ export class CheckoutComponent implements OnInit {
   }
 
   private prefillFromUser(): void {
-  const user = this.authService.getCurrentUser();
+    const user = this.authService.getCurrentUser();
 
-  if (!user) {
-    return;
-  }
+    if (!user) {
+      return;
+    }
 
-  // Always prefill account identity
-  this.checkoutForm.patchValue({
-    email: user.email || '',
-    firstName: user.firstName || '',
-    lastName: user.lastName || '',
-  });
-
-  // Then overlay saved shipping address (if any)
-  const shipping = this.addressService.getShipping(user.id);
-
-  if (shipping) {
+    // Always prefill account identity
     this.checkoutForm.patchValue({
-      firstName: shipping.firstName,
-      lastName: shipping.lastName,
-      phone: shipping.phone,
-      address: shipping.address,
-      apartment: shipping.apartment || '',
-      city: shipping.city,
-      state: shipping.state,
-      postalCode: shipping.postalCode,
-      country: shipping.country,
+      email: user.email || '',
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
     });
+
+    // Then overlay saved shipping address (if any)
+    const shipping = this.addressService.getShipping(user.id);
+
+    if (shipping) {
+      this.checkoutForm.patchValue({
+        firstName: shipping.firstName,
+        lastName: shipping.lastName,
+        phone: shipping.phone,
+        address: shipping.address,
+        apartment: shipping.apartment || '',
+        city: shipping.city,
+        state: shipping.state,
+        postalCode: shipping.postalCode,
+        country: shipping.country,
+      });
+    }
   }
-}
 
   // ============================================================
   // CART
@@ -231,7 +231,7 @@ export class CheckoutComponent implements OnInit {
 
     this.shippingCost = this.checkoutService.getShippingCost(
       shippingMethod,
-      this.shippingQuote
+      this.shippingQuote,
     );
 
     this.calculateTotal();
@@ -240,7 +240,7 @@ export class CheckoutComponent implements OnInit {
   private calculateTotal(): void {
     this.total = this.checkoutService.calculateTotal(
       this.subtotal,
-      this.shippingCost
+      this.shippingCost,
     );
   }
 
@@ -275,7 +275,7 @@ export class CheckoutComponent implements OnInit {
 
     if (!settings.storeActive) {
       this.toastService.info(
-        'The store is temporarily closed. Your order was not placed.'
+        'The store is temporarily closed. Your order was not placed.',
       );
       return;
     }
@@ -316,7 +316,7 @@ export class CheckoutComponent implements OnInit {
 
       if (item.quantity > available) {
         this.toastService.info(
-          `Not enough stock for "${item.product.name}". Please update your cart.`
+          `Not enough stock for "${item.product.name}". Please update your cart.`,
         );
         this.router.navigate(['/cart']);
         return;
@@ -333,19 +333,20 @@ export class CheckoutComponent implements OnInit {
       items,
       subtotal,
       this.shippingCost,
-      total
+      total,
     );
 
-    this.orderService.saveOrder(order);
+    this.orderService.saveOrder(order).subscribe((saved) => {
+      if (!saved) {
+        // 400 / network — toast already shown; keep cart
+        return;
+      }
 
-    for (const item of items) {
-      this.productService.reduceStock(item.product.id, item.quantity);
-    }
-
-    this.cartService.clearCart();
-    this.router.navigate(['/order-confirmation']);
+      // Server reduced stock + OrderService refreshed products
+      this.cartService.clearCart();
+      this.router.navigate(['/order-confirmation']);
+    });
   }
-
   // ============================================================
   // TEMPLATE HELPERS
   // ============================================================

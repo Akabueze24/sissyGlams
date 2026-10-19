@@ -280,12 +280,12 @@
               </button>
             </div>
 
-            <p class="product-info__stock-hint" *ngIf="product">
+            <!-- <p class="product-info__stock-hint" *ngIf="product">
               <span *ngIf="product.stock <= 5"
                 >Only {{ product.stock }} left</span
               >
               <span *ngIf="product.stock > 5">{{product.stock}} In stock</span>
-            </p>
+            </p> -->
 
             <button
               class="product-actions__add-to-bag"
@@ -426,13 +426,13 @@
         role="tabpanel"
         aria-labelledby="tab-shipping-btn"
       >
-        <p>
-          {{ product?.productDetails?.shipping }}
-        </p>
 
+         <p [innerHTML]="product?.productDetails?.shipping"></p>
         <p>
           {{ product?.productDetails?.returns }}
         </p>
+
+      
       </div>
 
       <!-- ========================================================

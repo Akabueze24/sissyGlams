@@ -1,20 +1,26 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 
 import { StoreCollection } from '../../models/product-models/store-collection.model';
-import { STORE_COLLECTIONS } from '../../models/product-models/store-collections';
+import { environment } from 'src/environments/environment';
+import { ToastService } from '../toast-service/toast.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
-  private readonly STORAGE_KEY = 'sissy-dream-collections';
+  private readonly baseUrl = `${environment.apiUrl}/collections`;
 
-  private collectionsSource = new BehaviorSubject<StoreCollection[]>(
-    this.loadCollections()
-  );
-
+  private collectionsSource = new BehaviorSubject<StoreCollection[]>([]);
   collections$ = this.collectionsSource.asObservable();
+
+  constructor(
+    private http: HttpClient,
+    private toastService: ToastService,
+  ) {
+    this.loadCollections();
+  }
 
   // ============================================================
   // READ
@@ -28,137 +34,115 @@ export class CollectionService {
     return this.collectionsSource.value.find((c) => c.slug === slug);
   }
 
+  /**
+   * GET /api/collections
+   * Backend: { count, collections: StoreCollection[] }
+   */
+  loadCollections(): void {
+    this.http.get<{ count: number; collections: StoreCollection[] }>(this.baseUrl).subscribe({
+      next: (res) => {
+        this.collectionsSource.next(res.collections ?? []);
+      },
+      error: (err) => {
+        this.toastService.error(this.readError(err, 'Could not load collections.'));
+        this.collectionsSource.next([]);
+      },
+    });
+  }
+
   // ============================================================
   // CREATE
   // ============================================================
 
   /**
-   * Adds a collection. Slug is generated once from the name and stays fixed.
-   * Returns null if empty, invalid slug, or duplicate slug/name.
+   * POST /api/collections  body: { name }
+   * Backend builds the slug.
    */
-  addCollection(name: string): StoreCollection | null {
+  addCollection(name: string): void {
     const trimmed = name.trim();
     if (!trimmed) {
-      return null;
+      this.toastService.error('Collection name is required.');
+      return;
     }
 
-    const slug = this.slugify(trimmed);
-    if (!slug) {
-      return null;
-    }
-
-    const exists = this.collectionsSource.value.some(
-      (c) =>
-        c.slug === slug || c.name.toLowerCase() === trimmed.toLowerCase()
-    );
-    if (exists) {
-      return null;
-    }
-
-    const collection: StoreCollection = { name: trimmed, slug };
-    this.setCollections([...this.collectionsSource.value, collection]);
-    return collection;
+    this.http
+      .post<{ collection: StoreCollection }>(
+        this.baseUrl,
+        { name: trimmed },
+        { headers: this.authHeaders() },
+      )
+      .subscribe({
+        next: () => {
+          this.toastService.success('Collection created.');
+          this.loadCollections();
+        },
+        error: (err) => {
+          this.toastService.error(this.readError(err, 'Could not create collection.'));
+        },
+      });
   }
 
   // ============================================================
-  // UPDATE (rename only — slug does not change)
+  // UPDATE (name only — slug fixed on server)
   // ============================================================
 
-  /**
-   * Renames a collection. Slug stays the same so product.collections
-   * and ?collection= URLs keep working.
-   */
-  updateCollection(slug: string, name: string): boolean {
+  updateCollection(slug: string, name: string): void {
     const trimmed = name.trim();
     if (!trimmed) {
-      return false;
+      this.toastService.error('Collection name is required.');
+      return;
     }
 
-    const exists = this.collectionsSource.value.some((c) => c.slug === slug);
-    if (!exists) {
-      return false;
-    }
-
-    const duplicateName = this.collectionsSource.value.some(
-      (c) =>
-        c.slug !== slug && c.name.toLowerCase() === trimmed.toLowerCase()
-    );
-    if (duplicateName) {
-      return false;
-    }
-
-    this.setCollections(
-      this.collectionsSource.value.map((c) =>
-        c.slug === slug ? { ...c, name: trimmed } : c
+    this.http
+      .put<{ collection: StoreCollection }>(
+        `${this.baseUrl}/${slug}`,
+        { name: trimmed },
+        { headers: this.authHeaders() },
       )
-    );
-    return true;
+      .subscribe({
+        next: () => {
+          this.toastService.success('Collection updated.');
+          this.loadCollections();
+        },
+        error: (err) => {
+          this.toastService.error(this.readError(err, 'Could not update collection.'));
+        },
+      });
   }
 
   // ============================================================
   // DELETE
   // ============================================================
 
-  /**
-   * Removes a collection definition.
-   * Admin UI should block this if any product still uses the slug.
-   */
   deleteCollection(slug: string): void {
-    this.setCollections(
-      this.collectionsSource.value.filter((c) => c.slug !== slug)
-    );
+    this.http
+      .delete<{ message: string }>(`${this.baseUrl}/${slug}`, {
+        headers: this.authHeaders(),
+      })
+      .subscribe({
+        next: () => {
+          this.toastService.success('Collection deleted.');
+          this.loadCollections();
+        },
+        error: (err) => {
+          this.toastService.error(this.readError(err, 'Could not delete collection.'));
+        },
+      });
   }
 
   // ============================================================
   // PRIVATE
   // ============================================================
 
-  private setCollections(list: StoreCollection[]): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
-    this.collectionsSource.next(list);
+  private authHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token'); // same key as CategoryService
+    return new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
   }
 
-  private loadCollections(): StoreCollection[] {
-    const raw = localStorage.getItem(this.STORAGE_KEY);
-    if (raw) {
-      try {
-        const parsed = JSON.parse(raw) as StoreCollection[];
-        if (Array.isArray(parsed) && parsed.length) {
-          return parsed;
-        }
-      } catch {
-        // fall through to seed
-      }
-    }
-    return this.getSeedCollections();
-  }
-
-  /**
-   * Themes from STORE_COLLECTIONS + merchandising tags used on products.
-   */
-  private getSeedCollections(): StoreCollection[] {
-    const merchandising: StoreCollection[] = [
-      { name: 'Featured', slug: 'featured' },
-      { name: 'New Arrivals', slug: 'new-arrivals' },
-      { name: 'Best Sellers', slug: 'best-sellers' },
-    ];
-
-    const bySlug = new Map<string, StoreCollection>();
-
-    for (const c of [...merchandising, ...STORE_COLLECTIONS]) {
-      if (!bySlug.has(c.slug)) {
-        bySlug.set(c.slug, c);
-      }
-    }
-
-    return [...bySlug.values()];
-  }
-
-  private slugify(value: string): string {
-    return value
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+  private readError(err: unknown, fallback: string): string {
+    const e = err as { error?: { message?: string }; message?: string };
+    return e?.error?.message || e?.message || fallback;
   }
 }

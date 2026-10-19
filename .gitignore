@@ -40,3 +40,21 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Angular environments (local / secrets)
+/src/environments/environment.ts
+/src/environments/environment.development.ts
+/src/environments/environment.prod.ts
+
+# Or ignore the whole folder except examples:
+# /src/environments/*
+# !/src/environments/environment.example.ts
+
+# Backend secrets (server folder)
+server/.env
+server/.env.*
+!server/.env.example
+
+# Optional: any nested env
+**/.env
+**/.env.local

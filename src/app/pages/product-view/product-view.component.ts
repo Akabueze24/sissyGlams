@@ -43,6 +43,7 @@ export class ProductViewComponent implements OnInit, OnDestroy {
 
   private routeSubscription!: Subscription;
   private wishlistSubscription!: Subscription;
+  private productLoadSubscription?: Subscription;
 
   // ============================================================
   // CONSTRUCTOR
@@ -77,6 +78,7 @@ export class ProductViewComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.routeSubscription?.unsubscribe();
     this.wishlistSubscription?.unsubscribe();
+    this.productLoadSubscription?.unsubscribe()
   }
 
   // ============================================================
@@ -100,6 +102,9 @@ export class ProductViewComponent implements OnInit, OnDestroy {
   // ============================================================
 
   private loadProduct(slug: string | null): void {
+    // Cancel previous request if the user navigates to another product quickly
+    this.productLoadSubscription?.unsubscribe();
+
     this.product = undefined;
     this.relatedProducts = [];
     this.productNotFound = false;
@@ -115,39 +120,42 @@ export class ProductViewComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const found = this.productService.getProductBySlug(slug);
+    this.productLoadSubscription = this.productService
+      .getProductBySlugFromApi(slug)
+      .subscribe((found) => {
+        if (!found) {
+          this.productNotFound = true;
+          this.product = undefined;
+          this.relatedProducts = [];
+          return;
+        }
 
-    if (!found) {
-      this.productNotFound = true;
-      return;
-    }
+        this.product = found;
+        this.productNotFound = false;
 
-    this.product = found;
-    this.productNotFound = false;
+        this.isWishlisted = this.wishlistService.isInWishlist(this.product);
 
-    this.isWishlisted = this.wishlistService.isInWishlist(this.product);
+        if (this.product.colors?.length) {
+          this.selectedColor = this.product.colors[0];
+        }
 
-    if (this.product.colors?.length) {
-      this.selectedColor = this.product.colors[0];
-    }
+        if (this.product.sizes?.length) {
+          this.selectedSize = this.product.sizes[0];
+        }
 
-    if (this.product.sizes?.length) {
-      this.selectedSize = this.product.sizes[0];
-    }
+        if (this.product.lengths?.length) {
+          this.selectedLength = this.product.lengths[0];
+        }
 
-    if (this.product.lengths?.length) {
-      this.selectedLength = this.product.lengths[0];
-    }
+        this.quantity = this.maxQuantity > 0 ? 1 : 0;
 
-    // Quantity never starts above stock
-    this.quantity = this.maxQuantity > 0 ? 1 : 0;
+        this.updateGallery();
 
-    this.updateGallery();
-
-    this.relatedProducts = this.productService.getRelatedProducts(
-      this.product,
-      8,
-    );
+        this.relatedProducts = this.productService.getRelatedProducts(
+          this.product,
+          8,
+        );
+      });
   }
 
   // ============================================================

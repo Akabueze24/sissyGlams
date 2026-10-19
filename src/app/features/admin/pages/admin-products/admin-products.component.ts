@@ -7,6 +7,7 @@ import { ProductService } from 'src/app/core/services/product-service/product.se
 import { StoreCollection } from 'src/app/core/models/product-models/store-collection.model';
 import { Subcategory } from 'src/app/core/models/product-models/subcategory.model';
 import { PaginationService } from 'src/app/core/services/pagination-service/pagination.service';
+import { CollectionService } from 'src/app/core/services/collection-service/collection.service';
 
 interface ColorRow {
   name: string;
@@ -141,6 +142,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   productToDelete: Product | null = null;
 
   private productsSubscription!: Subscription;
+  private collectionsSubscription!: Subscription;
 
   // ============================================================
   // LIFECYCLE
@@ -148,7 +150,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
   constructor(
     private productService: ProductService,
-    private pagination: PaginationService
+    private pagination: PaginationService,
+    private collectionService: CollectionService
   ) {}
 
   ngOnInit(): void {
@@ -156,7 +159,11 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       .getCategoryNav()
       .map((item) => item.category);
 
-    this.storeCollections = this.productService.getStoreCollections();
+       // Collections (API via CollectionService)
+    this.collectionsSubscription =
+      this.collectionService.collections$.subscribe((collections) => {
+        this.storeCollections = collections;
+      });
 
     this.productsSubscription = this.productService.adminProducts$.subscribe(
       (products) => {
@@ -164,14 +171,15 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
         this.currentPage = this.pagination.clampPage(
           this.currentPage,
           this.filteredProducts.length,
-          this.pageSize
+          this.pageSize,
         );
-      }
+      },
     );
   }
 
   ngOnDestroy(): void {
     this.productsSubscription?.unsubscribe();
+    this.collectionsSubscription?.unsubscribe();
     document.body.style.overflow = '';
   }
 
@@ -193,7 +201,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
   get lowStockCount(): number {
     return this.products.filter(
-      (p) => p.stock > 0 && p.stock <= LOW_STOCK_THRESHOLD
+      (p) => p.stock > 0 && p.stock <= LOW_STOCK_THRESHOLD,
     ).length;
   }
 
@@ -244,27 +252,27 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
     if (term) {
       result = result.filter((product) =>
-        this.matchesAdminSearch(product, term)
+        this.matchesAdminSearch(product, term),
       );
     }
 
     if (this.categoryFilter) {
       result = result.filter(
-        (product) => product.category === this.categoryFilter
+        (product) => product.category === this.categoryFilter,
       );
     }
 
     if (this.subcategoryFilter) {
       result = result.filter(
-        (product) => product.subcategory === this.subcategoryFilter
+        (product) => product.subcategory === this.subcategoryFilter,
       );
     }
 
     if (this.collectionFilter) {
       result = result.filter((product) =>
         product.collections?.some(
-          (collection) => collection.slug === this.collectionFilter
-        )
+          (collection) => collection.slug === this.collectionFilter,
+        ),
       );
     }
 
@@ -287,7 +295,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     return this.pagination.slicePage(
       this.filteredProducts,
       this.currentPage,
-      this.pageSize
+      this.pageSize,
     );
   }
 
@@ -295,7 +303,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     return this.pagination.rangeStart(
       this.currentPage,
       this.pageSize,
-      this.filteredProducts.length
+      this.filteredProducts.length,
     );
   }
 
@@ -303,7 +311,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     return this.pagination.rangeEnd(
       this.currentPage,
       this.pageSize,
-      this.filteredProducts.length
+      this.filteredProducts.length,
     );
   }
 
@@ -356,7 +364,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   toggleCollectionSlug(
     list: string[],
     slug: string,
-    checked: boolean
+    checked: boolean,
   ): string[] {
     if (checked) {
       return list.includes(slug) ? list : [...list, slug];
@@ -367,7 +375,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
   private collectionsFromSlugs(slugs: string[]): StoreCollection[] {
     return this.storeCollections.filter((collection) =>
-      slugs.includes(collection.slug)
+      slugs.includes(collection.slug),
     );
   }
 
@@ -507,22 +515,29 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
     const collections = this.collectionsFromSlugs(this.addForm.collectionSlugs);
 
-    this.productService.addProduct({
-      name: this.addForm.name,
-      brand: this.addForm.brand,
-      category: this.addForm.category as Category,
-      subcategory: this.addForm.subcategory || undefined,
-      collections: collections.length ? collections : undefined,
-      price: Number(this.addForm.price),
-      stock: Number(this.addForm.stock),
-      rating: Number(this.addForm.rating) || 0,
-      reviewCount: Number(this.addForm.reviewCount) || 0,
-      imageUrl: this.addForm.imageUrl,
-      description: this.addForm.description,
-      active: this.addForm.active,
-    });
+    this.productService
+      .createProductOnApi({
+        name: this.addForm.name,
+        brand: this.addForm.brand,
+        category: this.addForm.category as Category,
+        subcategory: this.addForm.subcategory || undefined,
+        collections: collections.length ? collections : undefined,
+        price: Number(this.addForm.price),
+        stock: Number(this.addForm.stock),
+        rating: Number(this.addForm.rating) || 0,
+        reviewCount: Number(this.addForm.reviewCount) || 0,
+        imageUrl: this.addForm.imageUrl,
+        description: this.addForm.description,
+        active: this.addForm.active,
+      })
+      .subscribe((product) => {
+        if (!product) {
+          // API failed — form stays open; check Network tab / console
+          return;
+        }
 
-    this.closeAddForm();
+        this.closeAddForm();
+      });
   }
 
   private resetAddForm(): void {
@@ -554,7 +569,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
     const colorRows: ColorRow[] = (product.colors ?? []).map((color) => {
       const gallery = product.colorGalleries?.find(
-        (g) => g.color.value === color.value
+        (g) => g.color.value === color.value,
       );
 
       return {
@@ -658,38 +673,43 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       }));
 
     const collections = this.collectionsFromSlugs(
-      this.editForm.collectionSlugs
+      this.editForm.collectionSlugs,
     );
 
-    this.productService.updateProduct(this.editingProductId, {
-      name: this.editForm.name,
-      brand: this.editForm.brand,
-      category: this.editForm.category as Category,
-      subcategory: this.editForm.subcategory || undefined,
-      collections,
-      price: Number(this.editForm.price),
-      oldPrice:
-        this.editForm.oldPrice != null && this.editForm.oldPrice > 0
-          ? Number(this.editForm.oldPrice)
-          : undefined,
-      stock: Number(this.editForm.stock),
-      rating: Number(this.editForm.rating) || 0,
-      reviewCount: Number(this.editForm.reviewCount) || 0,
-      images,
-      active: this.editForm.active,
-      productDetails: {
-        description: this.editForm.description.trim(),
-        details,
-        shipping: this.editForm.shipping.trim(),
-        returns: this.editForm.returns.trim(),
-      },
-      colors,
-      colorGalleries,
-      sizes,
-      lengths,
-    });
-
-    this.closeEditForm();
+    this.productService
+      .updateProductOnApi(this.editingProductId, {
+        name: this.editForm.name,
+        brand: this.editForm.brand,
+        category: this.editForm.category as Category,
+        subcategory: this.editForm.subcategory || undefined,
+        collections,
+        price: Number(this.editForm.price),
+        oldPrice:
+          this.editForm.oldPrice != null && this.editForm.oldPrice > 0
+            ? Number(this.editForm.oldPrice)
+            : undefined,
+        stock: Number(this.editForm.stock),
+        rating: Number(this.editForm.rating) || 0,
+        reviewCount: Number(this.editForm.reviewCount) || 0,
+        images,
+        active: this.editForm.active,
+        productDetails: {
+          description: this.editForm.description.trim(),
+          details,
+          shipping: this.editForm.shipping.trim(),
+          returns: this.editForm.returns.trim(),
+        },
+        colors,
+        colorGalleries,
+        sizes,
+        lengths,
+      })
+      .subscribe((updated) => {
+        if (!updated) {
+          return;
+        }
+        this.closeEditForm();
+      });
   }
 
   // ============================================================
@@ -746,8 +766,14 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.productService.deleteProduct(this.productToDelete.id);
-    this.closeDeleteModal();
+    const id = this.productToDelete.id;
+
+    this.productService.deleteProductOnApi(id).subscribe((ok) => {
+      if (!ok) {
+        return; // stay open or show error
+      }
+      this.closeDeleteModal();
+    });
   }
 
   // ============================================================
@@ -821,11 +847,11 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     const brand = this.normalizeSearch(product.brand);
     const category = this.normalizeSearch(product.category);
     const categoryLabel = this.normalizeSearch(
-      this.categoryLabel(product.category)
+      this.categoryLabel(product.category),
     );
     const subcategory = this.normalizeSearch(product.subcategory ?? '');
     const subcategoryLabel = this.normalizeSearch(
-      this.subcategoryLabel(product.subcategory)
+      this.subcategoryLabel(product.subcategory),
     );
 
     const inCollections = (product.collections ?? []).some((collection) => {

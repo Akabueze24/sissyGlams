@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -46,6 +47,7 @@ import { QuillModule } from 'ngx-quill';
 import { StoreLayoutComponent } from './features/store-layout/store-layout.component';
 import { RouterModule } from '@angular/router';
 import { AdminCollectionComponent } from './features/admin/pages/admin-collection/admin-collection.component';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 
 
 register();
@@ -101,10 +103,19 @@ register();
     FormsModule,
     ReactiveFormsModule,
     QuillModule.forRoot(),
-    RouterModule
+    RouterModule,
+    HttpClientModule
+    
+
 
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

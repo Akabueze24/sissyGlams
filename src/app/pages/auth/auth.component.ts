@@ -71,7 +71,6 @@ export class AuthComponent implements OnInit, OnDestroy {
     // Listen for requests to open the modal (from Guard, Header, etc.)
     this.modalSubscription = this.authService.authModalRequest$.subscribe(
       (request) => {
-        
         this.open(request.mode, request.redirectUrl || '/account');
       },
     );
@@ -124,12 +123,13 @@ export class AuthComponent implements OnInit, OnDestroy {
 
     const loginData: Login = this.loginForm.value;
 
-    this.authService.login(loginData);
-
-    if (this.authService.isAuthenticated()) {
+    this.authService.login(loginData).subscribe((res) => {
+      if (!res) {
+        return; // failed — toast already shown
+      }
       this.close();
       this.router.navigate([this.redirectUrl]);
-    }
+    });
   }
 
   // ============================================================
@@ -144,12 +144,13 @@ export class AuthComponent implements OnInit, OnDestroy {
 
     const registerData: Register = this.registerForm.value;
 
-    this.authService.register(registerData);
-
-    if (this.authService.isAuthenticated()) {
+    this.authService.register(registerData).subscribe((res) => {
+      if (!res) {
+        return;
+      }
       this.close();
       this.router.navigate([this.redirectUrl]);
-    }
+    });
   }
 
   // ============================================================

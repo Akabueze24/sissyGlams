@@ -262,17 +262,17 @@ export class AdminCollectionComponent implements OnInit, OnDestroy {
     this.addError = '';
   }
 
-  submitAddCollection(): void {
+ submitAddCollection(): void {
     this.addError = '';
-    const created = this.collectionService.addCollection(this.newCollectionName);
 
-    if (!created) {
-      this.addError =
-        'Could not add. Check the name is not empty or already used.';
+    const name = this.newCollectionName.trim();
+    if (!name) {
+      this.addError = 'Collection name is required.';
       return;
     }
 
-    this.toastService.success(`Collection "${created.name}" created.`);
+    // Service: POST → toast → loadCollections() → collections$ updates this page
+    this.collectionService.addCollection(name);
     this.closeAddForm();
   }
 
@@ -303,17 +303,14 @@ export class AdminCollectionComponent implements OnInit, OnDestroy {
     }
 
     this.editError = '';
-    const ok = this.collectionService.updateCollection(
-      this.editingSlug,
-      this.editName
-    );
 
-    if (!ok) {
-      this.editError = 'Could not update. Name cannot be empty or duplicated.';
+    const name = this.editName.trim();
+    if (!name) {
+      this.editError = 'Collection name is required.';
       return;
     }
 
-    this.toastService.success('Collection name updated.');
+    this.collectionService.updateCollection(this.editingSlug, name);
     this.closeEditModal();
   }
 
@@ -353,7 +350,7 @@ export class AdminCollectionComponent implements OnInit, OnDestroy {
     document.body.style.overflow = '';
   }
 
-  confirmDeleteCollection(): void {
+ confirmDeleteCollection(): void {
     if (!this.rowToDelete) {
       return;
     }
@@ -363,9 +360,7 @@ export class AdminCollectionComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const name = this.rowToDelete.name;
     this.collectionService.deleteCollection(this.rowToDelete.slug);
     this.closeDeleteModal();
-    this.toastService.success(`Collection "${name}" deleted.`);
   }
 }

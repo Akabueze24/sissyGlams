@@ -70,6 +70,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       this.products = products;
       this.rebuild();
     });
+    this.orderService.refreshOrders().subscribe();
   }
 
   ngOnDestroy(): void {

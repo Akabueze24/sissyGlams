@@ -194,7 +194,7 @@ export class AdminInventoryComponent implements OnInit, OnDestroy {
   saveEditStock(product: Product): void {
     const stock = Math.max(0, Number(this.editStock) || 0);
 
-    this.productService.updateProduct(product.id, { stock });
+    this.productService.updateProductOnApi(product.id, { stock }).subscribe();
 
     this.editingId = null;
   }

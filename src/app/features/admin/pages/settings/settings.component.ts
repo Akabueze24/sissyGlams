@@ -15,6 +15,8 @@ export class SettingsComponent implements OnInit {
   /** Working copy for the form (saved only on Save) */
   form!: StoreSettings;
 
+  saving = false;
+
   constructor(
     private settingsService: SettingsService,
     private authService: AuthService,
@@ -23,15 +25,40 @@ export class SettingsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.form = this.settingsService.getSettingsCopy();
+    // Prefer fresh data from API (service may still be on defaults for a moment)
+    this.settingsService.loadFromApi().subscribe({
+      next: () => {
+        this.form = this.settingsService.getSettingsCopy();
+      },
+      error: () => {
+        // Fallback: whatever is already in the stream (defaults)
+        this.form = this.settingsService.getSettingsCopy();
+        this.toastService.error('Could not load settings from server.');
+      },
+    });
   }
 
   /**
-   * Persist the whole form via SettingsService.
+   * Persist the whole form via SettingsService (PUT).
    */
   saveSettings(): void {
-    this.form = this.settingsService.saveSettings(this.form);
-    this.toastService.success('Settings saved.');
+    if (this.saving) {
+      return;
+    }
+
+    this.saving = true;
+
+    this.settingsService.saveSettings(this.form).subscribe({
+      next: () => {
+        this.form = this.settingsService.getSettingsCopy();
+        this.saving = false;
+        this.toastService.success('Settings saved.');
+      },
+      error: () => {
+        this.saving = false;
+        this.toastService.error('Could not save settings. Are you logged in as admin?');
+      },
+    });
   }
 
   /**

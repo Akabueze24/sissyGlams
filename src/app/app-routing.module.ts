@@ -17,7 +17,7 @@ import { EditAccountComponent } from './features/customer/pages/edit-account/edi
 import { CustomerSupportComponent } from './features/customer/pages/customer-support/customer-support.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component';
 import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
-import { AuthGuard } from './core/guards/auth.guard';
+import { AuthGuard } from './core/guards/auth-guard/auth.guard';
 import { AdminLayoutComponent } from './features/admin/admin-layout/admin-layout.component';
 import { AdminDashboardComponent } from './features/admin/pages/admin-dashboard/admin-dashboard.component';
 import { AdminCustomersComponent } from './features/admin/pages/admin-customers/admin-customers.component';
@@ -28,6 +28,7 @@ import { SettingsComponent } from './features/admin/pages/settings/settings.comp
 import { AdminCategoriesComponent } from './features/admin/pages/admin-categories/admin-categories.component';
 import { StoreLayoutComponent } from './features/store-layout/store-layout.component';
 import { AdminCollectionComponent } from './features/admin/pages/admin-collection/admin-collection.component';
+import { adminGuard } from './core/guards/admin-guard/admin.guard';
 
 const routes: Routes = [
   {
@@ -109,7 +110,7 @@ const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayoutComponent,
-    canActivate: [AuthGuard],
+    canActivate: [adminGuard],
     children: [
       { path: '', component: AdminDashboardComponent },
       { path: 'customers', component: AdminCustomersComponent },

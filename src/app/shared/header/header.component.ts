@@ -6,6 +6,8 @@ import { CartService } from 'src/app/core/services/cart-service/cart.service';
 import { WishlistService } from 'src/app/core/services/wishlist-service/wishlist.service';
 import { AuthService } from 'src/app/core/services/auth-service/auth.service';
 import { ProductService } from 'src/app/core/services/product-service/product.service';
+import { CategoryService } from 'src/app/core/services/category-service/category.service';
+import { CollectionService } from 'src/app/core/services/collection-service/collection.service';
 import { SettingsService } from 'src/app/core/services/store-settings/store-settings.service';
 
 import { User } from 'src/app/core/models/auth-models/user.model';
@@ -19,7 +21,6 @@ import { StoreCollection } from 'src/app/core/models/product-models/store-collec
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-
   // ============================================================
   // SEARCH
   // ============================================================
@@ -28,7 +29,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   suggestions: Product[] = [];
   showSuggestions = false;
 
-
   // ============================================================
   // CART
   // ============================================================
@@ -36,20 +36,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   cartCount = 0;
   cartTotal = 0;
 
-
   // ============================================================
   // WISHLIST
   // ============================================================
 
   wishlistCount = 0;
 
-
   // ============================================================
   // AUTH
   // ============================================================
 
   currentUser: User | null = null;
-
 
   // ============================================================
   // SETTINGS
@@ -61,7 +58,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   storeEmail = '';
   storePhone = '';
 
-
   // ============================================================
   // NAVIGATION
   // ============================================================
@@ -69,14 +65,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
   categoryNav: CategoryNavItem[] = [];
   storeCollections: StoreCollection[] = [];
 
-
   // ============================================================
   // SUBSCRIPTIONS
   // ============================================================
 
+  private cartCountSubscription!: Subscription;
+  private cartTotalSubscription!: Subscription;
+  private wishlistSubscription!: Subscription;
   private userSubscription!: Subscription;
   private settingsSubscription!: Subscription;
-
+  private categoriesSubscription!: Subscription;
+  private subcategoriesSubscription!: Subscription;
+  private collectionsSubscription!: Subscription;
 
   // ============================================================
   // CONSTRUCTOR
@@ -87,173 +87,135 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private wishlistService: WishlistService,
     private authService: AuthService,
     private productService: ProductService,
+    private categoryService: CategoryService,
+    private collectionService: CollectionService,
     private settingsService: SettingsService,
     private router: Router,
   ) {}
-
 
   // ============================================================
   // LIFECYCLE
   // ============================================================
 
   ngOnInit(): void {
+    this.cartCountSubscription = this.cartService.cartCount$.subscribe(
+      (count) => {
+        this.cartCount = count;
+      },
+    );
 
-    this.cartService.cartCount$.subscribe((count) => {
-      this.cartCount = count;
+    this.cartTotalSubscription = this.cartService.cartTotal$.subscribe(
+      (total) => {
+        this.cartTotal = total;
+      },
+    );
+
+    this.wishlistSubscription = this.wishlistService.wishlistItems$.subscribe(
+      (items) => {
+        this.wishlistCount = items.length;
+      },
+    );
+
+    this.userSubscription = this.authService.currentUser$.subscribe((user) => {
+      this.currentUser = user;
     });
 
+    this.settingsSubscription = this.settingsService.settings$.subscribe(
+      (settings) => {
+        this.announcementBar = settings.announcementBar?.trim() || '';
+        this.storeDescription = settings.storeDescription?.trim() || '';
+        this.storeName = settings.storeName?.trim() || '';
+        this.storeEmail = settings.storeEmail?.trim() || '';
+        this.storePhone = settings.storePhone?.trim() || '';
+      },
+    );
 
-    this.cartService.cartTotal$.subscribe((total) => {
-      this.cartTotal = total;
-    });
-
-
-    this.wishlistService.wishlistItems$.subscribe((items) => {
-      this.wishlistCount = items.length;
-    });
-
-
-    this.userSubscription =
-      this.authService.currentUser$.subscribe((user) => {
-        this.currentUser = user;
+    // Categories (API)
+    this.categoryService.loadCategoriesFromApi();
+    this.categoriesSubscription = this.categoryService.categories$.subscribe(
+      () => {
+        this.categoryNav = this.categoryService.getCategoryNav();
+      },
+    );
+    this.subcategoriesSubscription =
+      this.categoryService.subcategories$.subscribe(() => {
+        this.categoryNav = this.categoryService.getCategoryNav();
       });
 
-
-    this.settingsSubscription =
-      this.settingsService.settings$.subscribe((settings) => {
-
-        this.announcementBar =
-          settings.announcementBar?.trim() || '';
-
-        this.storeDescription =
-          settings.storeDescription?.trim() || '';
-
-        this.storeName =
-          settings.storeName?.trim() || '';
-
-        this.storeEmail =
-          settings.storeEmail?.trim() || '';
-
-        this.storePhone =
-          settings.storePhone?.trim() || '';
-
+    // Collections (API via CollectionService)
+    this.collectionsSubscription =
+      this.collectionService.collections$.subscribe((collections) => {
+        this.storeCollections = collections;
       });
-
-
-    this.categoryNav =
-      this.productService.getCategoryNav();
-
-    this.storeCollections =
-      this.productService.getStoreCollections();
   }
-
-
-  // ============================================================
-  // DESTROY
-  // ============================================================
 
   ngOnDestroy(): void {
-
+    this.cartCountSubscription?.unsubscribe();
+    this.cartTotalSubscription?.unsubscribe();
+    this.wishlistSubscription?.unsubscribe();
     this.userSubscription?.unsubscribe();
     this.settingsSubscription?.unsubscribe();
-
+    this.categoriesSubscription?.unsubscribe();
+    this.subcategoriesSubscription?.unsubscribe();
+    this.collectionsSubscription?.unsubscribe();
   }
-
 
   // ============================================================
   // SEARCH
   // ============================================================
 
   onSearchInput(): void {
-
     const term = this.searchTerm.trim();
 
     if (!term) {
-
       this.suggestions = [];
       this.showSuggestions = false;
-
       return;
     }
 
-
-    this.suggestions =
-      this.productService.searchSuggestions(term);
-
-    this.showSuggestions =
-      this.suggestions.length > 0;
+    this.suggestions = this.productService.searchSuggestions(term);
+    this.showSuggestions = this.suggestions.length > 0;
   }
 
-
   onSearch(event: Event): void {
-
     event.preventDefault();
 
     const term = this.searchTerm.trim();
-
     this.showSuggestions = false;
     this.suggestions = [];
 
-
     this.router.navigate(['/shop'], {
-      queryParams: term
-        ? { search: term }
-        : {},
+      queryParams: term ? { search: term } : {},
     });
   }
 
-
   goToProduct(product: Product): void {
-
     this.showSuggestions = false;
-
     this.searchTerm = '';
-
     this.suggestions = [];
-
-
-    this.router.navigate([
-      '/product-view',
-      product.slug,
-    ]);
+    this.router.navigate(['/product-view', product.slug]);
   }
 
-
   closeSuggestions(): void {
-
     setTimeout(() => {
       this.showSuggestions = false;
     }, 150);
   }
-
 
   // ============================================================
   // AUTH
   // ============================================================
 
   onAccountClick(): void {
-
     if (this.currentUser) {
-
       this.router.navigate(['/account']);
-
     } else {
-
-      this.authService.openAuthModal(
-        'login',
-        '/account',
-      );
-
+      this.authService.openAuthModal('login', '/account');
     }
   }
 
-
   logout(): void {
-
     this.authService.logout();
-
     this.router.navigate(['/']);
-
   }
-
 }

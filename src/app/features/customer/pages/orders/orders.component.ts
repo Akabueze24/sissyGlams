@@ -11,65 +11,41 @@ import { AuthService } from 'src/app/core/services/auth-service/auth.service';
   styleUrls: ['./orders.component.scss'],
 })
 export class OrdersComponent implements OnInit, OnDestroy {
-  /** All orders from storage (raw) */
-  private allOrders: Order[] = [];
-
-  /** Orders for the current user only */
   orders: Order[] = [];
-
   selectedOrder: Order | null = null;
 
-  private ordersSubscription!: Subscription;
   private userSubscription!: Subscription;
 
   constructor(
     private orderService: OrderService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
-    this.ordersSubscription = this.orderService.orders$.subscribe((orders) => {
-      this.allOrders = orders;
-      this.applyUserFilter();
-    });
+    this.userSubscription = this.authService.currentUser$.subscribe((user) => {
+      const email = user?.email?.trim();
 
-    // If user logs in/out while on this page, refresh the list
-    this.userSubscription = this.authService.currentUser$.subscribe(() => {
-      this.applyUserFilter();
+      if (!email) {
+        this.orders = [];
+        this.selectedOrder = null;
+        return;
+      }
+
+      this.orderService.loadOrdersByEmail(email).subscribe((list) => {
+        this.orders = list;
+
+        if (
+          this.selectedOrder &&
+          !this.orders.some((o) => o.id === this.selectedOrder?.id)
+        ) {
+          this.selectedOrder = null;
+        }
+      });
     });
   }
 
   ngOnDestroy(): void {
-    this.ordersSubscription?.unsubscribe();
     this.userSubscription?.unsubscribe();
-  }
-
-  /**
-   * Keep only orders whose customer email matches the logged-in user.
-   * Why: OrderService stores every order in the browser; account page
-   * must not show other people's mock orders.
-   */
-  private applyUserFilter(): void {
-    const user = this.authService.getCurrentUser();
-    const email = user?.email?.trim().toLowerCase();
-
-    if (!email) {
-      this.orders = [];
-      this.selectedOrder = null;
-      return;
-    }
-
-    this.orders = this.allOrders.filter(
-      (order) => order.customer.email.trim().toLowerCase() === email
-    );
-
-    // Close detail panel if that order is no longer in the filtered list
-    if (
-      this.selectedOrder &&
-      !this.orders.some((o) => o.id === this.selectedOrder?.id)
-    ) {
-      this.selectedOrder = null;
-    }
   }
 
   toggleOrderDetails(order: Order): void {
@@ -86,13 +62,13 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
   get processingCount(): number {
     return this.orders.filter(
-      (o) => o.orderStatus === 'pending' || o.orderStatus === 'processing'
+      (o) => o.orderStatus === 'pending' || o.orderStatus === 'processing',
     ).length;
   }
 
   get completedCount(): number {
     return this.orders.filter(
-      (o) => o.orderStatus === 'delivered' || o.orderStatus === 'shipped'
+      (o) => o.orderStatus === 'delivered' || o.orderStatus === 'shipped',
     ).length;
   }
 

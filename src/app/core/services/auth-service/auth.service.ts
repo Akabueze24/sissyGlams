@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { tap, catchError, of } from 'rxjs';
 
 import { Login } from '../../models/auth-models/login.mdel';
 import { Register } from '../../models/auth-models/register.model';
@@ -7,31 +9,25 @@ import { User } from '../../models/auth-models/user.model';
 import { AuthModalRequest } from '../../models/auth-models/auth-modal-request.model';
 
 import { ToastService } from '../toast-service/toast.service';
+import { environment } from 'src/environments/environment';
 
-// Auth modal modes
 export type AuthMode = 'login' | 'register';
+
+interface AuthResponse {
+  user: User;
+  token: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   // ============================================================
-  // LOCAL STORAGE KEYS
+  // STORAGE (session only — accounts live on the server)
   // ============================================================
 
-  /**
-   * Stores the currently logged-in user.
-   *
-   * This is the user's SESSION.
-   */
   private readonly CURRENT_USER_KEY = 'sissy-dream-user';
-
-  /**
-   * Stores all registered users.
-   *
-   * This is the user's ACCOUNT DATABASE for now.
-   */
-  private readonly REGISTERED_USERS_KEY = 'sissy-dream-users';
+  private readonly TOKEN_KEY = 'sissy-dream-token';
 
   // ============================================================
   // AUTHENTICATED USER
@@ -45,296 +41,153 @@ export class AuthService {
     this.currentUserSubject.asObservable();
 
   // ============================================================
-  // AUTH MODAL CONTROL
+  // AUTH MODAL
   // ============================================================
 
   private authModalRequestSubject = new Subject<AuthModalRequest>();
-
   authModalRequest$ = this.authModalRequestSubject.asObservable();
 
-  // ============================================================
-  // CONSTRUCTOR
-  // ============================================================
+  constructor(
+    private http: HttpClient,
+    private toastService: ToastService,
+  ) {}
 
-  constructor(private toastService: ToastService) {}
-
   // ============================================================
-  // OPEN AUTH MODAL
+  // MODAL
   // ============================================================
 
   openAuthModal(
     mode: AuthMode = 'login',
     redirectUrl: string = '/account',
   ): void {
-    this.authModalRequestSubject.next({
-      mode,
-      redirectUrl,
-    });
+    this.authModalRequestSubject.next({ mode, redirectUrl });
   }
 
   // ============================================================
-  // REGISTER
+  // REGISTER → POST /api/auth/register
   // ============================================================
 
-  register(registerData: Register): void {
-    /*
-     * Get all users that have already registered.
-     */
-    const registeredUsers = this.loadRegisteredUsers();
+ register(registerData: Register): Observable<AuthResponse | null> {
+  const payload = {
+    firstName: registerData.firstName.trim(),
+    lastName: registerData.lastName.trim(),
+    email: registerData.email.trim().toLowerCase(),
+    password: registerData.password,
+  };
 
-    /*
-     * Check whether this email is already registered.
-     */
-    const existingUser = registeredUsers.find(
-      (user) => user.email.toLowerCase() === registerData.email.toLowerCase(),
+  return this.http
+    .post<AuthResponse>(`${environment.apiUrl}/auth/register`, payload)
+    .pipe(
+      tap((res) => {
+        this.persistSession(res.user, res.token);
+        this.toastService.success(
+          'Your account has been created successfully.',
+        );
+      }),
+      catchError((err) => {
+        const msg =
+          err?.error?.message ||
+          'Could not create account. Please try again.';
+        this.toastService.error(msg);
+        return of(null);
+      }),
     );
-
-    if (existingUser) {
-      this.toastService.error('An account with this email already exists.');
-
-      return;
-    }
-
-    /*
-     * Create the public user information.
-     *
-     * Notice that password is NOT stored inside User.
-     */
-    const user: User = {
-      id: crypto.randomUUID(),
-      firstName: registerData.firstName,
-      lastName: registerData.lastName,
-      email: registerData.email,
-    };
-
-    /*
-     * Create the account record.
-     *
-     * The password is kept here so login can verify it.
-     */
-    const registeredUser: RegisteredUser = {
-      ...user,
-      password: registerData.password,
-    };
-
-    /*
-     * Add the new account to our registered-users list.
-     */
-    registeredUsers.push(registeredUser);
-
-    /*
-     * Save all registered accounts.
-     */
-    localStorage.setItem(
-      this.REGISTERED_USERS_KEY,
-      JSON.stringify(registeredUsers),
-    );
-
-    /*
-     * Automatically log the newly registered user in.
-     */
-    this.saveCurrentUser(user);
-
-    /*
-     * Show success message.
-     */
-    this.toastService.success('Your account has been created successfully.');
-  }
-
+}
   // ============================================================
-  // LOGIN
+  // LOGIN → POST /api/auth/login
   // ============================================================
 
-  login(loginData: Login): void {
-    /*
-     * Load every account that has registered.
-     */
-    const registeredUsers = this.loadRegisteredUsers();
+  login(loginData: Login): Observable<AuthResponse | null> {
+  const payload = {
+    email: loginData.email.trim().toLowerCase(),
+    password: loginData.password,
+  };
 
-    /*
-     * Find an account matching BOTH:
-     *
-     * 1. Email
-     * 2. Password
-     */
-    const registeredUser = registeredUsers.find(
-      (user) =>
-        user.email.toLowerCase() === loginData.email.toLowerCase() &&
-        user.password === loginData.password,
+  return this.http
+    .post<AuthResponse>(`${environment.apiUrl}/auth/login`, payload)
+    .pipe(
+      tap((res) => {
+        this.persistSession(res.user, res.token);
+        this.toastService.success(`Welcome back, ${res.user.firstName}!`);
+      }),
+      catchError((err) => {
+        const msg =
+          err?.error?.message || 'Incorrect email or password.';
+        this.toastService.error(msg);
+        return of(null);
+      }),
     );
-
-    /*
-     * No matching account was found.
-     */
-    if (!registeredUser) {
-      this.toastService.error('Incorrect email or password.');
-
-      return;
-    }
-
-    /*
-     * Remove the password before putting the user
-     * into the currently-logged-in session.
-     */
-    const user: User = {
-      id: registeredUser.id,
-      firstName: registeredUser.firstName,
-      lastName: registeredUser.lastName,
-      email: registeredUser.email,
-    };
-
-    /*
-     * Save the current session.
-     */
-    this.saveCurrentUser(user);
-
-    /*
-     * Show success message.
-     */
-    this.toastService.success(`Welcome back, ${user.firstName}!`);
-  }
+}
 
   // ============================================================
   // LOGOUT
   // ============================================================
 
   logout(): void {
-    /*
-     * IMPORTANT:
-     *
-     * We ONLY remove the currently logged-in user.
-     *
-     * We DO NOT remove sissy-dream-users.
-     *
-     * Therefore the account still exists and can be
-     * used to login again.
-     */
     localStorage.removeItem(this.CURRENT_USER_KEY);
-
+    localStorage.removeItem(this.TOKEN_KEY);
     this.currentUserSubject.next(null);
-
     this.toastService.success('You have been logged out successfully.');
   }
 
   // ============================================================
-  // CHECK AUTHENTICATION
+  // HELPERS
   // ============================================================
 
   isAuthenticated(): boolean {
     return this.currentUserSubject.value !== null;
   }
 
-  // ============================================================
-  // GET CURRENT USER
-  // ============================================================
-
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
 
+  /** JWT for later (admin guards, Authorization header) */
+  getToken(): string | null {
+    return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  /** is admin  */
+
+  isAdmin(): boolean {
+  return this.getCurrentUser()?.role === 'admin';
+}
+
+  /**
+   * Profile name/email update — session only for now.
+   * Wire to PATCH /api/auth/me when you add that route.
+   */
+  updateUser(user: User): void {
+    this.persistSession(user, this.getToken());
+    this.toastService.success('Your account has been updated successfully.');
+  }
+
+
+
   // ============================================================
-  // SAVE CURRENT USER
+  // PRIVATE
   // ============================================================
 
-  private saveCurrentUser(user: User): void {
-    /*
-     * Store only the public user information.
-     *
-     * Password is NOT stored here.
-     */
+  private persistSession(user: User, token: string | null): void {
     localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(user));
-
+    if (token) {
+      localStorage.setItem(this.TOKEN_KEY, token);
+    }
     this.currentUserSubject.next(user);
   }
 
-  // ============================================================
-  // LOAD CURRENT USER
-  // ============================================================
-
   private loadCurrentUser(): User | null {
-    const savedUser = localStorage.getItem(this.CURRENT_USER_KEY);
-
-    if (!savedUser) {
+    const raw = localStorage.getItem(this.CURRENT_USER_KEY);
+    if (!raw) {
       return null;
     }
-
     try {
-      return JSON.parse(savedUser) as User;
+      return JSON.parse(raw) as User;
     } catch {
       localStorage.removeItem(this.CURRENT_USER_KEY);
       return null;
     }
   }
 
-  // ============================================================
-  // LOAD REGISTERED USERS
-  // ============================================================
-
-  private loadRegisteredUsers(): RegisteredUser[] {
-    const savedUsers = localStorage.getItem(this.REGISTERED_USERS_KEY);
-
-    if (!savedUsers) {
-      return [];
-    }
-
-    try {
-      return JSON.parse(savedUsers) as RegisteredUser[];
-    } catch {
-      return [];
-    }
-  }
-
-  // ============================================================
-  // UPDATE USER
-  // ============================================================
-
-  updateUser(user: User): void {
-    /*
-     * Update the currently logged-in session.
-     */
-    this.saveCurrentUser(user);
-
-    /*
-     * Also update the corresponding registered account.
-     *
-     * We keep the existing password.
-     */
-    const registeredUsers = this.loadRegisteredUsers();
-
-    const index = registeredUsers.findIndex(
-      (registeredUser) => registeredUser.id === user.id,
-    );
-
-    if (index !== -1) {
-      registeredUsers[index] = {
-        ...registeredUsers[index],
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-      };
-
-      localStorage.setItem(
-        this.REGISTERED_USERS_KEY,
-        JSON.stringify(registeredUsers),
-      );
-    }
-
-    this.toastService.success('Your account has been updated successfully.');
-  }
-}
-
-// ============================================================
-// REGISTERED USER TYPE
-// ============================================================
-
-/**
- * This is used internally by AuthService.
- *
- * User remains your public user model.
- *
- * RegisteredUser additionally contains the password
- * needed for our temporary frontend authentication.
- */
-interface RegisteredUser extends User {
-  password: string;
+  
 }

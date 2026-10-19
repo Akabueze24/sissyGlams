@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-
 import { Subscription } from 'rxjs';
 
 import { User } from 'src/app/core/models/auth-models/user.model';
@@ -19,7 +18,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   orders: Order[] = [];
 
   private userSubscription!: Subscription;
-  private ordersSubscription!: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -27,59 +25,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // ============================================================
-    // CURRENT USER
-    // ============================================================
+    this.userSubscription = this.authService.currentUser$.subscribe((user) => {
+      this.currentUser = user;
+      const email = user?.email?.trim();
 
-    this.userSubscription = this.authService.currentUser$.subscribe(
-      (user) => {
-        this.currentUser = user;
+      if (!email) {
+        this.orders = [];
+        this.selectedOrder = null;
+        return;
+      }
 
-        this.applyUserOrders();
-      },
-    );
+      this.orderService.loadOrdersByEmail(email).subscribe((list) => {
+        this.orders = list;
 
-    // ============================================================
-    // ORDERS
-    // ============================================================
-
-    this.ordersSubscription = this.orderService.orders$.subscribe(
-      () => {
-        this.applyUserOrders();
-      },
-    );
+        if (
+          this.selectedOrder &&
+          !this.orders.some((o) => o.id === this.selectedOrder?.id)
+        ) {
+          this.selectedOrder = null;
+        }
+      });
+    });
   }
-
-  // ============================================================
-  // FILTER ORDERS FOR LOGGED-IN USER
-  // ============================================================
-
-  private applyUserOrders(): void {
-    const email = this.currentUser?.email?.trim().toLowerCase();
-
-    if (!email) {
-      this.orders = [];
-      this.selectedOrder = null;
-      return;
-    }
-
-    this.orders = this.orderService.getOrdersByEmail(email);
-
-    // Close the selected order if it no longer belongs
-    // to the currently logged-in user.
-    if (
-      this.selectedOrder &&
-      !this.orders.some(
-        (order) => order.id === this.selectedOrder?.id,
-      )
-    ) {
-      this.selectedOrder = null;
-    }
-  }
-
-  // ============================================================
-  // TOGGLE ORDER DETAILS
-  // ============================================================
 
   toggleOrderDetails(order: Order): void {
     if (this.selectedOrder?.id === order.id) {
@@ -89,12 +56,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ============================================================
-  // CLEANUP
-  // ============================================================
-
   ngOnDestroy(): void {
     this.userSubscription?.unsubscribe();
-    this.ordersSubscription?.unsubscribe();
   }
 }

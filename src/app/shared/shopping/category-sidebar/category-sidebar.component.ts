@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { CategoryNavItem } from 'src/app/core/models/product-models/category-nav-item.model';
 import { Category } from 'src/app/core/models/product-models/category.model';
-import { ProductService } from 'src/app/core/services/product-service/product.service';
+import { CategoryService } from 'src/app/core/services/category-service/category.service';
 
 @Component({
   selector: 'app-category-sidebar',
@@ -19,29 +19,42 @@ export class CategorySidebarComponent implements OnInit, OnDestroy {
   activeCollection: string | null = null;
 
   private queryParamsSubscription!: Subscription;
+  private categoriesSubscription!: Subscription;
+  private subcategoriesSubscription!: Subscription;
 
   constructor(
-    private productService: ProductService,
-    private route: ActivatedRoute
+    private categoryService: CategoryService,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
-    this.categoryNav = this.productService.getCategoryNav();
+    this.categoriesSubscription = this.categoryService.categories$.subscribe(
+      () => {
+        this.categoryNav = this.categoryService.getCategoryNav();
+      },
+    );
 
-    this.queryParamsSubscription = this.route.queryParams.subscribe((params) => {
-      this.activeCategory = params['category'] || null;
-      this.activeSubcategory = params['subcategory'] || null;
-      this.activeCollection = params['collection'] || null;
-    });
+    this.subcategoriesSubscription =
+      this.categoryService.subcategories$.subscribe(() => {
+        this.categoryNav = this.categoryService.getCategoryNav();
+      });
+
+    this.queryParamsSubscription = this.route.queryParams.subscribe(
+      (params) => {
+        this.activeCategory = params['category'] || null;
+        this.activeSubcategory = params['subcategory'] || null;
+        this.activeCollection = params['collection'] || null;
+      },
+    );
   }
 
   ngOnDestroy(): void {
-    if (this.queryParamsSubscription) {
-      this.queryParamsSubscription.unsubscribe();
-    }
+    this.queryParamsSubscription?.unsubscribe();
+    this.categoriesSubscription?.unsubscribe();
+    this.subcategoriesSubscription?.unsubscribe();
   }
 
-  isCategoryActive(category: Category): boolean {
+  isCategoryActive(category: Category | string): boolean {
     return this.activeCategory === category;
   }
 

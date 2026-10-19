@@ -1,486 +1,298 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+
+import { environment } from 'src/environments/environment';
 
 import { CategoryNavItem } from '../../models/product-models/category-nav-item.model';
 import { Subcategory } from '../../models/product-models/subcategory.model';
-import { SUBCATEGORIES } from '../../models/product-models/subcategories.model';
 import { CategoryDefinition } from '../../models/admin-model/category-definition.model';
+import { ToastService } from '../toast-service/toast.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoryService {
-  // ============================================================
-  // STORAGE
-  // ============================================================
+  private readonly apiUrl = `${environment.apiUrl}/categories`;
 
-  private readonly CATEGORIES_KEY = 'sissy-dream-categories';
-  private readonly SUBCATEGORIES_KEY = 'sissy-dream-subcategories';
-
-  // ============================================================
-  // STATE
-  // ============================================================
-
-  private categoriesSource = new BehaviorSubject<CategoryDefinition[]>(
-    this.loadCategories(),
-  );
-
-  private subcategoriesSource = new BehaviorSubject<Subcategory[]>(
-    this.loadSubcategories(),
-  );
+  private categoriesSource = new BehaviorSubject<CategoryDefinition[]>([]);
+  private subcategoriesSource = new BehaviorSubject<Subcategory[]>([]);
 
   categories$ = this.categoriesSource.asObservable();
   subcategories$ = this.subcategoriesSource.asObservable();
 
+  constructor(
+    private http: HttpClient,
+    private toastService: ToastService,
+  ) {}
+
   // ============================================================
-  // READ
+  // LOAD
   // ============================================================
 
-  /**
-   * Returns the complete category navigation tree.
-   *
-   * Each category contains:
-   * - category slug
-   * - category label
-   * - its subcategories
-   */
+  loadCategoriesFromApi(): void {
+    this.http.get<CategoryNavItem[]>(this.apiUrl).subscribe({
+      next: (nav) => this.applyNavFromApi(nav ?? []),
+      error: (err) => {
+        console.error('Failed to load categories', err);
+        this.toastService.error(
+          this.readError(err, 'Could not load categories.'),
+        );
+      },
+    });
+  }
+
+  private applyNavFromApi(nav: CategoryNavItem[]): void {
+    const categories: CategoryDefinition[] = nav.map((item) => ({
+      slug: item.category,
+      label: item.label,
+    }));
+
+    const subcategories: Subcategory[] = nav.flatMap((item) =>
+      (item.subcategories ?? []).map((sub) => ({
+        name: sub.name,
+        slug: sub.slug,
+        category: sub.category || item.category,
+      })),
+    );
+
+    this.categoriesSource.next(categories);
+    this.subcategoriesSource.next(subcategories);
+  }
+
+  // ============================================================
+  // READ (sync — from in-memory state filled by API)
+  // ============================================================
+
   getCategoryNav(): CategoryNavItem[] {
     const subs = this.subcategoriesSource.value;
 
     return this.categoriesSource.value.map((category) => ({
       category: category.slug,
       label: category.label,
-      subcategories: subs.filter(
-        (subcategory) => subcategory.category === category.slug,
-      ),
+      subcategories: subs.filter((s) => s.category === category.slug),
     }));
   }
 
-  /**
-   * Returns all categories.
-   */
   getCategories(): CategoryDefinition[] {
     return this.categoriesSource.value;
   }
 
-  /**
-   * Returns all subcategories.
-   */
   getSubcategories(): Subcategory[] {
     return this.subcategoriesSource.value;
   }
 
-  /**
-   * Returns all subcategories belonging to a category.
-   */
   getSubcategoriesByCategory(categorySlug: string): Subcategory[] {
     return this.subcategoriesSource.value.filter(
-      (subcategory) => subcategory.category === categorySlug,
+      (s) => s.category === categorySlug,
     );
   }
 
   // ============================================================
-  // CATEGORIES — CREATE / UPDATE / DELETE
+  // CATEGORY — CREATE / UPDATE / DELETE
   // ============================================================
 
   /**
-   * Creates a new top-level category.
-   *
-   * Example:
-   * "Make Up" → "make-up"
-   *
-   * The generated slug becomes the permanent identifier
-   * for the category.
-   *
-   * Returns null if:
-   * - name is empty
-   * - slug cannot be generated
-   * - category already exists
+   * POST /api/categories  { label }
    */
-  addCategory(label: string): CategoryDefinition | null {
+  addCategory(label: string, pendingSubNames: string[] = []): void {
     const trimmed = label.trim();
-
     if (!trimmed) {
-      return null;
+      this.toastService.error('Category name is required.');
+      return;
     }
 
-    const slug = this.slugify(trimmed);
+    this.http
+      .post<{ category: string; label: string }>(this.apiUrl, {
+        label: trimmed,
+      })
+      .subscribe({
+        next: (created) => {
+          // Create optional subcategories, then refresh once at the end
+          if (!pendingSubNames.length) {
+            this.toastService.success(
+              `Category "${created.label}" created successfully.`,
+            );
+            this.loadCategoriesFromApi();
+            return;
+          }
 
-    if (!slug) {
-      return null;
-    }
+          let remaining = pendingSubNames.length;
+          let failed = 0;
 
-    const exists = this.categoriesSource.value.some(
-      (category) => category.slug === slug,
-    );
-
-    if (exists) {
-      return null;
-    }
-
-    const category: CategoryDefinition = {
-      slug,
-      label: trimmed,
-    };
-
-    this.setCategories([...this.categoriesSource.value, category]);
-
-    return category;
+          for (const name of pendingSubNames) {
+            this.http
+              .post(`${this.apiUrl}/${created.category}/subcategories`, {
+                name: name.trim(),
+              })
+              .subscribe({
+                next: () => {
+                  remaining--;
+                  if (remaining === 0) {
+                    if (failed) {
+                      this.toastService.error(
+                        'Category created, but some subcategories failed.',
+                      );
+                    } else {
+                      this.toastService.success(
+                        `Category "${created.label}" created successfully.`,
+                      );
+                    }
+                    this.loadCategoriesFromApi();
+                  }
+                },
+                error: (err) => {
+                  failed++;
+                  remaining--;
+                  console.error(err);
+                  if (remaining === 0) {
+                    this.toastService.error(
+                      this.readError(
+                        err,
+                        'Category created, but some subcategories failed.',
+                      ),
+                    );
+                    this.loadCategoriesFromApi();
+                  }
+                },
+              });
+          }
+        },
+        error: (err) => {
+          this.toastService.error(
+            this.readError(err, 'Could not create category.'),
+          );
+        },
+      });
   }
 
   /**
-   * Renames an existing category.
-   *
-   * IMPORTANT:
-   * The slug does NOT change.
-   *
-   * Example:
-   *
-   * Before:
-   * label = "Make Up"
-   * slug  = "make-up"
-   *
-   * After:
-   * label = "Beauty"
-   * slug  = "make-up"
-   *
-   * Keeping the slug prevents existing products from losing
-   * their category reference.
+   * PUT /api/categories/:slug  { label }
    */
-  updateCategory(slug: string, label: string): boolean {
+  updateCategory(slug: string, label: string): void {
     const trimmed = label.trim();
-
     if (!trimmed) {
-      return false;
+      this.toastService.error('Category name is required.');
+      return;
     }
 
-    const exists = this.categoriesSource.value.some(
-      (category) => category.slug === slug,
-    );
-
-    if (!exists) {
-      return false;
-    }
-
-    const duplicateLabel = this.categoriesSource.value.some(
-      (category) =>
-        category.slug !== slug &&
-        category.label.toLowerCase() === trimmed.toLowerCase(),
-    );
-
-    if (duplicateLabel) {
-      return false;
-    }
-
-    this.setCategories(
-      this.categoriesSource.value.map((category) =>
-        category.slug === slug
-          ? {
-              ...category,
-              label: trimmed,
-            }
-          : category,
-      ),
-    );
-
-    return true;
+    this.http.put(`${this.apiUrl}/${slug}`, { label: trimmed }).subscribe({
+      next: () => {
+        this.toastService.success('Category name updated successfully.');
+        this.loadCategoriesFromApi();
+      },
+      error: (err) => {
+        this.toastService.error(
+          this.readError(err, 'Could not update category.'),
+        );
+      },
+    });
   }
 
   /**
-   * Deletes a category and all of its subcategories.
-   *
-   * The Admin Categories component is responsible for checking
-   * whether products still use the category before calling this.
+   * DELETE /api/categories/:slug
    */
   deleteCategory(slug: string): void {
-    this.setCategories(
-      this.categoriesSource.value.filter((category) => category.slug !== slug),
-    );
-
-    this.setSubcategories(
-      this.subcategoriesSource.value.filter(
-        (subcategory) => subcategory.category !== slug,
-      ),
-    );
+    this.http.delete(`${this.apiUrl}/${slug}`).subscribe({
+      next: () => {
+        this.toastService.success('Category deleted successfully.');
+        this.loadCategoriesFromApi();
+      },
+      error: (err) => {
+        this.toastService.error(
+          this.readError(err, 'Could not delete category.'),
+        );
+      },
+    });
   }
 
   // ============================================================
-  // SUBCATEGORIES — CREATE / UPDATE / DELETE
+  // SUBCATEGORY — CREATE / UPDATE / DELETE
   // ============================================================
 
   /**
-   * Creates a new subcategory.
-   *
-   * Example:
-   *
-   * "Fish Net"
-   *     ↓
-   * "fish-net"
-   *
-   * The generated slug is saved with the subcategory and
-   * becomes its permanent identifier.
+   * POST /api/categories/:slug/subcategories  { name }
    */
-  addSubcategory(categorySlug: string, name: string): Subcategory | null {
+  addSubcategory(categorySlug: string, name: string): void {
     const trimmed = name.trim();
-
     if (!trimmed) {
-      return null;
+      this.toastService.error('Subcategory name is required.');
+      return;
     }
 
-    // Make sure the parent category exists.
-    const parentExists = this.categoriesSource.value.some(
-      (category) => category.slug === categorySlug,
-    );
-
-    if (!parentExists) {
-      return null;
-    }
-
-    // Generate slug ONLY when creating a new subcategory.
-    const slug = this.slugify(trimmed);
-
-    if (!slug) {
-      return null;
-    }
-
-    // Prevent duplicate subcategory slugs in the same category.
-    const slugExists = this.subcategoriesSource.value.some(
-      (subcategory) =>
-        subcategory.category === categorySlug && subcategory.slug === slug,
-    );
-
-    if (slugExists) {
-      return null;
-    }
-
-    // Also prevent duplicate names in the same category.
-    const nameExists = this.subcategoriesSource.value.some(
-      (subcategory) =>
-        subcategory.category === categorySlug &&
-        subcategory.name.toLowerCase() === trimmed.toLowerCase(),
-    );
-
-    if (nameExists) {
-      return null;
-    }
-
-    const subcategory: Subcategory = {
-      name: trimmed,
-      slug,
-      category: categorySlug,
-    };
-
-    this.setSubcategories([...this.subcategoriesSource.value, subcategory]);
-
-    return subcategory;
+    this.http
+      .post(`${this.apiUrl}/${categorySlug}/subcategories`, { name: trimmed })
+      .subscribe({
+        next: () => {
+          this.toastService.success(
+            `Subcategory "${trimmed}" added successfully.`,
+          );
+          this.loadCategoriesFromApi();
+        },
+        error: (err) => {
+          this.toastService.error(
+            this.readError(err, 'Could not add subcategory.'),
+          );
+        },
+      });
   }
 
   /**
-   * Renames an existing subcategory.
-   *
-   * IMPORTANT:
-   * The slug DOES NOT change.
-   *
-   * Example:
-   *
-   * Before:
-   * name = "Fish Net"
-   * slug = "fish-net"
-   *
-   * Rename to:
-   * "Fishnet Stockings"
-   *
-   * After:
-   * name = "Fishnet Stockings"
-   * slug = "fish-net"
-   *
-   * This keeps existing products connected to the
-   * subcategory.
+   * PUT /api/categories/:slug/subcategories/:subSlug  { name }
    */
   updateSubcategory(
     categorySlug: string,
-    oldSlug: string,
+    subSlug: string,
     name: string,
-  ): boolean {
+  ): void {
     const trimmed = name.trim();
-
     if (!trimmed) {
-      return false;
+      this.toastService.error('Subcategory name is required.');
+      return;
     }
 
-    // Make sure the subcategory exists.
-    const exists = this.subcategoriesSource.value.some(
-      (subcategory) =>
-        subcategory.category === categorySlug && subcategory.slug === oldSlug,
-    );
-
-    if (!exists) {
-      return false;
-    }
-
-    // Prevent another subcategory in the same category
-    // from having the same name.
-    const duplicateName = this.subcategoriesSource.value.some(
-      (subcategory) =>
-        subcategory.category === categorySlug &&
-        subcategory.slug !== oldSlug &&
-        subcategory.name.toLowerCase() === trimmed.toLowerCase(),
-    );
-
-    if (duplicateName) {
-      return false;
-    }
-
-    // IMPORTANT:
-    // We only change the name.
-    // The old slug is intentionally preserved.
-    this.setSubcategories(
-      this.subcategoriesSource.value.map((subcategory) =>
-        subcategory.category === categorySlug && subcategory.slug === oldSlug
-          ? {
-              ...subcategory,
-              name: trimmed,
-            }
-          : subcategory,
-      ),
-    );
-
-    return true;
+    this.http
+      .put(`${this.apiUrl}/${categorySlug}/subcategories/${subSlug}`, {
+        name: trimmed,
+      })
+      .subscribe({
+        next: () => {
+          this.toastService.success('Subcategory updated successfully.');
+          this.loadCategoriesFromApi();
+        },
+        error: (err) => {
+          this.toastService.error(
+            this.readError(err, 'Could not update subcategory.'),
+          );
+        },
+      });
   }
 
   /**
-   * Deletes a subcategory.
-   *
-   * The Admin Categories component is responsible for checking
-   * whether products still use this subcategory before calling
-   * this method.
+   * DELETE /api/categories/:slug/subcategories/:subSlug
    */
-  deleteSubcategory(categorySlug: string, slug: string): void {
-    this.setSubcategories(
-      this.subcategoriesSource.value.filter(
-        (subcategory) =>
-          !(subcategory.category === categorySlug && subcategory.slug === slug),
-      ),
-    );
+  deleteSubcategory(categorySlug: string, subSlug: string): void {
+    this.http
+      .delete(`${this.apiUrl}/${categorySlug}/subcategories/${subSlug}`)
+      .subscribe({
+        next: () => {
+          this.toastService.success('Subcategory deleted successfully.');
+          this.loadCategoriesFromApi();
+        },
+        error: (err) => {
+          this.toastService.error(
+            this.readError(err, 'Could not delete subcategory.'),
+          );
+        },
+      });
   }
 
   // ============================================================
-  // PRIVATE — PERSISTENCE
+  // HELPERS
   // ============================================================
 
-  /**
-   * Saves categories to localStorage and updates the observable.
-   */
-  private setCategories(list: CategoryDefinition[]): void {
-    localStorage.setItem(this.CATEGORIES_KEY, JSON.stringify(list));
-
-    this.categoriesSource.next(list);
-  }
-
-  /**
-   * Saves subcategories to localStorage and updates the observable.
-   */
-  private setSubcategories(list: Subcategory[]): void {
-    localStorage.setItem(this.SUBCATEGORIES_KEY, JSON.stringify(list));
-
-    this.subcategoriesSource.next(list);
-  }
-
-  // ============================================================
-  // LOAD — CATEGORIES
-  // ============================================================
-
-  /**
-   * Loads categories from localStorage.
-   *
-   * If nothing is stored yet, the default seed categories
-   * are returned.
-   */
-  private loadCategories(): CategoryDefinition[] {
-    const raw = localStorage.getItem(this.CATEGORIES_KEY);
-
-    if (raw) {
-      try {
-        const parsed = JSON.parse(raw) as CategoryDefinition[];
-
-        if (Array.isArray(parsed) && parsed.length) {
-          return parsed;
-        }
-      } catch {
-        // Fall back to seed categories below.
-      }
-    }
-
-    return this.getSeedCategories();
-  }
-
-  // ============================================================
-  // LOAD — SUBCATEGORIES
-  // ============================================================
-
-  /**
-   * Loads subcategories from localStorage.
-   *
-   * If nothing is stored yet, the default seed subcategories
-   * are returned.
-   */
-  private loadSubcategories(): Subcategory[] {
-    const raw = localStorage.getItem(this.SUBCATEGORIES_KEY);
-
-    if (raw) {
-      try {
-        const parsed = JSON.parse(raw) as Subcategory[];
-
-        if (Array.isArray(parsed) && parsed.length) {
-          return parsed;
-        }
-      } catch {
-        // Fall back to seed subcategories below.
-      }
-    }
-
-    return [...SUBCATEGORIES];
-  }
-
-  // ============================================================
-  // SEED CATEGORIES
-  // ============================================================
-
-  private getSeedCategories(): CategoryDefinition[] {
-    return [
-      { slug: 'dresses', label: 'Dresses' },
-      { slug: 'wigs', label: 'Wigs' },
-      { slug: 'lingerie', label: 'Lingerie' },
-      { slug: 'shapers', label: 'Shapers' },
-      { slug: 'shoes', label: 'Shoes' },
-      { slug: 'tops', label: 'Tops' },
-      { slug: 'bottoms', label: 'Bottoms' },
-      { slug: 'sissy-toys', label: 'Sissy Toys' },
-      { slug: 'make-up', label: 'Make Up' },
-      { slug: 'accessories', label: 'Accessories' },
-      { slug: 'ebooks', label: 'Ebooks' },
-    ];
-  }
-
-  // ============================================================
-  // SLUG
-  // ============================================================
-
-  /**
-   * Converts a human-readable name into a URL/storage-friendly slug.
-   *
-   * Examples:
-   *
-   * "Fish Net"       → "fish-net"
-   * "Evening Dress"  → "evening-dress"
-   * "Sissy Toys"     → "sissy-toys"
-   * "  Make Up  "    → "make-up"
-   */
-  private slugify(value: string): string {
-    return value
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+  private readError(err: unknown, fallback: string): string {
+    const e = err as { error?: { message?: string }; message?: string };
+    return e?.error?.message || e?.message || fallback;
   }
 }

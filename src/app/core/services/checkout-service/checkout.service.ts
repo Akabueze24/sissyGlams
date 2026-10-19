@@ -127,14 +127,15 @@ export class CheckoutService {
   // CREATE ORDER
   // ============================================================
 
-  createOrder(
+   createOrder(
     checkoutData: CheckoutData,
     cartItems: CartItem[],
     subtotal: number,
     shippingCost: number,
     total: number,
   ): Order {
-    const order: Order = {
+    return {
+      // Temporary client id; stripped in OrderService.saveOrder before POST
       id: this.generateOrderId(),
 
       customer: {
@@ -165,29 +166,14 @@ export class CheckoutService {
       })),
 
       subtotal,
-
       shippingCost,
-
       total,
-
       shippingMethod: checkoutData.shippingMethod,
-
       paymentMethod: checkoutData.paymentMethod,
-
       paymentStatus: 'pending',
-
       orderStatus: 'pending',
-
       createdAt: new Date().toISOString(),
     };
-
-    // At this stage we have only created the order object.
-    // The real backend will eventually create and save
-    // the order in the database.
-
-    this.toastService.success('Your order has been prepared successfully.');
-
-    return order;
   }
 
   // ============================================================
