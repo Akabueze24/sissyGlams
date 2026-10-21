@@ -32,6 +32,26 @@ const getOrderById = asyncHandler(async (req, res) => {
   res.json(order);
 });
 
+
+// ============================================================
+// GET mine (logged-in customer — uses JWT, not query email)
+// ============================================================
+
+const getMyOrders = asyncHandler(async (req, res) => {
+  const email = (req.user.email || '').trim().toLowerCase();
+
+  if (!email) {
+    res.status(400);
+    throw new Error('User email missing');
+  }
+
+  const orders = await Order.find({
+    'customer.email': email,
+  }).sort({ createdAt: -1 });
+
+  res.json(orders);
+});
+
 // ============================================================
 // CREATE — decrease stock in Mongo
 // ============================================================
@@ -133,6 +153,7 @@ const updateOrder = asyncHandler(async (req, res) => {
 module.exports = {
   getOrders,
   getOrderById,
+  getMyOrders,
   createOrder,
   updateOrder,
 };

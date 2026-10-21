@@ -25,11 +25,6 @@ const register = asyncHandler(async (req, res) => {
     throw new Error('Please provide firstName, lastName, email, and password');
   }
 
-//   if (String(password).length < 8) {
-//     res.status(400);
-//     throw new Error('Password must be at least 8 characters');
-//   }
-
   const normalizedEmail = String(email).trim().toLowerCase();
 
   const exists = await User.findOne({ email: normalizedEmail });
@@ -66,7 +61,6 @@ const login = asyncHandler(async (req, res) => {
 
   const normalizedEmail = String(email).trim().toLowerCase();
 
-  // password is select:true by default; we need it for matchPassword
   const user = await User.findOne({ email: normalizedEmail });
 
   if (!user || !(await user.matchPassword(password))) {
@@ -80,7 +74,230 @@ const login = asyncHandler(async (req, res) => {
   });
 });
 
+// ============================================================
+// PATCH /api/auth/me  (protect)
+// ============================================================
+
+const updateMe = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  const { firstName, lastName, email } = req.body;
+
+  if (firstName != null) {
+    user.firstName = String(firstName).trim();
+  }
+
+  if (lastName != null) {
+    user.lastName = String(lastName).trim();
+  }
+
+  if (email != null) {
+    const normalizedEmail = String(email).trim().toLowerCase();
+
+    if (!normalizedEmail) {
+      res.status(400);
+      throw new Error('Email is required');
+    }
+
+    const taken = await User.findOne({
+      email: normalizedEmail,
+      _id: { $ne: user._id },
+    });
+
+    if (taken) {
+      res.status(400);
+      throw new Error('An account with this email already exists');
+    }
+
+    user.email = normalizedEmail;
+  }
+
+  await user.save();
+
+  res.json({
+    user: toPublicUser(user),
+  });
+});
+
+// ============================================================
+// PATCH /api/auth/me/password  (protect)
+// ============================================================
+
+const changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    res.status(400);
+    throw new Error('Please provide currentPassword and newPassword');
+  }
+
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  const isMatch = await user.matchPassword(currentPassword);
+
+  if (!isMatch) {
+    res.status(401);
+    throw new Error('Current password is incorrect');
+  }
+
+  user.password = newPassword; // hashed by pre('save')
+  await user.save();
+
+  res.json({
+    message: 'Password updated successfully',
+  });
+});
+
+// ============================================================
+// GET /api/auth/me/addresses  (protect)
+// ============================================================
+
+const getMyAddresses = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  res.json({
+    shipping: user.shippingAddress || null,
+    billing: user.billingAddress || null,
+  });
+});
+
+// ============================================================
+// PUT /api/auth/me/addresses/shipping  (protect)
+// Creates the shipping address the first time, replaces it after
+// ============================================================
+
+const saveShippingAddress = asyncHandler(async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    phone,
+    address,
+    apartment,
+    city,
+    state,
+    postalCode,
+    country,
+  } = req.body;
+
+  if (
+    !firstName ||
+    !lastName ||
+    !phone ||
+    !address ||
+    !city ||
+    !state ||
+    !postalCode ||
+    !country
+  ) {
+    res.status(400);
+    throw new Error('Please fill in all required address fields');
+  }
+
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  user.shippingAddress = {
+    firstName,
+    lastName,
+    phone,
+    address,
+    apartment: apartment || '',
+    city,
+    state,
+    postalCode,
+    country,
+  };
+
+  await user.save();
+
+  res.json(user.shippingAddress);
+});
+
+// ============================================================
+// PUT /api/auth/me/addresses/billing  (protect)
+// Creates the billing address the first time, replaces it after
+// ============================================================
+
+const saveBillingAddress = asyncHandler(async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    phone,
+    address,
+    apartment,
+    city,
+    state,
+    postalCode,
+    country,
+  } = req.body;
+
+  if (
+    !firstName ||
+    !lastName ||
+    !phone ||
+    !address ||
+    !city ||
+    !state ||
+    !postalCode ||
+    !country
+  ) {
+    res.status(400);
+    throw new Error('Please fill in all required address fields');
+  }
+
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  user.billingAddress = {
+    firstName,
+    lastName,
+    phone,
+    address,
+    apartment: apartment || '',
+    city,
+    state,
+    postalCode,
+    country,
+  };
+
+  await user.save();
+
+  res.json(user.billingAddress);
+});
+
+
+
+
+
 module.exports = {
   register,
   login,
+  updateMe,
+  changePassword,
+  getMyAddresses,
+  saveShippingAddress,
+  saveBillingAddress
 };

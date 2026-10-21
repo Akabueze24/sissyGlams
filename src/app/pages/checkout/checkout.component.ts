@@ -154,29 +154,43 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
-    // Always prefill account identity
+    // Account identity first
     this.checkoutForm.patchValue({
       email: user.email || '',
       firstName: user.firstName || '',
       lastName: user.lastName || '',
     });
 
-    // Then overlay saved shipping address (if any)
-    const shipping = this.addressService.getShipping(user.id);
+    // Overlay saved shipping from API (if any)
+    this.addressService.getMyAddresses().subscribe({
+      next: (data) => {
+        if (!data.shipping) {
+          return;
+        }
 
-    if (shipping) {
-      this.checkoutForm.patchValue({
-        firstName: shipping.firstName,
-        lastName: shipping.lastName,
-        phone: shipping.phone,
-        address: shipping.address,
-        apartment: shipping.apartment || '',
-        city: shipping.city,
-        state: shipping.state,
-        postalCode: shipping.postalCode,
-        country: shipping.country,
-      });
-    }
+        const s = data.shipping;
+
+        this.checkoutForm.patchValue({
+          firstName: s.firstName,
+          lastName: s.lastName,
+          phone: s.phone,
+          address: s.address,
+          apartment: s.apartment || '',
+          city: s.city,
+          state: s.state,
+          postalCode: s.postalCode,
+          country: s.country,
+        });
+
+        // Country change drives shipping quote — refresh after prefill
+        if (s.country) {
+          this.loadShippingQuote(s.country);
+        }
+      },
+      error: () => {
+        // Guest / network — form stays on identity-only prefill
+      },
+    });
   }
 
   // ============================================================

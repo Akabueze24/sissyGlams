@@ -23,25 +23,23 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userSubscription = this.authService.currentUser$.subscribe((user) => {
-      const email = user?.email?.trim();
+  if (!user) {
+    this.orders = [];
+    this.selectedOrder = null;
+    return;
+  }
 
-      if (!email) {
-        this.orders = [];
-        this.selectedOrder = null;
-        return;
-      }
+  this.orderService.loadMyOrders().subscribe((list) => {
+    this.orders = list;
 
-      this.orderService.loadOrdersByEmail(email).subscribe((list) => {
-        this.orders = list;
-
-        if (
-          this.selectedOrder &&
-          !this.orders.some((o) => o.id === this.selectedOrder?.id)
-        ) {
-          this.selectedOrder = null;
-        }
-      });
-    });
+    if (
+      this.selectedOrder &&
+      !this.orders.some((o) => o.id === this.selectedOrder?.id)
+    ) {
+      this.selectedOrder = null;
+    }
+  });
+});
   }
 
   ngOnDestroy(): void {

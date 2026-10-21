@@ -127,41 +127,48 @@ export class EditAccountComponent implements OnInit, OnDestroy {
   // SAVE ACCOUNT
   // ============================================================
 
-  onSaveAccount(): void {
-    if (this.accountForm.invalid) {
-      this.accountForm.markAllAsTouched();
-      return;
-    }
+onSaveAccount(): void {
+  if (this.accountForm.invalid) {
+    this.accountForm.markAllAsTouched();
+    return;
+  }
 
-    const updatedUser: User = {
-      id: this.currentUser!.id,
+  if (!this.currentUser) {
+    return;
+  }
+
+  this.authService
+    .updateProfile({
       firstName: this.accountForm.value.firstName,
       lastName: this.accountForm.value.lastName,
       email: this.accountForm.value.email,
-    };
-
-    this.authService.updateUser(updatedUser);
-  }
+    })
+    .subscribe((user) => {
+      // null = error (toast already shown)
+      // user = success; currentUser$ already updated via persistSession
+    });
+}
 
   // ============================================================
   // CHANGE PASSWORD
   // ============================================================
 
   onChangePassword(): void {
-    if (this.passwordForm.invalid) {
-      this.passwordForm.markAllAsTouched();
-      return;
-    }
-
-    // Temporary frontend-only password change.
-    // The real password update will happen through the backend later.
-
-    console.log('Password change submitted.');
-
-    // Clear all password fields after successful submission.
-    this.passwordForm.reset();
-  
+  if (this.passwordForm.invalid) {
+    this.passwordForm.markAllAsTouched();
+    return;
   }
+
+  const { currentPassword, newPassword } = this.passwordForm.value;
+
+  this.authService
+    .changePassword(currentPassword, newPassword)
+    .subscribe((ok) => {
+      if (ok) {
+        this.passwordForm.reset();
+      }
+    });
+}
 
   toggleCurrentPassword(): void {
     this.showCurrentPassword = !this.showCurrentPassword;

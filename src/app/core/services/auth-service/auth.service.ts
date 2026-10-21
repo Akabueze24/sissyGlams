@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, map, Observable, Subject } from 'rxjs';
 import { tap, catchError, of } from 'rxjs';
 
 import { Login } from '../../models/auth-models/login.mdel';
@@ -88,7 +88,7 @@ export class AuthService {
         const msg =
           err?.error?.message ||
           'Could not create account. Please try again.';
-        this.toastService.error(msg);
+        this.toastService.error(msg); 
         return of(null);
       }),
     );
@@ -153,14 +153,65 @@ export class AuthService {
   return this.getCurrentUser()?.role === 'admin';
 }
 
-  /**
-   * Profile name/email update — session only for now.
-   * Wire to PATCH /api/auth/me when you add that route.
-   */
-  updateUser(user: User): void {
-    this.persistSession(user, this.getToken());
-    this.toastService.success('Your account has been updated successfully.');
-  }
+ /**
+ * PATCH /api/auth/me — update profile on the server, then refresh session.
+ */
+updateProfile(data: {
+  firstName: string;
+  lastName: string;
+  email: string;
+}): Observable<User | null> {
+  const payload = {
+    firstName: data.firstName.trim(),
+    lastName: data.lastName.trim(),
+    email: data.email.trim().toLowerCase(),
+  };
+
+  return this.http
+    .patch<{ user: User }>(`${environment.apiUrl}/auth/me`, payload)
+    .pipe(
+      tap((res) => {
+        this.persistSession(res.user, this.getToken());
+        this.toastService.success('Your account has been updated successfully.');
+      }),
+      map((res) => res.user),
+      catchError((err) => {
+        const msg =
+          err?.error?.message || 'Could not update your account. Please try again.';
+        this.toastService.error(msg);
+        return of(null);
+      }),
+    );
+}
+
+
+
+/**
+ * PATCH /api/auth/me/password
+ */
+changePassword(
+  currentPassword: string,
+  newPassword: string,
+): Observable<boolean> {
+  return this.http
+    .patch<{ message?: string }>(`${environment.apiUrl}/auth/me/password`, {
+      currentPassword,
+      newPassword,
+    })
+    .pipe(
+      tap(() => {
+        this.toastService.success('Your password has been updated successfully.');
+      }),
+      map(() => true),
+      catchError((err) => {
+        const msg =
+          err?.error?.message ||
+          'Could not update password. Please try again.';
+        this.toastService.error(msg);
+        return of(false);
+      }),
+    );
+}
 
 
 

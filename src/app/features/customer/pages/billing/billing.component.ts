@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { AuthService } from 'src/app/core/services/auth-service/auth.service';
 import { AddressService } from 'src/app/core/services/address-service/address.service';
 import { SavedAddress } from 'src/app/core/models/user-address-model/savedAddress.model';
+import { ToastService } from 'src/app/core/services/toast-service/toast.service';
 
 @Component({
   selector: 'app-billing',
@@ -14,16 +14,21 @@ import { SavedAddress } from 'src/app/core/models/user-address-model/savedAddres
 })
 export class BillingComponent implements OnInit, OnDestroy {
   billingForm!: FormGroup;
+  isSaving = false;
 
-  private userId: string | null = null;
-  private userSub!: Subscription;
+  private loadSub?: Subscription;
+  private saveSub?: Subscription;
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
     private addressService: AddressService,
     private router: Router,
+    private toastService: ToastService,
   ) {}
+
+  // ============================================================
+  // LIFECYCLE
+  // ============================================================
 
   ngOnInit(): void {
     this.billingForm = this.fb.group({
@@ -33,7 +38,6 @@ export class BillingComponent implements OnInit, OnDestroy {
           Validators.required,
           Validators.minLength(2),
           Validators.maxLength(40),
-          // Letters only (optional space, hyphen, apostrophe) — no numbers
           Validators.pattern(/^[A-Za-z]+(?:[ '\-][A-Za-z]+)*$/),
         ],
       ],
@@ -48,11 +52,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       ],
       phone: [
         '',
-        [
-          Validators.required,
-          // Digits only, 10–15 characters
-          Validators.pattern(/^\d{10,15}$/),
-        ],
+        [Validators.required, Validators.pattern(/^\d{10,15}$/)],
       ],
       address: [
         '',
@@ -60,7 +60,6 @@ export class BillingComponent implements OnInit, OnDestroy {
           Validators.required,
           Validators.minLength(5),
           Validators.maxLength(100),
-          // Letters, numbers, space, comma, period, hyphen, #
           Validators.pattern(/^[A-Za-z0-9\s,.\-#/]+$/),
         ],
       ],
@@ -91,32 +90,33 @@ export class BillingComponent implements OnInit, OnDestroy {
       ],
       postalCode: [
         '',
-        [
-          Validators.required,
-          // Digits only, 4–10 (strict)
-          Validators.pattern(/^\d{4,10}$/),
-        ],
+        [Validators.required, Validators.pattern(/^\d{4,10}$/)],
       ],
       country: ['US', Validators.required],
     });
 
-    this.userSub = this.authService.currentUser$.subscribe((user) => {
-      this.userId = user?.id ?? null;
-
-      if (!user) {
-        return;
-      }
-
-      const saved = this.addressService.getBilling(user.id);
-      if (saved) {
-        this.billingForm.patchValue(saved);
-      }
+    this.loadSub = this.addressService.getMyAddresses().subscribe({
+      next: (data) => {
+        if (data.billing) {
+          this.billingForm.patchValue(data.billing);
+        }
+      },
+      error: (err) => {
+        const message =
+          err?.error?.message || 'Could not load billing address.';
+        this.toastService.error(message);
+      },
     });
   }
 
   ngOnDestroy(): void {
-    this.userSub?.unsubscribe();
+    this.loadSub?.unsubscribe();
+    this.saveSub?.unsubscribe();
   }
+
+  // ============================================================
+  // SAVE
+  // ============================================================
 
   onSave(): void {
     if (this.billingForm.invalid) {
@@ -124,7 +124,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.userId) {
+    if (this.isSaving) {
       return;
     }
 
@@ -142,19 +142,35 @@ export class BillingComponent implements OnInit, OnDestroy {
       country: value.country,
     };
 
-    this.addressService.saveBilling(this.userId, address);
-    this.router.navigate(['/account/address']);
+    this.isSaving = true;
+
+    this.saveSub = this.addressService.saveBilling(address).subscribe({
+      next: () => {
+        this.isSaving = false;
+        this.router.navigate(['/account/address']);
+      },
+      error: (err) => {
+        this.isSaving = false;
+        const message =
+          err?.error?.message || 'Could not save billing address.';
+        this.toastService.error(message);
+      },
+    });
   }
+
+  // ============================================================
+  // INPUT HELPERS
+  // ============================================================
 
   allowDigitsOnly(event: KeyboardEvent): void {
-  if (!/^\d$/.test(event.key)) {
-    event.preventDefault();
+    if (!/^\d$/.test(event.key)) {
+      event.preventDefault();
+    }
   }
-}
 
-allowNameChar(event: KeyboardEvent): void {
-  if (!/^[A-Za-z '\-]$/.test(event.key)) {
-    event.preventDefault();
+  allowNameChar(event: KeyboardEvent): void {
+    if (!/^[A-Za-z '\-]$/.test(event.key)) {
+      event.preventDefault();
+    }
   }
-}
 }

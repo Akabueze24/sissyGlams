@@ -49,8 +49,9 @@ export class OrderService {
   // ============================================================
 
   /**
-   * Full order list from the API (admin).
-   * Call from AdminOrdersComponent.ngOnInit — not from the constructor.
+   * Full order list (admin).
+   * GET /api/orders — requires admin JWT.
+   * Updates orders$ for dashboard / admin orders / admin customers.
    */
   refreshOrders(): Observable<Order[]> {
     return this.http.get<any[]>(`${environment.apiUrl}/orders`).pipe(
@@ -67,20 +68,21 @@ export class OrderService {
   }
 
   /**
-   * Orders for one email (account page). Does not replace admin list.
+   * Orders for the logged-in customer.
+   * GET /api/orders/mine — protect only; server uses req.user.email.
+   * Does NOT replace the admin orders$ stream.
    */
-  loadOrdersByEmail(email: string): Observable<Order[]> {
-    const q = encodeURIComponent(email.trim().toLowerCase());
-
-    return this.http
-      .get<any[]>(`${environment.apiUrl}/orders?email=${q}`)
-      .pipe(
-        map((list) => (list ?? []).map((o) => this.mapApiOrder(o))),
-        catchError((err) => {
-          console.error('Failed to load orders by email', err);
-          return of([]);
-        }),
-      );
+  loadMyOrders(): Observable<Order[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/orders/mine`).pipe(
+      map((list) => (list ?? []).map((o) => this.mapApiOrder(o))),
+      catchError((err) => {
+        console.error('Failed to load my orders', err);
+        this.toastService.error(
+          err?.error?.message || 'Could not load your orders.',
+        );
+        return of([]);
+      }),
+    );
   }
 
   // ============================================================
@@ -147,6 +149,10 @@ export class OrderService {
     return this.ordersSource.value.find((order) => order.id === id) ?? null;
   }
 
+  /**
+   * Filter the in-memory admin list by email (after refreshOrders).
+   * Not used for customer "my orders" — use loadMyOrders() for that.
+   */
   getOrdersByEmail(email: string): Order[] {
     const normalized = email.trim().toLowerCase();
 
