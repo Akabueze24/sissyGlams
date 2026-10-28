@@ -1,195 +1,260 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 
 import { CartItem } from '../../models/cart-models/cart.model';
+import { Product } from '../../models/product-models/product.model';
 import { ToastService } from '../toast-service/toast.service';
 import { ProductService } from '../product-service/product.service';
+import { AuthService } from '../auth-service/auth.service';
+import { environment } from 'src/environments/environment';
+
+interface CartApiResponse {
+  items: any[];
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartService {
-  // ============================================================
-  // CART ITEMS
-  // ============================================================
+  private readonly apiUrl = `${environment.apiUrl}/cart`;
+  private readonly LOCAL_KEY = 'cart';
 
   private cartItems: CartItem[] = this.loadCart();
 
   private cartItemsSubject = new BehaviorSubject<CartItem[]>(this.cartItems);
-
   cartItems$ = this.cartItemsSubject.asObservable();
 
-  // ============================================================
-  // CART COUNT
-  // ============================================================
-
   private cartCountSubject = new BehaviorSubject<number>(
-    this.calculateCartCount()
+    this.calculateCartCount(),
   );
-
   cartCount$ = this.cartCountSubject.asObservable();
 
-  // ============================================================
-  // CART TOTAL
-  // ============================================================
-
   private cartTotalSubject = new BehaviorSubject<number>(
-    this.calculateCartTotal()
+    this.calculateCartTotal(),
   );
-
   cartTotal$ = this.cartTotalSubject.asObservable();
 
-  // ============================================================
-  // CONSTRUCTOR
-  // ============================================================
-
   constructor(
+    private http: HttpClient,
     private toastService: ToastService,
-    private productService: ProductService
-  ) {}
+    private productService: ProductService,
+    private authService: AuthService,
+  ) {
+    // If already logged in on refresh, load server cart
+    if (this.authService.isAuthenticated()) {
+      this.loadFromApi();
+    }
+  }
 
   // ============================================================
-  // LOAD CART FROM LOCAL STORAGE
+  // LOAD / SAVE (local + server)
   // ============================================================
 
   private loadCart(): CartItem[] {
-    const savedCart = localStorage.getItem('cart');
-
+    const savedCart = localStorage.getItem(this.LOCAL_KEY);
     if (savedCart) {
-      return JSON.parse(savedCart);
+      try {
+        return JSON.parse(savedCart);
+      } catch {
+        return [];
+      }
     }
-
     return [];
   }
 
-  // ============================================================
-  // SAVE + BROADCAST CART CHANGES
-  // ============================================================
-
+  /**
+   * Always update UI subjects.
+   * Guest → localStorage only.
+   * Logged in → localStorage + PUT /api/cart
+   */
   private updateCart(): void {
-    this.saveCart();
+    localStorage.setItem(this.LOCAL_KEY, JSON.stringify(this.cartItems));
     this.cartItemsSubject.next(this.cartItems);
     this.cartCountSubject.next(this.calculateCartCount());
     this.cartTotalSubject.next(this.calculateCartTotal());
-  }
 
-  // ============================================================
-  // SAVE CART TO LOCAL STORAGE
-  // ============================================================
-
-  private saveCart(): void {
-    localStorage.setItem('cart', JSON.stringify(this.cartItems));
-  }
-
-  // ============================================================
-  // STOCK (live from ProductService — not the cart snapshot)
-  // ============================================================
-
-  private getLiveStock(productId: string): number {
-    const product = this.productService.getProductById(productId);
-
-    if (!product) {
-      return 0;
+    if (this.authService.isAuthenticated()) {
+      this.http
+        .put<CartApiResponse>(this.apiUrl, {
+          items: this.toApiItems(this.cartItems),
+        })
+        .subscribe({
+          error: () => {
+            // UI already updated; server can retry on next change
+          },
+        });
     }
+  }
 
-    return this.productService.getAvailableStock(product);
+  /** GET /api/cart — after login or page refresh while logged in */
+  loadFromApi(): void {
+    this.http.get<CartApiResponse>(this.apiUrl).subscribe({
+      next: (res) => {
+        this.cartItems = this.fromApiItems(res.items || []);
+        localStorage.setItem(this.LOCAL_KEY, JSON.stringify(this.cartItems));
+        this.cartItemsSubject.next(this.cartItems);
+        this.cartCountSubject.next(this.calculateCartCount());
+        this.cartTotalSubject.next(this.calculateCartTotal());
+      },
+      error: () => {
+        // Keep local cart if API fails
+      },
+    });
   }
 
   /**
-   * Fix quantities if admin lowered stock after items were added.
-   * Call when opening cart / checkout.
+   * Call after successful login/register.
+   * Server cart becomes source of truth (merge can come later).
    */
-  syncQuantitiesWithStock(): void {
-    let changed = false;
+  syncAfterLogin(): void {
+    this.loadFromApi();
+  }
 
-    this.cartItems = this.cartItems
-      .map((item) => {
-        const stock = this.getLiveStock(item.product.id);
+  // API body: product id only (Mongo ObjectId string)
+  private toApiItems(items: CartItem[]) {
+    return items.map((item) => ({
+      product: item.product.id,
+      quantity: item.quantity,
+      color: item.color,
+      size: item.size,
+      length: item.length,
+    }));
+  }
 
-        if (stock < 1) {
-          changed = true;
-          return { ...item, quantity: 0 };
-        }
+  // API → CartItem (populate returns product with _id)
+  private fromApiItems(lines: any[]): CartItem[] {
+    return lines
+      .filter((line) => line.product)
+      .map((line) => {
+        const p = line.product;
+        const product = {
+          ...p,
+          id: p.id || p._id,
+        } as Product;
 
-        if (item.quantity > stock) {
-          changed = true;
-          return { ...item, quantity: stock };
-        }
-
-        return item;
-      })
-      .filter((item) => item.quantity > 0);
-
-    if (changed) {
-      this.updateCart();
-      this.toastService.info('Some quantities were updated to match stock.');
-    }
+        return {
+          product,
+          quantity: line.quantity,
+          color: line.color,
+          size: line.size,
+          length: line.length,
+        } as CartItem;
+      });
   }
 
   // ============================================================
-  // ADD TO CART
+  // STOCK
   // ============================================================
 
-  addToCart(item: CartItem): void {
-    const stock = this.getLiveStock(item.product.id);
+ private getLiveStock(productId: string): number | null {
+  const product = this.productService.getProductById(productId);
 
-    if (stock < 1) {
+  // Product not in catalog yet (or id mismatch) → don't invent "0 stock"
+  if (!product) {
+    return null;
+  }
+
+  return this.productService.getAvailableStock(product);
+}
+
+syncQuantitiesWithStock(): void {
+  let changed = false;
+
+  this.cartItems = this.cartItems
+    .map((item) => {
+      const stock = this.getLiveStock(item.product.id);
+
+      // Unknown product: keep line as-is
+      if (stock === null) {
+        return item;
+      }
+
+      if (stock < 1) {
+        changed = true;
+        return { ...item, quantity: 0 };
+      }
+
+      if (item.quantity > stock) {
+        changed = true;
+        return { ...item, quantity: stock };
+      }
+
+      return item;
+    })
+    .filter((item) => {
+      const stock = this.getLiveStock(item.product.id);
+      // Only drop when we KNOW stock is 0
+      if (stock === null) {
+        return true;
+      }
+      return item.quantity > 0;
+    });
+
+  if (changed) {
+    this.updateCart();
+    this.toastService.info('Some quantities were updated to match stock.');
+  }
+}
+
+  // ============================================================
+  // ADD / REMOVE / QTY (unchanged logic)
+  // ============================================================
+
+ addToCart(item: CartItem): void {
+  const stock = this.getLiveStock(item.product.id);
+
+  // Known out of stock
+  if (stock !== null && stock < 1) {
+    this.toastService.info('This product is out of stock.');
+    return;
+  }
+
+  const existingItem = this.cartItems.find((cartItem) => {
+    return (
+      cartItem.product.id === item.product.id &&
+      cartItem.color?.value === item.color?.value &&
+      cartItem.size?.value === item.size?.value &&
+      cartItem.length?.value === item.length?.value
+    );
+  });
+
+  if (existingItem) {
+    let nextQty = existingItem.quantity + item.quantity;
+
+    // Cap only when we know stock
+    if (stock !== null && nextQty > stock) {
+      existingItem.quantity = stock;
+      this.updateCart();
+      this.toastService.info(
+        `Only ${stock} available. Quantity updated to ${stock}.`,
+      );
+      return;
+    }
+
+    existingItem.quantity = nextQty;
+  } else {
+    const qty =
+      stock !== null ? Math.min(item.quantity, stock) : item.quantity;
+
+    if (qty < 1) {
       this.toastService.info('This product is out of stock.');
       return;
     }
 
-    const existingItem = this.cartItems.find((cartItem) => {
-      return (
-        cartItem.product.id === item.product.id &&
-        cartItem.color?.value === item.color?.value &&
-        cartItem.size?.value === item.size?.value &&
-        cartItem.length?.value === item.length?.value
-      );
+    this.cartItems.push({
+      ...item,
+      quantity: qty,
     });
-
-    if (existingItem) {
-      const nextQty = existingItem.quantity + item.quantity;
-
-      if (nextQty > stock) {
-        existingItem.quantity = stock;
-        this.updateCart();
-        this.toastService.info(
-          `Only ${stock} available. Quantity updated to ${stock}.`
-        );
-        return;
-      }
-
-      existingItem.quantity = nextQty;
-    } else {
-      const qty = Math.min(item.quantity, stock);
-
-      if (qty < 1) {
-        this.toastService.info('This product is out of stock.');
-        return;
-      }
-
-      // Keep full item (product + color/size/length) — colorGalleries stay on product
-      this.cartItems.push({
-        ...item,
-        quantity: qty,
-      });
-    }
-
-    this.updateCart();
-    this.toastService.success('Product added to your cart.');
   }
 
-  // ============================================================
-  // GET CART ITEMS
-  // ============================================================
+  this.updateCart();
+  this.toastService.success('Product added to your cart.');
+}
 
   getCartItems(): CartItem[] {
     return this.cartItems;
   }
-
-  // ============================================================
-  // REMOVE ITEM
-  // ============================================================
 
   removeCartItems(item: CartItem): void {
     const index = this.cartItems.indexOf(item);
@@ -201,29 +266,26 @@ export class CartService {
     }
   }
 
-  // ============================================================
-  // INCREASE QUANTITY
-  // ============================================================
-
   increaseQuantity(item: CartItem): void {
-    const stock = this.getLiveStock(item.product.id);
+  const stock = this.getLiveStock(item.product.id);
 
-    if (item.quantity >= stock) {
-      this.toastService.info(
-        stock < 1
-          ? 'This product is out of stock.'
-          : `Only ${stock} available.`
-      );
-      return;
-    }
-
+  if (stock === null) {
+    // No live stock info — allow +1 (or skip; your choice)
     item.quantity++;
     this.updateCart();
+    return;
   }
 
-  // ============================================================
-  // DECREASE QUANTITY
-  // ============================================================
+  if (item.quantity >= stock) {
+    this.toastService.info(
+      stock < 1 ? 'This product is out of stock.' : `Only ${stock} available.`,
+    );
+    return;
+  }
+
+  item.quantity++;
+  this.updateCart();
+}
 
   decreaseQuantity(item: CartItem): void {
     if (item.quantity > 1) {
@@ -232,46 +294,26 @@ export class CartService {
     }
   }
 
-  // ============================================================
-  // CALCULATE CART COUNT
-  // ============================================================
-
   private calculateCartCount(): number {
-    return this.cartItems.reduce((total, item) => {
-      return total + item.quantity;
-    }, 0);
+    return this.cartItems.reduce((total, item) => total + item.quantity, 0);
   }
-
-  // ============================================================
-  // CALCULATE CART TOTAL
-  // ============================================================
 
   private calculateCartTotal(): number {
-    return this.cartItems.reduce((total, item) => {
-      return total + item.product.price * item.quantity;
-    }, 0);
+    return this.cartItems.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0,
+    );
   }
-
-  // ============================================================
-  // GET CART COUNT
-  // ============================================================
 
   getCartCount(): number {
     return this.calculateCartCount();
   }
 
-  // ============================================================
-  // GET CART TOTAL
-  // ============================================================
-
   getCartTotal(): number {
     return this.calculateCartTotal();
   }
 
-  // ============================================================
-  // CLEAR CART
-  // ============================================================
-
+  /** Clears local + Mongo (PUT items: []) when logged in */
   clearCart(): void {
     this.cartItems = [];
     this.updateCart();

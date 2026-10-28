@@ -48,6 +48,11 @@ import { StoreLayoutComponent } from './features/store-layout/store-layout.compo
 import { RouterModule } from '@angular/router';
 import { AdminCollectionComponent } from './features/admin/pages/admin-collection/admin-collection.component';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { ShippingAndDeliveryComponent } from './pages/shipping-and-delivery/shipping-and-delivery.component';
+import { ReturnPolicyComponent } from './pages/return-policy/return-policy.component';
+import { FaqComponent } from './pages/faq/faq.component';
+import { TermsAndConditionsComponent } from './pages/terms-and-conditions/terms-and-conditions.component';
+import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 
 
 register();
@@ -94,6 +99,11 @@ register();
     SalesChartComponent,
     StoreLayoutComponent,
     AdminCollectionComponent,
+    ShippingAndDeliveryComponent,
+    ReturnPolicyComponent,
+    FaqComponent,
+    TermsAndConditionsComponent,
+    PrivacyPolicyComponent,
   
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

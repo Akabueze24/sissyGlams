@@ -1,0 +1,272 @@
+<main class="shipping-page container-fluid">
+
+
+  <!-- Header -->
+  <header class="shipping-page__header">
+    <h1 class="shipping-page__title">Shipping &amp; Delivery</h1>
+    <p class="shipping-page__subtitle">
+      Everything you need to know about how your Sissy Glams order gets to your door.
+    </p>
+  </header>
+
+  <!-- Highlights -->
+  <section class="shipping-highlights" aria-label="Shipping highlights">
+    <div class="row row-cols-1 row-cols-md-3 g-3 g-lg-4">
+
+      <div class="col">
+        <div class="shipping-highlights__card">
+          <span class="shipping-highlights__icon">
+            <i class="fa-solid fa-earth-americas" aria-hidden="true"></i>
+          </span>
+          <h2 class="shipping-highlights__title">Location-Based Shipping Rates</h2>
+          <p class="shipping-highlights__text">Shipping fees differ based on your delivery location and are calculated at checkout.</p>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="shipping-highlights__card">
+          <span class="shipping-highlights__icon">
+            <i class="fa-solid fa-box" aria-hidden="true"></i>
+          </span>
+          <h2 class="shipping-highlights__title">Discreet Packaging</h2>
+          <p class="shipping-highlights__text">Plain, unmarked parcels with no logos or product details on the outside.</p>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="shipping-highlights__card">
+          <span class="shipping-highlights__icon">
+            <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i>
+          </span>
+          <h2 class="shipping-highlights__title">Tracking Included</h2>
+          <p class="shipping-highlights__text">A tracking number is emailed to you as soon as your order ships.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!--
+    Optional notice banner. Use it for temporary delivery delays or
+    destinations you can't currently ship to, and delete it when it
+    no longer applies.
+  -->
+  <aside class="shipping-notice" aria-label="Shipping notice">
+    <i class="fa-solid fa-circle-info shipping-notice__icon" aria-hidden="true"></i>
+    <p class="shipping-notice__text">
+      Delivery times are estimates. Busy seasons, customs checks, and carrier delays can
+      occasionally add a few extra days.
+    </p>
+  </aside>
+
+  <!-- Delivery estimates -->
+  <section class="shipping-estimates" aria-labelledby="shippingEstimatesHeading">
+    <h2 class="shipping-estimates__title" id="shippingEstimatesHeading">Estimated Delivery Times</h2>
+    <p class="shipping-estimates__intro">
+      Orders are processed within 2&ndash;5 business days. Estimates below start from the day your order ships.
+    </p>
+
+    <div class="shipping-estimates__table-wrap table-responsive">
+      <table class="shipping-table">
+        <thead>
+          <tr>
+            <th scope="col">Destination</th>
+            <th scope="col">Standard</th>
+            <th scope="col">Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="shipping-table__region">United States</td>
+            <td>7&ndash;14 business days</td>
+            <td><span class="shipping-table__badge">Varies by location</span></td>
+          </tr>
+          <tr>
+            <td class="shipping-table__region">Canada</td>
+            <td>10&ndash;18 business days</td>
+            <td><span class="shipping-table__badge">Varies by location</span></td>
+          </tr>
+          <tr>
+            <td class="shipping-table__region">United Kingdom &amp; Europe</td>
+            <td>10&ndash;20 business days</td>
+            <td><span class="shipping-table__badge">Varies by location</span></td>
+          </tr>
+          <tr>
+            <td class="shipping-table__region">Nigeria &amp; Africa</td>
+            <td>12&ndash;25 business days</td>
+            <td><span class="shipping-table__badge">Varies by location</span></td>
+          </tr>
+          <tr>
+            <td class="shipping-table__region">Australia &amp; New Zealand</td>
+            <td>10&ndash;20 business days</td>
+            <td><span class="shipping-table__badge">Varies by location</span></td>
+          </tr>
+          <tr>
+            <td class="shipping-table__region">Rest of the world</td>
+            <td>14&ndash;30 business days</td>
+            <td><span class="shipping-table__badge">Varies by location</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="shipping-faq" aria-labelledby="shippingFaqHeading">
+    <h2 class="shipping-faq__title" id="shippingFaqHeading">Shipping Questions</h2>
+
+    <div class="accordion shipping-faq__accordion" id="shippingFaqAccordion">
+
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#faqWorldwide" aria-expanded="true" aria-controls="faqWorldwide">
+            Do you ship worldwide?
+          </button>
+        </h3>
+        <div id="faqWorldwide" class="accordion-collapse collapse show" data-bs-parent="#shippingFaqAccordion">
+          <div class="accordion-body">
+            Yes, we deliver to most countries around the world. If a remote destination
+            can't be served by our carriers, we'll contact you after you order and offer
+            a refund or an alternative.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#faqCost" aria-expanded="false" aria-controls="faqCost">
+            How much does shipping cost?
+          </button>
+        </h3>
+        <div id="faqCost" class="accordion-collapse collapse" data-bs-parent="#shippingFaqAccordion">
+          <div class="accordion-body">
+            Shipping fees differ depending on your delivery location. The exact fee is shown at
+            checkout before you pay, so there are no surprises.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#faqOrigin" aria-expanded="false" aria-controls="faqOrigin">
+            Where do my orders ship from?
+          </button>
+        </h3>
+        <div id="faqOrigin" class="accordion-collapse collapse" data-bs-parent="#shippingFaqAccordion">
+          <div class="accordion-body">
+            Orders are dispatched from our partner warehouses. Working with several
+            fulfilment locations helps us keep prices low and shipping free on qualifying orders.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#faqTracking" aria-expanded="false" aria-controls="faqTracking">
+            Will I receive a tracking number?
+          </button>
+        </h3>
+        <div id="faqTracking" class="accordion-collapse collapse" data-bs-parent="#shippingFaqAccordion">
+          <div class="accordion-body">
+            Yes. We email your tracking number once your order leaves the warehouse, usually
+            within a few days of purchase. If you haven't received it after 5 business days,
+            please get in touch and we'll look into it.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#faqDiscreet" aria-expanded="false" aria-controls="faqDiscreet">
+            Is my package discreet?
+          </button>
+        </h3>
+        <div id="faqDiscreet" class="accordion-collapse collapse" data-bs-parent="#shippingFaqAccordion">
+          <div class="accordion-body">
+            Absolutely. Every order arrives in plain, unmarked packaging. There are no
+            logos on the outside, and the customs label uses a generic description rather
+            than naming the items inside.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#faqCustoms" aria-expanded="false" aria-controls="faqCustoms">
+            Will I have to pay customs or import fees?
+          </button>
+        </h3>
+        <div id="faqCustoms" class="accordion-collapse collapse" data-bs-parent="#shippingFaqAccordion">
+          <div class="accordion-body">
+            Most parcels arrive without extra charges, but import duties and taxes are set
+            by your country and are the buyer's responsibility if they apply.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#faqMultiple" aria-expanded="false" aria-controls="faqMultiple">
+            Why did my items arrive in separate packages?
+          </button>
+        </h3>
+        <div id="faqMultiple" class="accordion-collapse collapse" data-bs-parent="#shippingFaqAccordion">
+          <div class="accordion-body">
+            Items in one order can ship from different warehouses, so they may arrive on
+            different days. Each package gets its own tracking number.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#faqStalled" aria-expanded="false" aria-controls="faqStalled">
+            My tracking hasn't updated in a while. Is that normal?
+          </button>
+        </h3>
+        <div id="faqStalled" class="accordion-collapse collapse" data-bs-parent="#shippingFaqAccordion">
+          <div class="accordion-body">
+            International parcels often go several days between scans, especially while in
+            transit or clearing customs. If there's been no movement for 10 business days,
+            contact us and we'll follow up with the carrier.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#faqAddress" aria-expanded="false" aria-controls="faqAddress">
+            Can I change my shipping address after ordering?
+          </button>
+        </h3>
+        <div id="faqAddress" class="accordion-collapse collapse" data-bs-parent="#shippingFaqAccordion">
+          <div class="accordion-body">
+            Contact us as soon as possible. We can update the address if your order hasn't
+            shipped yet, but once it's on its way we can't redirect it.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Contact CTA -->
+  <section class="shipping-help" aria-labelledby="shippingHelpHeading">
+    <h2 class="shipping-help__title" id="shippingHelpHeading">Still have questions?</h2>
+    <p class="shipping-help__text">Our support team is happy to help with anything about your delivery.</p>
+    <div class="shipping-help__actions">
+      <a class="shipping-help__action shipping-help__action--primary" href="/contact">Contact Us</a>
+      <a class="shipping-help__action shipping-help__action--secondary" href="/faq">View All FAQs</a>
+    </div>
+  </section>
+
+</main>

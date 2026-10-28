@@ -26,7 +26,11 @@ app.use('/api/collections', require('./routes/collection.routes'));
 
 app.use('/api/settings', require('./routes/storeSettings.routes'));
 
-app.use('/api/cart', require('./routes/cart.routes'))
+app.use('/api/cart', require('./routes/cart.routes'));
+
+app.use('/api/wishlist', require('./routes/wishlist.routes'));
+
+app.use('/api/shipping', require('./routes/shippingRate.routes'));
 
 app.use(notFound);
 app.use(errorHandler)

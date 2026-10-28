@@ -427,10 +427,11 @@
         aria-labelledby="tab-shipping-btn"
       >
 
-         <p [innerHTML]="product?.productDetails?.shipping"></p>
+         <!-- <p [innerHTML]="product?.productDetails?.shipping"></p>
         <p>
           {{ product?.productDetails?.returns }}
-        </p>
+        </p> -->
+        <app-shipping-and-delivery></app-shipping-and-delivery>
 
       
       </div>

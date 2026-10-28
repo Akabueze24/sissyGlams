@@ -29,6 +29,11 @@ import { AdminCategoriesComponent } from './features/admin/pages/admin-categorie
 import { StoreLayoutComponent } from './features/store-layout/store-layout.component';
 import { AdminCollectionComponent } from './features/admin/pages/admin-collection/admin-collection.component';
 import { adminGuard } from './core/guards/admin-guard/admin.guard';
+import { ShippingAndDeliveryComponent } from './pages/shipping-and-delivery/shipping-and-delivery.component';
+import { ReturnPolicyComponent } from './pages/return-policy/return-policy.component';
+import { FaqComponent } from './pages/faq/faq.component';
+import { TermsAndConditionsComponent } from './pages/terms-and-conditions/terms-and-conditions.component';
+import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 
 const routes: Routes = [
   {
@@ -54,6 +59,15 @@ const routes: Routes = [
         path: 'order-confirmation',
         component: OrderConfirmationComponent,
       },
+
+      {path: 'shipping', component: ShippingAndDeliveryComponent},
+
+      {path: 'refund-policy', component: ReturnPolicyComponent},
+
+      {path: 'frequently-asked-question', component: FaqComponent},
+
+      {path: 'terms-and-conditions', component: TermsAndConditionsComponent},
+      {path: 'privacy-policy', component: PrivacyPolicyComponent},
 
       // CUSTOMER ACCOUNT
       {

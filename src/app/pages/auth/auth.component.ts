@@ -15,6 +15,8 @@ import {
   AuthService,
   AuthMode,
 } from 'src/app/core/services/auth-service/auth.service';
+import { CartService } from 'src/app/core/services/cart-service/cart.service';
+import { WishlistService } from 'src/app/core/services/wishlist-service/wishlist.service';
 
 @Component({
   selector: 'app-auth',
@@ -58,6 +60,8 @@ export class AuthComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private cartService: CartService,
+    private wishlistService: WishlistService
   ) {}
 
   // ============================================================
@@ -127,6 +131,8 @@ export class AuthComponent implements OnInit, OnDestroy {
       if (!res) {
         return; // failed — toast already shown
       }
+      this.wishlistService.syncAfterLogin();
+      this.cartService.syncAfterLogin();
       this.close();
       this.router.navigate([this.redirectUrl]);
     });
@@ -148,6 +154,8 @@ export class AuthComponent implements OnInit, OnDestroy {
       if (!res) {
         return;
       }
+      this.wishlistService.syncAfterLogin();
+      this.cartService.syncAfterLogin();
       this.close();
       this.router.navigate([this.redirectUrl]);
     });

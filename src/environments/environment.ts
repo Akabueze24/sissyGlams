@@ -1,4 +1,4 @@
 export const environment = {
-  production: true,
-  apiUrl: 'https://sissy-glam-api.onrender.com/api',
+  production: false,
+  apiUrl: 'http://localhost:5000/api',
 };
