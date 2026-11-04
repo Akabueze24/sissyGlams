@@ -98,6 +98,33 @@ const userSchema = new mongoose.Schema(
     },
     shippingAddress: { type: addressSchema, default: undefined },
     billingAddress: { type: addressSchema, default: undefined },
+
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailVerifyCode: {
+      type: String,
+      default: null,
+    },
+    emailVerifyExpires: {
+      type: Date,
+      default: null,
+    },
+
+    passwordResetCode: {
+      type: String,
+      default: null,
+    },
+    passwordResetExpires: {
+      type: Date,
+      default: null,
+    },
+
+    passwordResetPurpose: {
+      type: String,
+      enum: ["forgot", "change"]
+    },
   },
   { timestamps: true },
 );

@@ -455,3 +455,15 @@
     </div>
   </div>
 </div>
+
+<app-otp-modal
+  [open]="otpOpen"
+  title="Verify your email"
+  description="We sent a 6-digit code to your email. Enter it to activate your account."
+  [errorMessage]="otpError"
+  [verifying]="otpVerifying"
+  [resendSeconds]="otpResendSeconds"
+  (closed)="onOtpClosed()"
+  (resend)="onOtpResend()"
+  (verified)="onOtpVerified($event)"
+></app-otp-modal>

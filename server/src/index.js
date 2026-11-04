@@ -14,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/health', require('./routes/health.routes'));
+
 app.use('/api/products', require('./routes/products.routes'));
 
 app.use('/api/orders', require('./routes/orders.routes'))
@@ -31,6 +32,7 @@ app.use('/api/cart', require('./routes/cart.routes'));
 app.use('/api/wishlist', require('./routes/wishlist.routes'));
 
 app.use('/api/shipping', require('./routes/shippingRate.routes'));
+
 
 app.use(notFound);
 app.use(errorHandler)

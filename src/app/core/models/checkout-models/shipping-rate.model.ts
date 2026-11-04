@@ -1,5 +1,11 @@
 export interface ShippingRate {
-  country: string;
+  _id?: string;
+  id?: string;
+  countryCode: string;
+  countryName: string;
   standard: number;
   express: number;
+  active?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }

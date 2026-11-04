@@ -123,6 +123,18 @@
           <li>
             <a
               class="admin-nav__link"
+              routerLink="/admin/shippings"
+              routerLinkActive="admin-nav__link--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="fa-solid fa-warehouse" aria-hidden="true"></i>
+              <span>Shippings</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="admin-nav__link"
               routerLink="/admin/settings"
               routerLinkActive="admin-nav__link--active"
               [routerLinkActiveOptions]="{ exact: true }"

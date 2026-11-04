@@ -13,9 +13,9 @@ import { register } from 'swiper/element/bundle';
 import { ProductCardComponent } from './shared/product-card/product-card.component';
 import { CollectionSliderComponent } from './shared/collection-slider/collection-slider.component';
 import { ShopComponent } from './pages/shop/shop.component';
-import { CategorySidebarComponent } from './shared/shopping/category-sidebar/category-sidebar.component';
-import { PriceFilterComponent } from './shared/shopping/price-filter/price-filter.component';
-import { RatingFilterComponent } from './shared/shopping/rating-filter/rating-filter.component';
+import { CategorySidebarComponent } from './shared/category-sidebar/category-sidebar.component';
+import { PriceFilterComponent } from './shared/price-filter/price-filter.component';
+import { RatingFilterComponent } from './shared/rating-filter/rating-filter.component';
 import { ProductViewComponent } from './pages/product-view/product-view.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { AuthComponent } from './pages/auth/auth.component';
@@ -53,6 +53,8 @@ import { ReturnPolicyComponent } from './pages/return-policy/return-policy.compo
 import { FaqComponent } from './pages/faq/faq.component';
 import { TermsAndConditionsComponent } from './pages/terms-and-conditions/terms-and-conditions.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
+import { AdminShippingComponent } from './features/admin/pages/admin-shipping/admin-shipping.component';
+import { OtpModalComponent } from './shared/otp-modal/otp-modal.component';
 
 
 register();
@@ -104,6 +106,9 @@ register();
     FaqComponent,
     TermsAndConditionsComponent,
     PrivacyPolicyComponent,
+    AdminShippingComponent,
+    OtpModalComponent,
+
   
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

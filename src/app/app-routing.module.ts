@@ -34,6 +34,7 @@ import { ReturnPolicyComponent } from './pages/return-policy/return-policy.compo
 import { FaqComponent } from './pages/faq/faq.component';
 import { TermsAndConditionsComponent } from './pages/terms-and-conditions/terms-and-conditions.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
+import { AdminShippingComponent } from './features/admin/pages/admin-shipping/admin-shipping.component';
 
 const routes: Routes = [
   {
@@ -134,6 +135,7 @@ const routes: Routes = [
       { path: 'categories', component: AdminCategoriesComponent },
       { path: 'collections', component: AdminCollectionComponent },
       { path: 'settings', component: SettingsComponent },
+      {path: 'shippings', component: AdminShippingComponent}
     ],
   },
 ];

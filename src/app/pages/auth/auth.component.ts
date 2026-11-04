@@ -33,6 +33,18 @@ export class AuthComponent implements OnInit, OnDestroy {
   redirectUrl = '/account';
 
   // ============================================================
+  // EMAIL OTP (after register — before any session)
+  // ============================================================
+
+  otpOpen = false;
+  otpError = '';
+  otpVerifying = false;
+  otpResendSeconds = 0;
+
+  /** Email waiting for OTP — required for public verify/resend */
+  pendingVerifyEmail = '';
+
+  // ============================================================
   // PASSWORD VISIBILITY
   // ============================================================
 
@@ -46,22 +58,14 @@ export class AuthComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   registerForm!: FormGroup;
 
-  // ============================================================
-  // SUBSCRIPTION
-  // ============================================================
-
   private modalSubscription!: Subscription;
-
-  // ============================================================
-  // CONSTRUCTOR
-  // ============================================================
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
     private cartService: CartService,
-    private wishlistService: WishlistService
+    private wishlistService: WishlistService,
   ) {}
 
   // ============================================================
@@ -72,7 +76,6 @@ export class AuthComponent implements OnInit, OnDestroy {
     this.createLoginForm();
     this.createRegisterForm();
 
-    // Listen for requests to open the modal (from Guard, Header, etc.)
     this.modalSubscription = this.authService.authModalRequest$.subscribe(
       (request) => {
         this.open(request.mode, request.redirectUrl || '/account');
@@ -81,14 +84,11 @@ export class AuthComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Always unsubscribe to avoid memory leaks
-    if (this.modalSubscription) {
-      this.modalSubscription.unsubscribe();
-    }
+    this.modalSubscription?.unsubscribe();
   }
 
   // ============================================================
-  // FORM CREATION
+  // FORMS
   // ============================================================
 
   private createLoginForm(): void {
@@ -117,6 +117,7 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   // ============================================================
   // LOGIN
+  // Backend returns 403 if email is not verified — no OTP here
   // ============================================================
 
   onLogin(): void {
@@ -129,17 +130,27 @@ export class AuthComponent implements OnInit, OnDestroy {
 
     this.authService.login(loginData).subscribe((res) => {
       if (!res) {
-        return; // failed — toast already shown
+        return;
       }
+
+      // Unverified — open OTP, no session
+      if ('needsVerification' in res && res.needsVerification) {
+        this.pendingVerifyEmail = res.email;
+        this.isOpen = false;
+        this.openEmailOtpModal();
+        this.authService.resendEmailVerification(res.email).subscribe();
+        return;
+      }
+
+      // Normal verified login
       this.wishlistService.syncAfterLogin();
       this.cartService.syncAfterLogin();
-      this.close();
-      this.router.navigate([this.redirectUrl]);
+      this.finishAuthSuccess();
     });
   }
-
   // ============================================================
   // REGISTER
+  // No session yet — only open OTP
   // ============================================================
 
   onRegister(): void {
@@ -154,11 +165,76 @@ export class AuthComponent implements OnInit, OnDestroy {
       if (!res) {
         return;
       }
-      this.wishlistService.syncAfterLogin();
-      this.cartService.syncAfterLogin();
-      this.close();
-      this.router.navigate([this.redirectUrl]);
+
+      this.pendingVerifyEmail = res.email;
+      this.isOpen = false;
+      this.openEmailOtpModal();
     });
+  }
+  // ============================================================
+  // EMAIL OTP
+  // ============================================================
+
+  private openEmailOtpModal(): void {
+    this.otpError = '';
+    this.otpVerifying = false;
+    this.otpOpen = true;
+    this.otpResendSeconds = 0;
+    setTimeout(() => {
+      this.otpResendSeconds = 60;
+    }, 0);
+  }
+
+  onOtpVerified(code: string): void {
+    if (!this.pendingVerifyEmail) {
+      this.otpError = 'Missing email. Please try again.';
+      return;
+    }
+
+    this.otpVerifying = true;
+    this.otpError = '';
+
+    this.authService
+      .verifyEmail(this.pendingVerifyEmail, code)
+      .subscribe((user) => {
+        this.otpVerifying = false;
+        if (!user) {
+          this.otpError = 'Invalid or expired verification code.';
+          return;
+        }
+
+        this.otpOpen = false;
+        this.pendingVerifyEmail = '';
+        this.registerForm.reset();
+        this.wishlistService.syncAfterLogin();
+        this.cartService.syncAfterLogin();
+        this.finishAuthSuccess();
+      });
+  }
+  onOtpResend(): void {
+    if (!this.pendingVerifyEmail) {
+      return;
+    }
+    this.authService
+      .resendEmailVerification(this.pendingVerifyEmail)
+      .subscribe((ok) => {
+        if (!ok) return;
+        this.otpError = '';
+        this.otpResendSeconds = 0;
+        setTimeout(() => (this.otpResendSeconds = 60), 0);
+      });
+  }
+  onOtpClosed(): void {
+    this.otpOpen = false;
+    this.otpError = '';
+    this.otpVerifying = false;
+    this.pendingVerifyEmail = '';
+    // stay logged out — no finishAuthSuccess()
+  }
+
+  private finishAuthSuccess(): void {
+    this.close();
+    this.router.navigate([this.redirectUrl]);
   }
 
   // ============================================================

@@ -1,0 +1,533 @@
+<div class="admin-shipping">
+  <!-- PAGE HEADER -->
+  <header class="admin-shipping__header">
+    <div class="admin-shipping__heading">
+      <h1 class="admin-shipping__title">Shipping Rates</h1>
+      <p class="admin-shipping__subtitle">
+        Manage standard and express shipping fees for each destination country.
+      </p>
+    </div>
+
+    <button
+      class="admin-shipping__btn admin-shipping__btn--primary"
+      type="button"
+      (click)="openAddForm()"
+    >
+      <i class="fa-solid fa-plus" aria-hidden="true"></i>
+      <span>Add Country</span>
+    </button>
+  </header>
+
+  <!-- SUMMARY -->
+  <section class="admin-shipping__summary" aria-label="Shipping summary">
+    <div class="row g-3 g-lg-4">
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-shipping__summary-card">
+          <span class="admin-shipping__summary-icon">
+            <i class="fa-solid fa-earth-africa" aria-hidden="true"></i>
+          </span>
+          <div class="admin-shipping__summary-content">
+            <span class="admin-shipping__summary-label">Total Countries</span>
+            <p class="admin-shipping__summary-value">{{ totalCount }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-shipping__summary-card">
+          <span class="admin-shipping__summary-icon">
+            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+          </span>
+          <div class="admin-shipping__summary-content">
+            <span class="admin-shipping__summary-label">Active Countries</span>
+            <p class="admin-shipping__summary-value">{{ activeCount }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-shipping__summary-card">
+          <span class="admin-shipping__summary-icon">
+            <i class="fa-solid fa-circle-pause" aria-hidden="true"></i>
+          </span>
+          <div class="admin-shipping__summary-content">
+            <span class="admin-shipping__summary-label">Inactive Countries</span>
+            <p class="admin-shipping__summary-value">{{ inactiveCount }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="admin-shipping__summary-card">
+          <span class="admin-shipping__summary-icon">
+            <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+          </span>
+          <div class="admin-shipping__summary-content">
+            <span class="admin-shipping__summary-label"
+              >Active Shipping Options</span
+            >
+            <p class="admin-shipping__summary-value">
+              {{ activeOptionsCount }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESTINATION COUNTRIES -->
+  <section
+    class="admin-shipping__content"
+    aria-labelledby="shippingCountriesHeading"
+  >
+    <div class="admin-shipping__content-header">
+      <h2 class="admin-shipping__content-title" id="shippingCountriesHeading">
+        Destination Countries
+      </h2>
+      <p class="admin-shipping__content-subtitle">
+        Each country has one standard fee and one express fee.
+      </p>
+    </div>
+
+    <!-- TOOLBAR -->
+     <!-- TOOLBAR -->
+    <div class="admin-shipping__toolbar">
+      <div class="admin-shipping__search">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input
+          class="admin-shipping__search-input"
+          type="search"
+          name="shippingSearch"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onFilterChange()"
+          placeholder="Search by country name or code..."
+          aria-label="Search countries"
+        />
+      </div>
+
+      <div class="admin-shipping__filters">
+        <select
+          class="admin-shipping__select"
+          name="shippingStatusFilter"
+          [(ngModel)]="statusFilter"
+          (ngModelChange)="onFilterChange()"
+          aria-label="Filter by status"
+        >
+          <option value="">All</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+
+        <button
+          class="admin-shipping__btn admin-shipping__btn--ghost"
+          type="button"
+          (click)="clearFilters()"
+        >
+          <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+          <span>Clear filters</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SHIPPING TABLE -->
+    <div class="admin-shipping__table-wrapper">
+      <table class="admin-shipping__table">
+        <caption class="visually-hidden">
+          Shipping rates by destination country
+        </caption>
+
+        <thead>
+          <tr>
+            <th scope="col">Country</th>
+            <th scope="col">Code</th>
+            <th scope="col">Standard</th>
+            <th scope="col">Express</th>
+            <th scope="col">Status</th>
+            <th scope="col">Last Updated</th>
+            <th scope="col" class="admin-shipping__actions-heading">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <ng-container *ngIf="filteredRates.length; else emptyRates">
+            <tr
+              *ngFor="let rate of filteredRates"
+              [class.admin-shipping__row--inactive]="!isActive(rate)"
+            >
+              <td class="admin-shipping__country">{{ rate.countryName }}</td>
+              <td>
+                <span class="admin-shipping__code">{{ rate.countryCode }}</span>
+              </td>
+              <td class="admin-shipping__fee">
+                {{ formatMoney(rate.standard) }}
+              </td>
+              <td class="admin-shipping__fee">
+                {{ formatMoney(rate.express) }}
+              </td>
+              <td>
+                <span
+                  class="admin-shipping__status"
+                  [class.bg-success-subtle]="isActive(rate)"
+                  [class.text-success-emphasis]="isActive(rate)"
+                  [class.admin-shipping__status--inactive]="!isActive(rate)"
+                >
+                  {{ isActive(rate) ? "Active" : "Inactive" }}
+                </span>
+              </td>
+              <td>{{ formatDate(rate.updatedAt || rate.createdAt) }}</td>
+              <td>
+                <div class="admin-shipping__actions">
+                  <button
+                    class="admin-shipping__action-btn"
+                    type="button"
+                    [attr.aria-label]="'View ' + rate.countryName"
+                    (click)="openViewModal(rate)"
+                  >
+                    <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                  </button>
+
+                  <button
+                    class="admin-shipping__action-btn admin-shipping__action-btn--edit"
+                    type="button"
+                    [attr.aria-label]="'Edit ' + rate.countryName"
+                    (click)="openEditForm(rate)"
+                  >
+                    <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                  </button>
+
+                  <button
+                    class="admin-shipping__action-btn"
+                    type="button"
+                    [attr.aria-label]="
+                      (isActive(rate) ? 'Deactivate ' : 'Activate ') +
+                      rate.countryName
+                    "
+                    (click)="toggleActive(rate)"
+                  >
+                    <i
+                      class="fa-solid"
+                      [class.fa-toggle-on]="isActive(rate)"
+                      [class.fa-toggle-off]="!isActive(rate)"
+                      aria-hidden="true"
+                    ></i>
+                  </button>
+
+                  <button
+                    class="admin-shipping__action-btn admin-shipping__action-btn--delete"
+                    type="button"
+                    [attr.aria-label]="'Delete ' + rate.countryName"
+                    (click)="openDeleteModal(rate)"
+                  >
+                    <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+
+          <ng-template #emptyRates>
+            <tr>
+              <td colspan="7">
+                No shipping destinations match your filters. Add a country or
+                clear filters.
+              </td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="admin-shipping__footer">
+      <p class="admin-shipping__results">
+        Showing {{ filteredRates.length }} of {{ totalCount }}
+        {{ totalCount === 1 ? "country" : "countries" }}
+      </p>
+    </footer>
+  </section>
+
+  <!-- ADD / EDIT MODAL -->
+  <div
+    class="admin-shipping__overlay"
+    *ngIf="showFormModal"
+    role="presentation"
+    (click)="closeFormModal()"
+  >
+    <div
+      class="admin-shipping__modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="shippingFormTitle"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="admin-shipping__modal-header">
+        <h2 class="admin-shipping__modal-title" id="shippingFormTitle">
+          {{ isEditMode ? "Edit Country" : "Add Country" }}
+        </h2>
+
+        <button
+          class="admin-shipping__modal-close"
+          type="button"
+          aria-label="Close"
+          (click)="closeFormModal()"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <form class="admin-shipping__form" (ngSubmit)="submitForm()" novalidate>
+        <div class="admin-shipping__field">
+          <label class="admin-shipping__label" for="shippingCountryName">
+            Country name
+          </label>
+          <input
+            id="shippingCountryName"
+            class="admin-shipping__input"
+            type="text"
+            name="countryName"
+            [(ngModel)]="form.countryName"
+            placeholder="e.g. Nigeria"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="admin-shipping__field">
+          <label class="admin-shipping__label" for="shippingCountryCode">
+            Country code
+          </label>
+          <input
+            id="shippingCountryCode"
+            class="admin-shipping__input admin-shipping__input--code"
+            type="text"
+            name="countryCode"
+            [(ngModel)]="form.countryCode"
+            placeholder="NG"
+            maxlength="2"
+            autocomplete="off"
+            [readonly]="isEditMode"
+          />
+          <p class="admin-shipping__hint">
+            Two-letter ISO code, such as NG, US, or GB.
+            <span *ngIf="isEditMode">Code cannot be changed after create.</span>
+          </p>
+        </div>
+
+        <div class="admin-shipping__field-row">
+          <div class="admin-shipping__field">
+            <label class="admin-shipping__label" for="shippingStandard">
+              Standard fee (USD)
+            </label>
+            <input
+              id="shippingStandard"
+              class="admin-shipping__input"
+              type="number"
+              name="standard"
+              [(ngModel)]="form.standard"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+            />
+          </div>
+
+          <div class="admin-shipping__field">
+            <label class="admin-shipping__label" for="shippingExpress">
+              Express fee (USD)
+            </label>
+            <input
+              id="shippingExpress"
+              class="admin-shipping__input"
+              type="number"
+              name="express"
+              [(ngModel)]="form.express"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+
+        <label class="admin-shipping__toggle" for="shippingActive">
+          <input
+            id="shippingActive"
+            type="checkbox"
+            name="active"
+            [(ngModel)]="form.active"
+          />
+          <span>
+            <strong>Active</strong>
+            <small>
+              Customers in this country can choose these shipping options.
+            </small>
+          </span>
+        </label>
+
+        <p class="admin-shipping__form-error" *ngIf="formError" role="alert">
+          {{ formError }}
+        </p>
+
+        <div class="admin-shipping__modal-actions">
+          <button
+            class="admin-shipping__btn admin-shipping__btn--secondary"
+            type="button"
+            (click)="closeFormModal()"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="admin-shipping__btn admin-shipping__btn--primary"
+            type="submit"
+          >
+            {{ isEditMode ? "Save changes" : "Add country" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- DETAILS MODAL -->
+  <div
+    class="admin-shipping__overlay"
+    *ngIf="showViewModal && viewRate"
+    role="presentation"
+    (click)="closeViewModal()"
+  >
+    <div
+      class="admin-shipping__modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="shippingDetailsTitle"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="admin-shipping__modal-header">
+        <h2 class="admin-shipping__modal-title" id="shippingDetailsTitle">
+          {{ viewRate.countryName }} ({{ viewRate.countryCode }})
+        </h2>
+
+        <button
+          class="admin-shipping__modal-close"
+          type="button"
+          aria-label="Close"
+          (click)="closeViewModal()"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <dl class="admin-shipping__details">
+        <div class="admin-shipping__details-row">
+          <dt>Standard shipping</dt>
+          <dd>{{ formatMoney(viewRate.standard) }}</dd>
+        </div>
+
+        <div class="admin-shipping__details-row">
+          <dt>Express shipping</dt>
+          <dd>{{ formatMoney(viewRate.express) }}</dd>
+        </div>
+
+        <div class="admin-shipping__details-row">
+          <dt>Status</dt>
+          <dd>
+            <span
+              class="admin-shipping__status"
+              [class.bg-success-subtle]="isActive(viewRate)"
+              [class.text-success-emphasis]="isActive(viewRate)"
+              [class.admin-shipping__status--inactive]="!isActive(viewRate)"
+            >
+              {{ isActive(viewRate) ? "Active" : "Inactive" }}
+            </span>
+          </dd>
+        </div>
+
+        <div class="admin-shipping__details-row">
+          <dt>Created</dt>
+          <dd>{{ formatDateTime(viewRate.createdAt) }}</dd>
+        </div>
+
+        <div class="admin-shipping__details-row">
+          <dt>Last updated</dt>
+          <dd>{{ formatDateTime(viewRate.updatedAt) }}</dd>
+        </div>
+
+        <div class="admin-shipping__details-row">
+          <dt>Record ID</dt>
+          <dd class="admin-shipping__details-id">
+            {{ viewRate._id || viewRate.id || "—" }}
+          </dd>
+        </div>
+      </dl>
+
+      <div class="admin-shipping__modal-actions">
+        <button
+          class="admin-shipping__btn admin-shipping__btn--secondary"
+          type="button"
+          (click)="closeViewModal()"
+        >
+          Close
+        </button>
+
+        <button
+          class="admin-shipping__btn admin-shipping__btn--primary"
+          type="button"
+          (click)="editFromView()"
+        >
+          <i class="fa-solid fa-pen" aria-hidden="true"></i>
+          <span>Edit</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRMATION -->
+  <div
+    class="admin-shipping__overlay"
+    *ngIf="showDeleteModal && rateToDelete"
+    role="presentation"
+    (click)="closeDeleteModal()"
+  >
+    <div
+      class="admin-shipping__modal admin-shipping__modal--narrow"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="shippingDeleteTitle"
+      aria-describedby="shippingDeleteText"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="admin-shipping__delete-icon">
+        <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+      </div>
+
+      <h2
+        class="admin-shipping__modal-title admin-shipping__modal-title--center"
+        id="shippingDeleteTitle"
+      >
+        Delete {{ rateToDelete.countryName }} ({{ rateToDelete.countryCode }})?
+      </h2>
+
+      <p class="admin-shipping__delete-text" id="shippingDeleteText">
+        This permanently removes the shipping-rate record for this country.
+        Customers there will no longer see these shipping options. This cannot
+        be undone.
+      </p>
+
+      <div
+        class="admin-shipping__modal-actions admin-shipping__modal-actions--center"
+      >
+        <button
+          class="admin-shipping__btn admin-shipping__btn--secondary"
+          type="button"
+          (click)="closeDeleteModal()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="admin-shipping__btn admin-shipping__btn--danger"
+          type="button"
+          (click)="confirmDelete()"
+        >
+          Delete country
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

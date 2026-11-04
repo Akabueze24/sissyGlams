@@ -20,13 +20,20 @@ export class EditAccountComponent implements OnInit, OnDestroy {
   showConfirmPassword = false;
 
   // ============================================================
+  // OTP MODAL
+  // ============================================================
+
+  otpOpen = false;
+  otpError = '';
+  otpVerifying = false;
+  otpResendSeconds = 0;
+  private requestingCode = false;
+
+  // ============================================================
   // FORMS
   // ============================================================
 
-  // Personal information form
   accountForm!: FormGroup;
-
-  // Password change form
   passwordForm!: FormGroup;
 
   // ============================================================
@@ -35,15 +42,7 @@ export class EditAccountComponent implements OnInit, OnDestroy {
 
   currentUser: User | null = null;
 
-  // ============================================================
-  // SUBSCRIPTION
-  // ============================================================
-
   private userSubscription!: Subscription;
-
-  // ============================================================
-  // CONSTRUCTOR
-  // ============================================================
 
   constructor(
     private fb: FormBuilder,
@@ -55,11 +54,9 @@ export class EditAccountComponent implements OnInit, OnDestroy {
   // ============================================================
 
   ngOnInit(): void {
-    // Create both forms
     this.createAccountForm();
     this.createPasswordForm();
 
-    // Listen for the current user
     this.userSubscription = this.authService.currentUser$.subscribe((user) => {
       this.currentUser = user;
 
@@ -74,11 +71,11 @@ export class EditAccountComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.userSubscription.unsubscribe();
+    this.userSubscription?.unsubscribe();
   }
 
   // ============================================================
-  // CREATE ACCOUNT FORM
+  // FORMS
   // ============================================================
 
   private createAccountForm(): void {
@@ -89,17 +86,11 @@ export class EditAccountComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ============================================================
-  // CREATE PASSWORD FORM
-  // ============================================================
-
   private createPasswordForm(): void {
     this.passwordForm = this.fb.group(
       {
         currentPassword: ['', Validators.required],
-
         newPassword: ['', [Validators.required, Validators.minLength(8)]],
-
         confirmNewPassword: ['', Validators.required],
       },
       {
@@ -107,10 +98,6 @@ export class EditAccountComponent implements OnInit, OnDestroy {
       },
     );
   }
-
-  // ============================================================
-  // PASSWORD MATCH VALIDATOR
-  // ============================================================
 
   private passwordMatchValidator(form: FormGroup) {
     const newPassword = form.get('newPassword')?.value;
@@ -127,48 +114,110 @@ export class EditAccountComponent implements OnInit, OnDestroy {
   // SAVE ACCOUNT
   // ============================================================
 
-onSaveAccount(): void {
-  if (this.accountForm.invalid) {
-    this.accountForm.markAllAsTouched();
-    return;
+  onSaveAccount(): void {
+    if (this.accountForm.invalid) {
+      this.accountForm.markAllAsTouched();
+      return;
+    }
+
+    if (!this.currentUser) {
+      return;
+    }
+
+    this.authService
+      .updateProfile({
+        firstName: this.accountForm.value.firstName,
+        lastName: this.accountForm.value.lastName,
+        email: this.accountForm.value.email,
+      })
+      .subscribe();
   }
 
-  if (!this.currentUser) {
-    return;
-  }
-
-  this.authService
-    .updateProfile({
-      firstName: this.accountForm.value.firstName,
-      lastName: this.accountForm.value.lastName,
-      email: this.accountForm.value.email,
-    })
-    .subscribe((user) => {
-      // null = error (toast already shown)
-      // user = success; currentUser$ already updated via persistSession
-    });
-}
-
   // ============================================================
-  // CHANGE PASSWORD
+  // CHANGE PASSWORD → validate → send code → open OTP modal
   // ============================================================
 
+  /**
+   * Submit "Change Password":
+   * 1. Validate form
+   * 2. Request email code
+   * 3. Open OTP modal (user enters code there)
+   */
   onChangePassword(): void {
-  if (this.passwordForm.invalid) {
-    this.passwordForm.markAllAsTouched();
-    return;
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      return;
+    }
+
+    this.requestPasswordCodeAndOpenModal();
   }
 
-  const { currentPassword, newPassword } = this.passwordForm.value;
+  /** Resend from inside the OTP modal */
+  onRequestPasswordCode(): void {
+    this.requestPasswordCodeAndOpenModal();
+  }
 
-  this.authService
-    .changePassword(currentPassword, newPassword)
-    .subscribe((ok) => {
+  private requestPasswordCodeAndOpenModal(): void {
+    if (this.requestingCode) {
+      return;
+    }
+
+    this.requestingCode = true;
+    this.otpError = '';
+
+    this.authService.requestPasswordChangeCode().subscribe((ok) => {
+      this.requestingCode = false;
+
       if (ok) {
-        this.passwordForm.reset();
+        this.otpOpen = true;
+        // New reference so ngOnChanges restarts the timer
+        this.otpResendSeconds = 0;
+        setTimeout(() => {
+          this.otpResendSeconds = 60;
+        }, 0);
       }
     });
-}
+  }
+
+  /**
+   * OTP modal emitted a 6-digit code → confirm with backend.
+   */
+  onOtpVerified(code: string): void {
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      return;
+    }
+
+    const { currentPassword, newPassword } = this.passwordForm.value;
+
+    this.otpVerifying = true;
+    this.otpError = '';
+
+    this.authService
+      .confirmPasswordChange(currentPassword, code, newPassword)
+      .subscribe((ok) => {
+        this.otpVerifying = false;
+
+        if (ok) {
+          this.otpOpen = false;
+          this.otpResendSeconds = 0;
+          this.passwordForm.reset();
+        } else {
+          // Toast already shown in AuthService; also show on modal
+          this.otpError = 'Invalid or expired confirmation code.';
+        }
+      });
+  }
+
+  onOtpClosed(): void {
+    this.otpOpen = false;
+    this.otpError = '';
+    this.otpVerifying = false;
+  }
+
+  // ============================================================
+  // PASSWORD VISIBILITY TOGGLES
+  // ============================================================
 
   toggleCurrentPassword(): void {
     this.showCurrentPassword = !this.showCurrentPassword;

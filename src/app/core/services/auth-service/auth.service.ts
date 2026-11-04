@@ -13,9 +13,17 @@ import { environment } from 'src/environments/environment';
 
 export type AuthMode = 'login' | 'register';
 
+/** Login / verify-email success */
 interface AuthResponse {
   user: User;
   token: string;
+}
+
+/** Register success — no session yet */
+interface RegisterPendingResponse {
+  email: string;
+  requiresEmailVerification: true;
+  message?: string;
 }
 
 @Injectable({
@@ -23,7 +31,7 @@ interface AuthResponse {
 })
 export class AuthService {
   // ============================================================
-  // STORAGE (session only — accounts live on the server)
+  // STORAGE
   // ============================================================
 
   private readonly CURRENT_USER_KEY = 'sissy-dream-user';
@@ -65,39 +73,47 @@ export class AuthService {
 
   // ============================================================
   // REGISTER → POST /api/auth/register
+  // Does NOT log the user in (no token from API)
   // ============================================================
 
- register(registerData: Register): Observable<AuthResponse | null> {
-  const payload = {
-    firstName: registerData.firstName.trim(),
-    lastName: registerData.lastName.trim(),
-    email: registerData.email.trim().toLowerCase(),
-    password: registerData.password,
-  };
+  register(
+    registerData: Register,
+  ): Observable<RegisterPendingResponse | null> {
+    const payload = {
+      firstName: registerData.firstName.trim(),
+      lastName: registerData.lastName.trim(),
+      email: registerData.email.trim().toLowerCase(),
+      password: registerData.password,
+    };
 
-  return this.http
-    .post<AuthResponse>(`${environment.apiUrl}/auth/register`, payload)
-    .pipe(
-      tap((res) => {
-        this.persistSession(res.user, res.token);
-        this.toastService.success(
-          'Your account has been created successfully.',
-        );
-      }),
-      catchError((err) => {
-        const msg =
-          err?.error?.message ||
-          'Could not create account. Please try again.';
-        this.toastService.error(msg); 
-        return of(null);
-      }),
-    );
-}
+    return this.http
+      .post<RegisterPendingResponse>(
+        `${environment.apiUrl}/auth/register`,
+        payload,
+      )
+      .pipe(
+        tap(() => {
+          // Intentionally NO persistSession here
+          this.toastService.success(
+            'Account created. Please verify your email with the code we sent.',
+          );
+        }),
+        catchError((err) => {
+          const msg =
+            err?.error?.message ||
+            'Could not create account. Please try again.';
+          this.toastService.error(msg);
+          return of(null);
+        }),
+      );
+  }
+
   // ============================================================
   // LOGIN → POST /api/auth/login
+  // Backend rejects unverified accounts (403)
   // ============================================================
 
-  login(loginData: Login): Observable<AuthResponse | null> {
+  login(loginData: Login): Observable<AuthResponse | { needsVerification: true; email: string } | null> {
   const payload = {
     email: loginData.email.trim().toLowerCase(),
     password: loginData.password,
@@ -111,13 +127,84 @@ export class AuthService {
         this.toastService.success(`Welcome back, ${res.user.firstName}!`);
       }),
       catchError((err) => {
+        const body = err?.error;
+        if (
+          err?.status === 403 &&
+          body?.requiresEmailVerification === true &&
+          body?.email
+        ) {
+          // Do not toast as a hard failure — parent will open OTP
+          return of({
+            needsVerification: true as const,
+            email: String(body.email).toLowerCase(),
+          });
+        }
+
         const msg =
-          err?.error?.message || 'Incorrect email or password.';
+          body?.message || 'Incorrect email or password.';
         this.toastService.error(msg);
         return of(null);
       }),
     );
 }
+
+  // ============================================================
+  // EMAIL VERIFICATION (public — email + code)
+  // ============================================================
+
+  /**
+   * POST /api/auth/verify-email
+   * Body: { email, code }
+   * Success → session starts here
+   */
+  verifyEmail(email: string, code: string): Observable<User | null> {
+    return this.http
+      .post<AuthResponse>(`${environment.apiUrl}/auth/verify-email`, {
+        email: email.trim().toLowerCase(),
+        code: String(code).trim(),
+      })
+      .pipe(
+        tap((res) => {
+          this.persistSession(res.user, res.token);
+          this.toastService.success('Your email has been verified.');
+        }),
+        map((res) => res.user),
+        catchError((err) => {
+          const msg =
+            err?.error?.message ||
+            'Invalid or expired verification code.';
+          this.toastService.error(msg);
+          return of(null);
+        }),
+      );
+  }
+
+  /**
+   * POST /api/auth/resend-verification
+   * Body: { email }
+   */
+  resendEmailVerification(email: string): Observable<boolean> {
+    return this.http
+      .post<{ message?: string }>(
+        `${environment.apiUrl}/auth/resend-verification`,
+        { email: email.trim().toLowerCase() },
+      )
+      .pipe(
+        tap(() => {
+          this.toastService.success(
+            'If that email needs verification, a new code has been sent.',
+          );
+        }),
+        map(() => true),
+        catchError((err) => {
+          const msg =
+            err?.error?.message ||
+            'Could not send verification code. Please try again.';
+          this.toastService.error(msg);
+          return of(false);
+        }),
+      );
+  }
 
   // ============================================================
   // LOGOUT
@@ -142,78 +229,110 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  /** JWT for later (admin guards, Authorization header) */
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
-  /** is admin  */
-
   isAdmin(): boolean {
-  return this.getCurrentUser()?.role === 'admin';
-}
+    return this.getCurrentUser()?.role === 'admin';
+  }
 
- /**
- * PATCH /api/auth/me — update profile on the server, then refresh session.
- */
-updateProfile(data: {
-  firstName: string;
-  lastName: string;
-  email: string;
-}): Observable<User | null> {
-  const payload = {
-    firstName: data.firstName.trim(),
-    lastName: data.lastName.trim(),
-    email: data.email.trim().toLowerCase(),
-  };
+  isEmailVerified(): boolean {
+    return this.getCurrentUser()?.emailVerified === true;
+  }
 
-  return this.http
-    .patch<{ user: User }>(`${environment.apiUrl}/auth/me`, payload)
-    .pipe(
-      tap((res) => {
-        this.persistSession(res.user, this.getToken());
-        this.toastService.success('Your account has been updated successfully.');
-      }),
-      map((res) => res.user),
-      catchError((err) => {
-        const msg =
-          err?.error?.message || 'Could not update your account. Please try again.';
-        this.toastService.error(msg);
-        return of(null);
-      }),
-    );
-}
+  // ============================================================
+  // PROFILE → PATCH /api/auth/me
+  // ============================================================
 
+  updateProfile(data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  }): Observable<User | null> {
+    const payload = {
+      firstName: data.firstName.trim(),
+      lastName: data.lastName.trim(),
+      email: data.email.trim().toLowerCase(),
+    };
 
+    return this.http
+      .patch<{ user: User }>(`${environment.apiUrl}/auth/me`, payload)
+      .pipe(
+        tap((res) => {
+          this.persistSession(res.user, this.getToken());
+          this.toastService.success(
+            'Your account has been updated successfully.',
+          );
+        }),
+        map((res) => res.user),
+        catchError((err) => {
+          const msg =
+            err?.error?.message ||
+            'Could not update your account. Please try again.';
+          this.toastService.error(msg);
+          return of(null);
+        }),
+      );
+  }
 
-/**
- * PATCH /api/auth/me/password
- */
-changePassword(
-  currentPassword: string,
-  newPassword: string,
-): Observable<boolean> {
-  return this.http
-    .patch<{ message?: string }>(`${environment.apiUrl}/auth/me/password`, {
-      currentPassword,
-      newPassword,
-    })
-    .pipe(
-      tap(() => {
-        this.toastService.success('Your password has been updated successfully.');
-      }),
-      map(() => true),
-      catchError((err) => {
-        const msg =
-          err?.error?.message ||
-          'Could not update password. Please try again.';
-        this.toastService.error(msg);
-        return of(false);
-      }),
-    );
-}
+  // ============================================================
+  // PASSWORD CHANGE (email code) — still requires JWT
+  // ============================================================
 
+  requestPasswordChangeCode(): Observable<boolean> {
+    return this.http
+      .post<{ message?: string }>(
+        `${environment.apiUrl}/auth/me/password/request-code`,
+        {},
+      )
+      .pipe(
+        tap(() => {
+          this.toastService.success(
+            'A verification code has been sent to your email.',
+          );
+        }),
+        map(() => true),
+        catchError((err) => {
+          const msg =
+            err?.error?.message ||
+            'Could not send verification code. Please try again.';
+          this.toastService.error(msg);
+          return of(false);
+        }),
+      );
+  }
 
+  confirmPasswordChange(
+    currentPassword: string,
+    code: string,
+    newPassword: string,
+  ): Observable<boolean> {
+    return this.http
+      .post<{ message?: string }>(
+        `${environment.apiUrl}/auth/me/password/confirm`,
+        {
+          currentPassword,
+          code: String(code).trim(),
+          newPassword,
+        },
+      )
+      .pipe(
+        tap(() => {
+          this.toastService.success(
+            'Your password has been updated successfully.',
+          );
+        }),
+        map(() => true),
+        catchError((err) => {
+          const msg =
+            err?.error?.message ||
+            'Could not update password. Please try again.';
+          this.toastService.error(msg);
+          return of(false);
+        }),
+      );
+  }
 
   // ============================================================
   // PRIVATE
@@ -239,6 +358,4 @@ changePassword(
       return null;
     }
   }
-
-  
 }

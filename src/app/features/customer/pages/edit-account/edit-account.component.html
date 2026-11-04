@@ -1,363 +1,364 @@
 <div class="edit-account">
-  <header class="edit-account__header">
-    <h1 class="edit-account__title">Edit Account</h1>
-    <p class="edit-account__subtitle">
-      Update your personal information and account password.
-    </p>
-  </header>
 
-  <!-- ============================================================
+  <div class="edit-account">
+    <header class="edit-account__header">
+      <h1 class="edit-account__title">Edit Account</h1>
+      <p class="edit-account__subtitle">
+        Update your personal information and account password.
+      </p>
+    </header>
+
+    <!-- ============================================================
        SECTION 1 — PERSONAL INFORMATION
   ============================================================ -->
 
-  <section class="account-section">
-    <h2 class="account-section__title">Personal Information</h2>
+    <section class="account-section">
+      <h2 class="account-section__title">Personal Information</h2>
 
-    <p class="account-section__description">
-      Update the information associated with your account.
-    </p>
+      <p class="account-section__description">
+        Update the information associated with your account.
+      </p>
 
-    <form
-      class="account-form"
-      [formGroup]="accountForm"
-      (ngSubmit)="onSaveAccount()"
-    >
-      <div class="row g-3">
+      <form
+        class="account-form"
+        [formGroup]="accountForm"
+        (ngSubmit)="onSaveAccount()"
+      >
+        <div class="row g-3">
+          <!-- FIRST NAME -->
+          <div class="col-12 col-md-6">
+            <div class="account-form__group">
+              <label class="account-form__label" for="editFirstName">
+                First Name
+              </label>
 
-        <!-- FIRST NAME -->
-        <div class="col-12 col-md-6">
-          <div class="account-form__group">
-            <label class="account-form__label" for="editFirstName">
-              First Name
-            </label>
+              <input
+                id="editFirstName"
+                class="account-form__input"
+                type="text"
+                autocomplete="given-name"
+                formControlName="firstName"
+              />
 
-            <input
-              id="editFirstName"
-              class="account-form__input"
-              type="text"
-              autocomplete="given-name"
-              formControlName="firstName"
-            />
+              <!-- First name required -->
+              <p
+                class="account-form__error"
+                *ngIf="
+                  accountForm.get('firstName')?.touched &&
+                  accountForm.get('firstName')?.hasError('required')
+                "
+              >
+                First name is required.
+              </p>
 
-            <!-- First name required -->
-            <p
-              class="account-form__error"
-              *ngIf="
-                accountForm.get('firstName')?.touched &&
-                accountForm.get('firstName')?.hasError('required')
-              "
-            >
-              First name is required.
-            </p>
+              <!-- First name minlength -->
+              <p
+                class="account-form__error"
+                *ngIf="
+                  accountForm.get('firstName')?.touched &&
+                  accountForm.get('firstName')?.hasError('minlength')
+                "
+              >
+                First name must be at least 2 characters.
+              </p>
+            </div>
+          </div>
 
-            <!-- First name minlength -->
-            <p
-              class="account-form__error"
-              *ngIf="
-                accountForm.get('firstName')?.touched &&
-                accountForm.get('firstName')?.hasError('minlength')
-              "
-            >
-              First name must be at least 2 characters.
-            </p>
+          <!-- LAST NAME -->
+          <div class="col-12 col-md-6">
+            <div class="account-form__group">
+              <label class="account-form__label" for="editLastName">
+                Last Name
+              </label>
+
+              <input
+                id="editLastName"
+                class="account-form__input"
+                type="text"
+                autocomplete="family-name"
+                formControlName="lastName"
+              />
+
+              <!-- Last name required -->
+              <p
+                class="account-form__error"
+                *ngIf="
+                  accountForm.get('lastName')?.touched &&
+                  accountForm.get('lastName')?.hasError('required')
+                "
+              >
+                Last name is required.
+              </p>
+
+              <!-- Last name minlength -->
+              <p
+                class="account-form__error"
+                *ngIf="
+                  accountForm.get('lastName')?.touched &&
+                  accountForm.get('lastName')?.hasError('minlength')
+                "
+              >
+                Last name must be at least 2 characters.
+              </p>
+            </div>
+          </div>
+
+          <!-- EMAIL -->
+          <div class="col-12">
+            <div class="account-form__group">
+              <label class="account-form__label" for="editEmail">
+                Email Address
+              </label>
+
+              <input
+                id="editEmail"
+                class="account-form__input"
+                type="email"
+                autocomplete="email"
+                formControlName="email"
+              />
+
+              <!-- Email required -->
+              <p
+                class="account-form__error"
+                *ngIf="
+                  accountForm.get('email')?.touched &&
+                  accountForm.get('email')?.hasError('required')
+                "
+              >
+                Email address is required.
+              </p>
+
+              <!-- Invalid email -->
+              <p
+                class="account-form__error"
+                *ngIf="
+                  accountForm.get('email')?.touched &&
+                  accountForm.get('email')?.hasError('email')
+                "
+              >
+                Please enter a valid email address.
+              </p>
+            </div>
           </div>
         </div>
 
-        <!-- LAST NAME -->
-        <div class="col-12 col-md-6">
-          <div class="account-form__group">
-            <label class="account-form__label" for="editLastName">
-              Last Name
-            </label>
-
-            <input
-              id="editLastName"
-              class="account-form__input"
-              type="text"
-              autocomplete="family-name"
-              formControlName="lastName"
-            />
-
-            <!-- Last name required -->
-            <p
-              class="account-form__error"
-              *ngIf="
-                accountForm.get('lastName')?.touched &&
-                accountForm.get('lastName')?.hasError('required')
-              "
-            >
-              Last name is required.
-            </p>
-
-            <!-- Last name minlength -->
-            <p
-              class="account-form__error"
-              *ngIf="
-                accountForm.get('lastName')?.touched &&
-                accountForm.get('lastName')?.hasError('minlength')
-              "
-            >
-              Last name must be at least 2 characters.
-            </p>
-          </div>
+        <!-- SAVE ACCOUNT -->
+        <div class="account-form__actions">
+          <button class="account-form__save" type="submit">Save Changes</button>
         </div>
+      </form>
+    </section>
 
-        <!-- EMAIL -->
-        <div class="col-12">
-          <div class="account-form__group">
-            <label class="account-form__label" for="editEmail">
-              Email Address
-            </label>
-
-            <input
-              id="editEmail"
-              class="account-form__input"
-              type="email"
-              autocomplete="email"
-              formControlName="email"
-            />
-
-            <!-- Email required -->
-            <p
-              class="account-form__error"
-              *ngIf="
-                accountForm.get('email')?.touched &&
-                accountForm.get('email')?.hasError('required')
-              "
-            >
-              Email address is required.
-            </p>
-
-            <!-- Invalid email -->
-            <p
-              class="account-form__error"
-              *ngIf="
-                accountForm.get('email')?.touched &&
-                accountForm.get('email')?.hasError('email')
-              "
-            >
-              Please enter a valid email address.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- SAVE ACCOUNT -->
-      <div class="account-form__actions">
-        <button class="account-form__save" type="submit">
-          Save Changes
-        </button>
-      </div>
-    </form>
-  </section>
-
-  <!-- ============================================================
+    <!-- ============================================================
        SECTION 2 — CHANGE PASSWORD
   ============================================================ -->
 
-  <section class="account-section">
-    <h2 class="account-section__title">Change Password</h2>
+    <section class="account-section">
+      <h2 class="account-section__title">Change Password</h2>
 
-    <p class="account-section__description">
-      Update your password to keep your account secure.
-    </p>
+      <p class="account-section__description">
+        Update your password to keep your account secure.
+      </p>
 
-    <form
-      class="account-form"
-      [formGroup]="passwordForm"
-      (ngSubmit)="onChangePassword()"
-    >
-      <div class="row g-3">
+      <form
+        class="account-form"
+        [formGroup]="passwordForm"
+        (ngSubmit)="onChangePassword()"
+      >
+        <div class="row g-3">
+          <!-- CURRENT PASSWORD -->
+          <div class="col-12">
+            <div class="account-form__group">
+              <label class="account-form__label" for="currentPassword">
+                Current Password
+              </label>
 
-        <!-- CURRENT PASSWORD -->
-        <div class="col-12">
-          <div class="account-form__group">
-            <label class="account-form__label" for="currentPassword">
-              Current Password
-            </label>
+              <div class="account-form__password">
+                <input
+                  id="currentPassword"
+                  class="account-form__input"
+                  [type]="showCurrentPassword ? 'text' : 'password'"
+                  autocomplete="current-password"
+                  formControlName="currentPassword"
+                />
 
-            <div class="account-form__password">
-
-              <input
-                id="currentPassword"
-                class="account-form__input"
-                [type]="showCurrentPassword ? 'text' : 'password'"
-                autocomplete="current-password"
-                formControlName="currentPassword"
-              />
-
-              <!-- Show / Hide Current Password -->
-              <button
-                type="button"
-                class="account-form__password-toggle"
-                (click)="toggleCurrentPassword()"
-                [attr.aria-label]="
-                  showCurrentPassword
-                    ? 'Hide current password'
-                    : 'Show current password'
-                "
-              >
-                <i
-                  [class]="
+                <!-- Show / Hide Current Password -->
+                <button
+                  type="button"
+                  class="account-form__password-toggle"
+                  (click)="toggleCurrentPassword()"
+                  [attr.aria-label]="
                     showCurrentPassword
-                      ? 'fa-regular fa-eye-slash'
-                      : 'fa-regular fa-eye'
+                      ? 'Hide current password'
+                      : 'Show current password'
                   "
-                  aria-hidden="true"
-                ></i>
-              </button>
+                >
+                  <i
+                    [class]="
+                      showCurrentPassword
+                        ? 'fa-regular fa-eye-slash'
+                        : 'fa-regular fa-eye'
+                    "
+                    aria-hidden="true"
+                  ></i>
+                </button>
+              </div>
 
-            </div>
-
-            <!-- Current password required -->
-            <p
-              class="account-form__error"
-              *ngIf="
-                passwordForm.get('currentPassword')?.touched &&
-                passwordForm.get('currentPassword')?.hasError('required')
-              "
-            >
-              Current password is required.
-            </p>
-          </div>
-        </div>
-
-        <!-- NEW PASSWORD -->
-        <div class="col-12">
-          <div class="account-form__group">
-            <label class="account-form__label" for="newPassword">
-              New Password
-            </label>
-
-            <div class="account-form__password">
-
-              <input
-                id="newPassword"
-                class="account-form__input"
-                [type]="showNewPassword ? 'text' : 'password'"
-                autocomplete="new-password"
-                formControlName="newPassword"
-              />
-
-              <!-- Show / Hide New Password -->
-              <button
-                type="button"
-                class="account-form__password-toggle"
-                (click)="toggleNewPassword()"
-                [attr.aria-label]="
-                  showNewPassword
-                    ? 'Hide new password'
-                    : 'Show new password'
+              <!-- Current password required -->
+              <p
+                class="account-form__error"
+                *ngIf="
+                  passwordForm.get('currentPassword')?.touched &&
+                  passwordForm.get('currentPassword')?.hasError('required')
                 "
               >
-                <i
-                  [class]="
-                    showNewPassword
-                      ? 'fa-regular fa-eye-slash'
-                      : 'fa-regular fa-eye'
-                  "
-                  aria-hidden="true"
-                ></i>
-              </button>
-
+                Current password is required.
+              </p>
             </div>
-
-            <!-- New password required -->
-            <p
-              class="account-form__error"
-              *ngIf="
-                passwordForm.get('newPassword')?.touched &&
-                passwordForm.get('newPassword')?.hasError('required')
-              "
-            >
-              New password is required.
-            </p>
-
-            <!-- New password minlength -->
-            <p
-              class="account-form__error"
-              *ngIf="
-                passwordForm.get('newPassword')?.touched &&
-                passwordForm.get('newPassword')?.hasError('minlength')
-              "
-            >
-              Password must be at least 8 characters.
-            </p>
           </div>
-        </div>
 
-        <!-- CONFIRM NEW PASSWORD -->
-        <div class="col-12">
-          <div class="account-form__group">
-            <label class="account-form__label" for="confirmNewPassword">
-              Confirm New Password
-            </label>
+          <!-- NEW PASSWORD -->
+          <div class="col-12">
+            <div class="account-form__group">
+              <label class="account-form__label" for="newPassword">
+                New Password
+              </label>
 
-            <div class="account-form__password">
+              <div class="account-form__password">
+                <input
+                  id="newPassword"
+                  class="account-form__input"
+                  [type]="showNewPassword ? 'text' : 'password'"
+                  autocomplete="new-password"
+                  formControlName="newPassword"
+                />
 
-              <input
-                id="confirmNewPassword"
-                class="account-form__input"
-                [type]="showConfirmPassword ? 'text' : 'password'"
-                autocomplete="new-password"
-                formControlName="confirmNewPassword"
-              />
+                <!-- Show / Hide New Password -->
+                <button
+                  type="button"
+                  class="account-form__password-toggle"
+                  (click)="toggleNewPassword()"
+                  [attr.aria-label]="
+                    showNewPassword ? 'Hide new password' : 'Show new password'
+                  "
+                >
+                  <i
+                    [class]="
+                      showNewPassword
+                        ? 'fa-regular fa-eye-slash'
+                        : 'fa-regular fa-eye'
+                    "
+                    aria-hidden="true"
+                  ></i>
+                </button>
+              </div>
 
-              <!-- Show / Hide Confirm Password -->
-              <button
-                type="button"
-                class="account-form__password-toggle"
-                (click)="toggleConfirmPassword()"
-                [attr.aria-label]="
-                  showConfirmPassword
-                    ? 'Hide password confirmation'
-                    : 'Show password confirmation'
+              <!-- New password required -->
+              <p
+                class="account-form__error"
+                *ngIf="
+                  passwordForm.get('newPassword')?.touched &&
+                  passwordForm.get('newPassword')?.hasError('required')
                 "
               >
-                <i
-                  [class]="
+                New password is required.
+              </p>
+
+              <!-- New password minlength -->
+              <p
+                class="account-form__error"
+                *ngIf="
+                  passwordForm.get('newPassword')?.touched &&
+                  passwordForm.get('newPassword')?.hasError('minlength')
+                "
+              >
+                Password must be at least 8 characters.
+              </p>
+            </div>
+          </div>
+
+          <!-- CONFIRM NEW PASSWORD -->
+          <div class="col-12">
+            <div class="account-form__group">
+              <label class="account-form__label" for="confirmNewPassword">
+                Confirm New Password
+              </label>
+
+              <div class="account-form__password">
+                <input
+                  id="confirmNewPassword"
+                  class="account-form__input"
+                  [type]="showConfirmPassword ? 'text' : 'password'"
+                  autocomplete="new-password"
+                  formControlName="confirmNewPassword"
+                />
+
+                <!-- Show / Hide Confirm Password -->
+                <button
+                  type="button"
+                  class="account-form__password-toggle"
+                  (click)="toggleConfirmPassword()"
+                  [attr.aria-label]="
                     showConfirmPassword
-                      ? 'fa-regular fa-eye-slash'
-                      : 'fa-regular fa-eye'
+                      ? 'Hide password confirmation'
+                      : 'Show password confirmation'
                   "
-                  aria-hidden="true"
-                ></i>
-              </button>
+                >
+                  <i
+                    [class]="
+                      showConfirmPassword
+                        ? 'fa-regular fa-eye-slash'
+                        : 'fa-regular fa-eye'
+                    "
+                    aria-hidden="true"
+                  ></i>
+                </button>
+              </div>
 
+              <!-- Confirm password required -->
+              <p
+                class="account-form__error"
+                *ngIf="
+                  passwordForm.get('confirmNewPassword')?.touched &&
+                  passwordForm.get('confirmNewPassword')?.hasError('required')
+                "
+              >
+                Please confirm your new password.
+              </p>
+
+              <!-- Password mismatch -->
+              <p
+                class="account-form__error"
+                *ngIf="
+                  passwordForm.hasError('passwordMismatch') &&
+                  passwordForm.get('confirmNewPassword')?.touched
+                "
+              >
+                Passwords do not match.
+              </p>
             </div>
-
-            <!-- Confirm password required -->
-            <p
-              class="account-form__error"
-              *ngIf="
-                passwordForm.get('confirmNewPassword')?.touched &&
-                passwordForm.get('confirmNewPassword')?.hasError('required')
-              "
-            >
-              Please confirm your new password.
-            </p>
-
-            <!-- Password mismatch -->
-            <p
-              class="account-form__error"
-              *ngIf="
-                passwordForm.hasError('passwordMismatch') &&
-                passwordForm.get('confirmNewPassword')?.touched
-              "
-            >
-              Passwords do not match.
-            </p>
           </div>
         </div>
 
-      </div>
-
-      <!-- CHANGE PASSWORD -->
-      <div class="account-form__actions">
-        <button class="account-form__save" type="submit">
-          Change Password
-        </button>
-      </div>
-    </form>
-  </section>
+        <!-- CHANGE PASSWORD -->
+        <div class="account-form__actions">
+          <button class="account-form__save" type="submit">
+            Change Password
+          </button>
+        </div>
+        <app-otp-modal
+          [open]="otpOpen"
+          [title]="'Confirm password change'"
+          [description]="'Enter the code we sent to your email.'"
+          [errorMessage]="otpError"
+          [verifying]="otpVerifying"
+          [resendSeconds]="otpResendSeconds"
+          (closed)="otpOpen = false"
+          (resend)="onRequestPasswordCode()"
+          (verified)="onOtpVerified($event)"
+        ></app-otp-modal>
+      </form>
+    </section>
+  </div>
 </div>

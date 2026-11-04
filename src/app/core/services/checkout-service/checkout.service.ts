@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { CartItem } from '../../models/cart-models/cart.model';
 import { CheckoutData } from '../../models/checkout-models/checkout.model';
 import { ShippingQuote } from '../../models/checkout-models/shippingQuote.model';
-import { SHIPPING_RATES } from '../../models/checkout-models/data/shipping.data';
 import { CheckoutPreferences } from '../../models/checkout-models/checkout-preferences.model';
 import { Order } from '../../models/order-models/order.model';
+import { ShippingRate } from '../../models/checkout-models/shipping-rate.model';
 
 import { ToastService } from '../toast-service/toast.service';
+import { ShippingService } from '../shipping-service/shipping.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,34 +18,45 @@ import { ToastService } from '../toast-service/toast.service';
 export class CheckoutService {
   private readonly CHECKOUT_STORAGE_KEY = 'sissy-dream-checkout';
 
+  constructor(
+    private toastService: ToastService,
+    private shippingService: ShippingService,
+  ) {}
+
   // ============================================================
-  // CONSTRUCTOR
+  // SHIPPING (API)
   // ============================================================
 
-  constructor(private toastService: ToastService) {}
-
-  // ============================================================
-  // GET SHIPPING QUOTE
-  // ============================================================
-
-  getShippingQuote(countryCode: string): ShippingQuote | null {
-    const shippingRate = SHIPPING_RATES.find(
-      (rate) => rate.country === countryCode,
-    );
-
-    if (!shippingRate) {
-      return null;
-    }
-
-    return {
-      standard: shippingRate.standard,
-      express: shippingRate.express,
-    };
+  /**
+   * Active destinations for the country dropdown.
+   * Source: GET /api/shipping/rates
+   */
+  getShippingDestinations(): Observable<ShippingRate[]> {
+    return this.shippingService.getRates();
   }
 
-  // ============================================================
-  // GET SHIPPING COST
-  // ============================================================
+  /**
+   * Standard / express prices for one country.
+   * Source: GET /api/shipping/quote/:countryCode
+   */
+  getShippingQuote(countryCode: string): Observable<ShippingQuote | null> {
+    if (!countryCode?.trim()) {
+      return of(null);
+    }
+
+    return this.shippingService.getQuote(countryCode).pipe(
+      map((quote) => {
+        if (!quote) {
+          return null;
+        }
+
+        return {
+          standard: quote.standard,
+          express: quote.express,
+        };
+      }),
+    );
+  }
 
   getShippingCost(
     shippingMethod: 'standard' | 'express' | '',
@@ -64,7 +78,7 @@ export class CheckoutService {
   }
 
   // ============================================================
-  // CALCULATE SUBTOTAL
+  // CART MATH (unchanged)
   // ============================================================
 
   calculateSubtotal(cartItems: CartItem[]): number {
@@ -72,10 +86,6 @@ export class CheckoutService {
       return total + item.product.price * item.quantity;
     }, 0);
   }
-
-  // ============================================================
-  // CALCULATE TOTAL
-  // ============================================================
 
   calculateTotal(subtotal: number, shippingCost: number | null): number | null {
     if (shippingCost === null) {
@@ -86,18 +96,13 @@ export class CheckoutService {
   }
 
   // ============================================================
-  // SAVE CHECKOUT PREFERENCES
+  // PREFERENCES (unchanged)
   // ============================================================
 
   saveCheckoutPreferences(data: CheckoutPreferences): void {
     localStorage.setItem(this.CHECKOUT_STORAGE_KEY, JSON.stringify(data));
-
     this.toastService.success('Your checkout preferences have been saved.');
   }
-
-  // ============================================================
-  // LOAD CHECKOUT PREFERENCES
-  // ============================================================
 
   getCheckoutPreferences(): CheckoutPreferences | null {
     const savedData = localStorage.getItem(this.CHECKOUT_STORAGE_KEY);
@@ -113,21 +118,16 @@ export class CheckoutService {
     }
   }
 
-  // ============================================================
-  // CLEAR CHECKOUT PREFERENCES
-  // ============================================================
-
   clearCheckoutPreferences(): void {
     localStorage.removeItem(this.CHECKOUT_STORAGE_KEY);
-
     this.toastService.info('Your checkout preferences have been cleared.');
   }
 
   // ============================================================
-  // CREATE ORDER
+  // CREATE ORDER (unchanged)
   // ============================================================
 
-   createOrder(
+  createOrder(
     checkoutData: CheckoutData,
     cartItems: CartItem[],
     subtotal: number,
@@ -135,7 +135,6 @@ export class CheckoutService {
     total: number,
   ): Order {
     return {
-      // Temporary client id; stripped in OrderService.saveOrder before POST
       id: this.generateOrderId(),
 
       customer: {
@@ -175,10 +174,6 @@ export class CheckoutService {
       createdAt: new Date().toISOString(),
     };
   }
-
-  // ============================================================
-  // GENERATE ORDER ID
-  // ============================================================
 
   private generateOrderId(): string {
     return `SD-${Date.now()}`;

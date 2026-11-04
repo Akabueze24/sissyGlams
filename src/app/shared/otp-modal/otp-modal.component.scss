@@ -1,0 +1,299 @@
+@import '../../../styles/variables';
+
+// ============================================================
+// OTP CONFIRMATION MODAL (static visual design)
+// Colours and fonts come from your shared variables.
+// ============================================================
+
+// ------------------------------------------------------------
+// Backdrop
+// ------------------------------------------------------------
+.otp-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  padding: 1rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+// ------------------------------------------------------------
+// Dialog card
+// `margin: auto` centres it and still lets short screens scroll.
+// ------------------------------------------------------------
+.otp-modal__dialog {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  margin: auto;
+  padding: 2.5rem 1.25rem 1.5rem;
+  background-color: $color-white;
+  border-radius: 1rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+  text-align: center;
+
+  @media (min-width: 576px) {
+    padding: 2.75rem 2.5rem 1.75rem;
+  }
+}
+
+// ------------------------------------------------------------
+// Close button
+// ------------------------------------------------------------
+.otp-modal__close {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  font-size: 1rem;
+  color: $color-text-muted;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: $brand-pink-light;
+    color: $brand-pink-dark;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba($brand-pink, 0.3);
+    outline-offset: 2px;
+  }
+}
+
+// ------------------------------------------------------------
+// Icon, heading, description
+// ------------------------------------------------------------
+.otp-modal__icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.25rem;
+  border-radius: 50%;
+  background-color: $brand-pink-light;
+  color: $brand-pink-dark;
+  font-size: 1.6rem;
+  box-shadow: 0 0 0 8px rgba($brand-pink-light, 0.45);
+}
+
+.otp-modal__title {
+  margin: 0 0 0.6rem;
+  font-family: $font-heading;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: $color-text-dark;
+
+  @media (min-width: 576px) {
+    font-size: 1.7rem;
+  }
+}
+
+.otp-modal__description {
+  max-width: 320px;
+  margin: 0 auto 1.75rem;
+  font-family: $font-body;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: $color-text-muted;
+}
+
+// ------------------------------------------------------------
+// Six digit boxes
+// A fluid six-column grid keeps the boxes even and stops them
+// overflowing on narrow phones.
+// ------------------------------------------------------------
+.otp-modal__code {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.5rem;
+  min-width: 0;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  border: 0;
+
+  @media (min-width: 576px) {
+    gap: 0.7rem;
+  }
+}
+
+.otp-modal__digit {
+  width: 100%;
+  height: 50px;
+  padding: 0;
+  border: 1.5px solid $color-border;
+  border-radius: 0.6rem;
+  background-color: $color-white;
+  font-family: $font-body;
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  color: $color-text-dark;
+  caret-color: $brand-pink;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  @media (min-width: 576px) {
+    height: 58px;
+    font-size: 1.5rem;
+  }
+
+  &:hover {
+    border-color: $brand-pink-light;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $brand-pink;
+    box-shadow: 0 0 0 4px rgba($brand-pink, 0.15);
+  }
+}
+
+// Add this class to the fieldset when a code is rejected.
+.otp-modal__code--error .otp-modal__digit {
+  border-color: var(--bs-danger);
+
+  &:focus {
+    box-shadow: 0 0 0 4px rgba(var(--bs-danger-rgb), 0.15);
+  }
+}
+
+// ------------------------------------------------------------
+// Error message
+// Space is always reserved so the layout doesn't jump when the
+// message appears. Add --visible to show it.
+// ------------------------------------------------------------
+.otp-modal__error {
+  min-height: 1.4rem;
+  margin: 0 0 1rem;
+  font-family: $font-body;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--bs-danger);
+  visibility: hidden;
+
+  &--visible {
+    visibility: visible;
+  }
+}
+
+// ------------------------------------------------------------
+// Verify button
+// ------------------------------------------------------------
+.otp-modal__verify {
+  display: block;
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 0.6rem;
+  background-color: $brand-pink;
+  font-family: $font-body;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: $color-white;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $brand-pink-dark;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba($brand-pink, 0.35);
+    outline-offset: 2px;
+  }
+}
+
+// ------------------------------------------------------------
+// Resend section
+// ------------------------------------------------------------
+.otp-modal__resend-block {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid $color-border;
+}
+
+.otp-modal__resend-text {
+  margin: 0 0 0.4rem;
+  font-family: $font-body;
+  font-size: 0.82rem;
+  color: $color-text-muted;
+}
+
+.otp-modal__resend {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 0.4rem;
+  background: transparent;
+  font-family: $font-body;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $brand-pink-dark;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: $brand-pink-light;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba($brand-pink, 0.3);
+    outline-offset: 2px;
+  }
+
+  // While the countdown runs the button reads as inactive.
+  &:disabled {
+    color: $color-text-muted;
+    cursor: not-allowed;
+  }
+}
+
+.otp-modal__timer {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: $brand-pink-dark;
+}
+
+// ------------------------------------------------------------
+// Cancel
+// ------------------------------------------------------------
+.otp-modal__cancel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1rem;
+  padding: 0.4rem 0.75rem;
+  border: none;
+  border-radius: 0.4rem;
+  background: transparent;
+  font-family: $font-body;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $color-text-muted;
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  i {
+    font-size: 0.72rem;
+  }
+
+  &:hover {
+    color: $brand-pink-dark;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba($brand-pink, 0.3);
+    outline-offset: 2px;
+  }
+}

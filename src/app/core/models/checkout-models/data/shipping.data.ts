@@ -2,128 +2,150 @@ import { ShippingRate } from '../shipping-rate.model';
 
 export const SHIPPING_RATES: ShippingRate[] = [
   {
-    country: 'US',
+    countryCode: 'US',
+    countryName: 'United States',
     standard: 10,
     express: 25,
+    active: true,
   },
-
   {
-    country: 'GB',
+    countryCode: 'GB',
+    countryName: 'United Kingdom',
     standard: 10,
     express: 25,
+    active: true,
   },
-
   {
-    country: 'CA',
+    countryCode: 'CA',
+    countryName: 'Canada',
     standard: 15,
     express: 30,
+    active: true,
   },
-
   {
-    country: 'AU',
+    countryCode: 'AU',
+    countryName: 'Australia',
     standard: 18,
     express: 35,
+    active: true,
   },
-
   {
-    country: 'DE',
+    countryCode: 'DE',
+    countryName: 'Germany',
     standard: 12,
     express: 28,
+    active: true,
   },
-
   {
-    country: 'FR',
+    countryCode: 'FR',
+    countryName: 'France',
     standard: 12,
     express: 28,
+    active: true,
   },
-
   {
-    country: 'IT',
+    countryCode: 'IT',
+    countryName: 'Italy',
     standard: 13,
     express: 30,
+    active: true,
   },
-
   {
-    country: 'ES',
+    countryCode: 'ES',
+    countryName: 'Spain',
     standard: 12,
     express: 28,
+    active: true,
   },
-
   {
-    country: 'NL',
+    countryCode: 'NL',
+    countryName: 'Netherlands',
     standard: 12,
     express: 28,
+    active: true,
   },
-
   {
-    country: 'BE',
+    countryCode: 'BE',
+    countryName: 'Belgium',
     standard: 12,
     express: 28,
+    active: true,
   },
-
   {
-    country: 'SE',
+    countryCode: 'SE',
+    countryName: 'Sweden',
     standard: 15,
     express: 30,
+    active: true,
   },
-
   {
-    country: 'NO',
+    countryCode: 'NO',
+    countryName: 'Norway',
     standard: 17,
     express: 34,
+    active: true,
   },
-
   {
-    country: 'DK',
+    countryCode: 'DK',
+    countryName: 'Denmark',
     standard: 12,
     express: 25,
+    active: true,
   },
-
   {
-    country: 'CH',
+    countryCode: 'CH',
+    countryName: 'Switzerland',
     standard: 15,
     express: 35,
+    active: true,
   },
-
   {
-    country: 'IE',
+    countryCode: 'IE',
+    countryName: 'Ireland',
     standard: 12,
     express: 28,
+    active: true,
   },
-
   {
-    country: 'NZ',
+    countryCode: 'NZ',
+    countryName: 'New Zealand',
     standard: 22,
     express: 40,
+    active: true,
   },
-
   {
-    country: 'ZA',
+    countryCode: 'ZA',
+    countryName: 'South Africa',
     standard: 20,
     express: 40,
+    active: true,
   },
-
   {
-    country: 'AE',
+    countryCode: 'AE',
+    countryName: 'United Arab Emirates',
     standard: 50,
     express: 100,
+    active: true,
   },
-
   {
-    country: 'SA',
+    countryCode: 'SA',
+    countryName: 'Saudi Arabia',
     standard: 55,
     express: 110,
+    active: true,
   },
-
   {
-    country: 'NG',
+    countryCode: 'NG',
+    countryName: 'Nigeria',
     standard: 20,
     express: 40,
+    active: true,
   },
-
   {
-    country: 'GH',
+    countryCode: 'GH',
+    countryName: 'Ghana',
     standard: 15,
     express: 30,
+    active: true,
   },
 ];

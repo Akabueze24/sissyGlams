@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { CartItem } from 'src/app/core/models/cart-models/cart.model';
 import { CheckoutData } from 'src/app/core/models/checkout-models/checkout.model';
-import { Country } from 'src/app/core/models/checkout-models/country.model';
 import { ShippingQuote } from 'src/app/core/models/checkout-models/shippingQuote.model';
-import { COUNTRIES } from 'src/app/core/models/checkout-models/data/country.data';
+import { ShippingRate } from 'src/app/core/models/checkout-models/shipping-rate.model';
 
 import { CartService } from 'src/app/core/services/cart-service/cart.service';
 import { CheckoutService } from 'src/app/core/services/checkout-service/checkout.service';
@@ -22,9 +22,11 @@ import { AddressService } from 'src/app/core/services/address-service/address.se
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.scss'],
 })
-export class CheckoutComponent implements OnInit {
+export class CheckoutComponent implements OnInit, OnDestroy {
   checkoutForm!: FormGroup;
-  countries: Country[] = COUNTRIES;
+
+  /** Active destinations from API (country dropdown) */
+  shippingRates: ShippingRate[] = [];
 
   cartItems: CartItem[] = [];
   subtotal = 0;
@@ -33,8 +35,9 @@ export class CheckoutComponent implements OnInit {
   shippingCost: number | null = null;
   total: number | null = null;
 
-  /** On-page message when store is closed */
   pageBlockMessage = '';
+
+  private quoteSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -61,7 +64,6 @@ export class CheckoutComponent implements OnInit {
         'Checkout is unavailable right now. The store is temporarily closed.';
     }
 
-    // Guest rule is independent of store-active (not else-if)
     if (
       settings.guestCheckout !== true &&
       !this.authService.isAuthenticated()
@@ -77,10 +79,19 @@ export class CheckoutComponent implements OnInit {
     this.cartService.syncQuantitiesWithStock();
 
     this.loadCart();
+    this.loadShippingDestinations();
     this.watchCountryChanges();
     this.watchShippingChanges();
     this.watchPaymentChanges();
-    this.loadShippingQuote(this.checkoutForm.get('country')?.value);
+
+    const initialCountry = this.checkoutForm.get('country')?.value;
+    if (initialCountry) {
+      this.loadShippingQuote(initialCountry);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.quoteSubscription?.unsubscribe();
   }
 
   // ============================================================
@@ -154,14 +165,12 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
-    // Account identity first
     this.checkoutForm.patchValue({
       email: user.email || '',
       firstName: user.firstName || '',
       lastName: user.lastName || '',
     });
 
-    // Overlay saved shipping from API (if any)
     this.addressService.getMyAddresses().subscribe({
       next: (data) => {
         if (!data.shipping) {
@@ -182,13 +191,12 @@ export class CheckoutComponent implements OnInit {
           country: s.country,
         });
 
-        // Country change drives shipping quote — refresh after prefill
         if (s.country) {
           this.loadShippingQuote(s.country);
         }
       },
       error: () => {
-        // Guest / network — form stays on identity-only prefill
+        // Guest / network — identity-only prefill
       },
     });
   }
@@ -216,8 +224,24 @@ export class CheckoutComponent implements OnInit {
   }
 
   // ============================================================
-  // SHIPPING
+  // SHIPPING (API)
   // ============================================================
+
+  private loadShippingDestinations(): void {
+    this.checkoutService.getShippingDestinations().subscribe((rates) => {
+      this.shippingRates = rates;
+
+      // If saved country is no longer offered, clear quote
+      const current = this.checkoutForm.get('country')?.value;
+      if (
+        current &&
+        !rates.some((r) => r.countryCode === current)
+      ) {
+        this.shippingQuote = null;
+        this.updateShippingCost();
+      }
+    });
+  }
 
   private watchCountryChanges(): void {
     this.checkoutForm
@@ -229,8 +253,20 @@ export class CheckoutComponent implements OnInit {
   }
 
   private loadShippingQuote(countryCode: string): void {
-    this.shippingQuote = this.checkoutService.getShippingQuote(countryCode);
-    this.updateShippingCost();
+    this.quoteSubscription?.unsubscribe();
+
+    if (!countryCode?.trim()) {
+      this.shippingQuote = null;
+      this.updateShippingCost();
+      return;
+    }
+
+    this.quoteSubscription = this.checkoutService
+      .getShippingQuote(countryCode)
+      .subscribe((quote) => {
+        this.shippingQuote = quote;
+        this.updateShippingCost();
+      });
   }
 
   private watchShippingChanges(): void {
@@ -352,15 +388,14 @@ export class CheckoutComponent implements OnInit {
 
     this.orderService.saveOrder(order).subscribe((saved) => {
       if (!saved) {
-        // 400 / network — toast already shown; keep cart
         return;
       }
 
-      // Server reduced stock + OrderService refreshed products
       this.cartService.clearCart();
       this.router.navigate(['/order-confirmation']);
     });
   }
+
   // ============================================================
   // TEMPLATE HELPERS
   // ============================================================

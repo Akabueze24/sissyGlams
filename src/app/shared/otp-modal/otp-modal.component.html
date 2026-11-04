@@ -1,0 +1,86 @@
+<div class="otp-modal" *ngIf="open">
+  <div
+    class="otp-modal__dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="otpModalTitle"
+    aria-describedby="otpModalDescription"
+    (click)="$event.stopPropagation()"
+  >
+    <button
+      class="otp-modal__close"
+      type="button"
+      aria-label="Close verification dialog"
+      (click)="onClose()"
+    >
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+
+    <div class="otp-modal__icon">
+      <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+    </div>
+
+    <h2 class="otp-modal__title" id="otpModalTitle">{{ title }}</h2>
+    <p class="otp-modal__description" id="otpModalDescription">
+      {{ description }}
+    </p>
+
+    <form class="otp-modal__form" (ngSubmit)="onVerify()" novalidate>
+      <fieldset
+        class="otp-modal__code"
+        [class.otp-modal__code--error]="showError"
+      >
+        <legend class="visually-hidden">Six-digit verification code</legend>
+
+        <input
+          *ngFor="let d of digits; let i = index"
+          class="otp-modal__digit"
+          type="text"
+          inputmode="numeric"
+          maxlength="1"
+          [id]="'otp-digit-' + i"
+          [attr.aria-label]="'Digit ' + (i + 1) + ' of 6'"
+          [value]="digits[i]"
+          (input)="onDigitInput(i, $event)"
+          (keydown)="onDigitKeydown(i, $event)"
+          (paste)="onDigitPaste($event)"
+          [autocomplete]="i === 0 ? 'one-time-code' : 'off'"
+        />
+      </fieldset>
+
+      <p
+        class="otp-modal__error"
+        [class.otp-modal__error--visible]="showError"
+        role="alert"
+        *ngIf="showError"
+      >
+        {{ displayError }}
+      </p>
+
+      <button class="otp-modal__verify" type="submit" [disabled]="verifying">
+        {{ verifying ? "Verifying…" : "Verify Code" }}
+      </button>
+    </form>
+
+    <div class="otp-modal__resend-block">
+      <p class="otp-modal__resend-text">Didn't receive the code?</p>
+      <button
+        class="otp-modal__resend"
+        type="button"
+        [disabled]="!canResend"
+        (click)="onResend()"
+      >
+        <ng-container *ngIf="secondsLeft > 0; else resendReady">
+          Resend code in
+          <span class="otp-modal__timer">{{ timerLabel }}</span>
+        </ng-container>
+        <ng-template #resendReady>Resend code</ng-template>
+      </button>
+    </div>
+
+    <button class="otp-modal__cancel" type="button" (click)="onClose()">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+      <span>Cancel</span>
+    </button>
+  </div>
+</div>
