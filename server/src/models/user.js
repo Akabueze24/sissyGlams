@@ -103,13 +103,13 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    emailVerifyCode: {
+    emailVerificationCode: {
       type: String,
-      default: null,
+      default: undefined,
     },
-    emailVerifyExpires: {
+    emailVerificationExpires: {
       type: Date,
-      default: null,
+      default: undefined,
     },
 
     passwordResetCode: {
@@ -123,7 +123,7 @@ const userSchema = new mongoose.Schema(
 
     passwordResetPurpose: {
       type: String,
-      enum: ["forgot", "change"]
+      enum: ["forgot", "change"],
     },
   },
   { timestamps: true },
